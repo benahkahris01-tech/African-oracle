@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The African Oracle — NSE & JSE Stock Screener</title>
+  <meta name="description" content="Free analytical tool for NSE Kenya and JSE South Africa listed companies." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- ═══ HEADER ═══ -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="index.html" class="brand">
+        <span class="brand-icon">◈</span>
+        <div>
+          <div class="brand-name">The African Oracle</div>
+          <div class="brand-sub">NSE · JSE Stock Intelligence</div>
+        </div>
+      </a>
+      <nav class="site-nav">
+        <a href="index.html" class="nav-link active">Screener</a>
+        <a href="learn.html" class="nav-link">Learn</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ═══ HERO ═══ -->
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-tag">Free · No signup · Updated daily</div>
+      <h1 class="hero-title">Find your next<br/><em>African investment</em></h1>
+      <p class="hero-sub">Data-driven analysis of every company on the Nairobi and Johannesburg Stock Exchanges. Built for laymen and professionals alike.</p>
+      <div class="hero-stats">
+        <div class="hero-stat"><span class="stat-num" id="totalCount">—</span><span class="stat-label">Companies</span></div>
+        <div class="hero-stat"><span class="stat-num" id="nseCount">—</span><span class="stat-label">NSE Kenya</span></div>
+        <div class="hero-stat"><span class="stat-num" id="jseCount">—</span><span class="stat-label">JSE South Africa</span></div>
+        <div class="hero-stat"><span class="stat-num" id="wideCount">—</span><span class="stat-label">Wide Moat</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ FILTERS ═══ -->
+  <section class="filters-bar">
+    <div class="filters-inner">
+      <div class="search-wrap">
+        <span class="search-icon">⌕</span>
+        <input type="text" id="searchInput" class="search-input" placeholder="Search ticker or company…" />
+      </div>
+      <div class="filter-group">
+        <label class="filter-label">Exchange</label>
+        <div class="pill-group" id="exchangeFilter">
+          <button class="pill active" data-value="all">All</button>
+          <button class="pill" data-value="Kenya">NSE</button>
+          <button class="pill" data-value="S. Africa">JSE</button>
+        </div>
+      </div>
+      <div class="filter-group">
+        <label class="filter-label">Moat</label>
+        <div class="pill-group" id="moatFilter">
+          <button class="pill active" data-value="all">All</button>
+          <button class="pill" data-value="Wide">Wide</button>
+          <button class="pill" data-value="Narrow">Narrow</button>
+          <button class="pill" data-value="None">None</button>
+        </div>
+      </div>
+      <div class="filter-group">
+        <label class="filter-label">Strength</label>
+        <div class="pill-group" id="strengthFilter">
+          <button class="pill active" data-value="all">All</button>
+          <button class="pill" data-value="Strong">Strong</button>
+          <button class="pill" data-value="Adequate">Adequate</button>
+          <button class="pill" data-value="Weak">Weak</button>
+        </div>
+      </div>
+      <div class="filter-group">
+        <label class="filter-label">Predictability</label>
+        <div class="pill-group" id="predictFilter">
+          <button class="pill active" data-value="all">All</button>
+          <button class="pill" data-value="High">High</button>
+          <button class="pill" data-value="Medium">Medium</button>
+          <button class="pill" data-value="Low">Low</button>
+        </div>
+      </div>
+      <div class="filter-group">
+        <label class="filter-label">Sector</label>
+        <select id="sectorFilter" class="filter-select">
+          <option value="all">All Sectors</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label class="filter-label">Sort by</label>
+        <select id="sortSelect" class="filter-select">
+          <option value="ticker_asc">Ticker A–Z</option>
+          <option value="pe_asc">P/E Low → High</option>
+          <option value="pe_desc">P/E High → Low</option>
+          <option value="divYield_desc">Div Yield High → Low</option>
+          <option value="earningsGrowth_desc">EPS Growth High → Low</option>
+          <option value="intrinsicValue_desc">Intrinsic Value High → Low</option>
+          <option value="price_asc">Price Low → High</option>
+        </select>
+      </div>
+      <div class="result-count" id="resultCount">Loading…</div>
+    </div>
+  </section>
+
+  <!-- ═══ COLUMN TOGGLE ═══ -->
+  <div class="col-toggle-bar">
+    <div class="col-toggle-inner">
+      <span class="col-toggle-label">Show columns:</span>
+      <label class="col-check"><input type="checkbox" data-col="beginEps"      checked /> Begin EPS</label>
+      <label class="col-check"><input type="checkbox" data-col="endEps"        checked /> End EPS</label>
+      <label class="col-check"><input type="checkbox" data-col="earningsGrowth" checked /> EPS Growth</label>
+      <label class="col-check"><input type="checkbox" data-col="pe"            checked /> P/E</label>
+      <label class="col-check"><input type="checkbox" data-col="peg"           checked /> PEG</label>
+      <label class="col-check"><input type="checkbox" data-col="divYield"      checked /> Div Yield</label>
+      <label class="col-check"><input type="checkbox" data-col="initMargin"    checked /> Init Margin</label>
+      <label class="col-check"><input type="checkbox" data-col="finalMargin"   checked /> Final Margin</label>
+      <label class="col-check"><input type="checkbox" data-col="marginGrowth"  checked /> Margin Growth</label>
+      <label class="col-check"><input type="checkbox" data-col="debtEquity"    checked /> D/E</label>
+      <label class="col-check"><input type="checkbox" data-col="moat"          checked /> Moat</label>
+      <label class="col-check"><input type="checkbox" data-col="finStrength"   checked /> Fin Strength</label>
+      <label class="col-check"><input type="checkbox" data-col="predictability" checked /> Predictability</label>
+      <label class="col-check"><input type="checkbox" data-col="intrinsicValue" checked /> Intrinsic Value</label>
+      <label class="col-check"><input type="checkbox" data-col="signal"        checked /> Signal</label>
+    </div>
+  </div>
+
+  <!-- ═══ TABLE ═══ -->
+  <main class="table-section">
+    <div class="table-wrap">
+      <div class="loading-state" id="loadingState">
+        <div class="spinner"></div>
+        <p>Fetching live market data…</p>
+      </div>
+      <div class="error-state hidden" id="errorState">
+        <p id="errorMsg">⚠ Could not load data.</p>
+      </div>
+
+      <table class="stock-table hidden" id="stockTable">
+        <thead>
+          <tr>
+            <!-- Fixed columns -->
+            <th class="col-fixed">Ticker</th>
+            <th class="col-fixed">Company</th>
+            <th class="col-fixed">Exch</th>
+            <th class="col-fixed num-col th-sortable" data-sort="price">
+              Price <span class="sort-arrow"></span>
+            </th>
+
+            <!-- Toggleable columns -->
+            <th class="num-col th-sortable tc" data-col="beginEps" data-sort="beginEps">
+              Begin EPS
+              <span class="sort-arrow"></span>
+              <span class="th-tip" title="EPS approximately 5 years ago (FY2020). Shows where the company started.">?</span>
+            </th>
+            <th class="num-col th-sortable tc" data-col="endEps" data-sort="endEps">
+              End EPS
+              <span class="sort-arrow"></span>
+              <span class="th-tip" title="Most recent annual EPS (FY2024/2025). The latest reported earnings per share.">?</span>
+            </th>
+            <th class="num-col th-sortable tc" data-col="earningsGrowth" data-sort="earningsGrowth">
+              EPS Growth
+              <span class="sort-arrow"></span>
+              <span class="th-tip" title="How much earnings per share grew over 5 years (%). Higher is better.">?</span>
+            </th>
+            <th class="num-col th-sortable tc" data-col="pe" data-sort="pe">
+              P/E
+              <span class="sort-arrow"></span>
+              <span class="th-tip" title="Price ÷ Earnings Per Share. Lower can mean the stock is cheaper relative to profits.">?</span>
+            </th>
+            <th class="num-col th-sortable tc" data-col="peg" data-sort="peg">
+              PEG
+              <span class="sort-arrow"></span>
+              <span class="th-tip" title="P/E ÷ Growth Rate. Under 1.0 often signals an undervalued stock.">?</span>
+            </th>
+            <th class="num-col th-sortable tc" data-col="divYield" data-sort="divYield">
+              Div Yield
+              <span class="sort-arrow"></span>
+              <span class="th-tip" title="Annual dividend as % of share price. Higher = more income paid to shareholders.">?</span>
+            </th>
+            <th class="num-col tc" data-col="initMargin">
+              Init Margin
+              <span class="th-tip" title="Net profit margin ~5 years ago. Shows where profitability started.">?</span>
+            </th>
+            <th class="num-col tc" data-col="finalMargin">
+              Final Margin
+              <span class="th-tip" title="Most recent net profit margin. % of revenue kept as profit after all costs.">?</span>
+            </th>
+            <th class="num-col tc" data-col="marginGrowth">
+              Margin Growth
+              <span class="th-tip" title="How much the profit margin improved over 5 years (%). Positive means the company is becoming more efficient.">?</span>
+            </th>
+            <th class="num-col th-sortable tc" data-col="debtEquity" data-sort="debtEquity">
+              D/E
+              <span class="sort-arrow"></span>
+              <span class="th-tip" title="Debt ÷ Equity. Lower means less debt relative to shareholder funds. Banks naturally have higher D/E.">?</span>
+            </th>
+            <th class="tc" data-col="moat">
+              Moat
+              <span class="th-tip" title="Competitive advantage: Wide (durable 10yr+), Narrow (some), None (easily competed away).">?</span>
+            </th>
+            <th class="tc" data-col="finStrength">
+              Fin Strength
+              <span class="th-tip" title="Financial health based on debt levels, margins and profitability trends.">?</span>
+            </th>
+            <th class="tc" data-col="predictability">
+              Predictability
+              <span class="th-tip" title="How consistent earnings have been. High = steady profits, Low = erratic or losses.">?</span>
+            </th>
+            <th class="num-col th-sortable tc" data-col="intrinsicValue" data-sort="intrinsicValue">
+              Intrinsic Value
+              <span class="sort-arrow"></span>
+              <span class="th-tip" title="Estimated fair value = EPS × P/E. Compare to current price to spot potential bargains.">?</span>
+            </th>
+            <th class="tc" data-col="signal">
+              Signal
+              <span class="th-tip" title="Quick buy/watch/avoid based on PE, moat, growth and financial strength combined.">?</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+
+    <p class="disclaimer">
+      Updated daily · Not financial advice · Always do your own research ·
+      <a href="learn.html">Learn what these terms mean →</a>
+    </p>
+  </main>
+
+  <!-- ═══ FOOTER ═══ -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">◈ The African Oracle</div>
+      <div class="footer-links">
+        <a href="learn.html">Glossary</a>
+        <a href="index.html">Screener</a>
+      </div>
+      <div class="footer-note">Free forever · Data from NSE &amp; JSE public filings</div>
+    </div>
+  </footer>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

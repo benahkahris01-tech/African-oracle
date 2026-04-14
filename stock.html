@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title id="pageTitle">Stock Detail — The African Oracle</title>
+  <meta name="description" id="pageDesc" content="Detailed stock analysis." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/stock.css" />
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="index.html" class="brand">
+        <span class="brand-icon">◈</span>
+        <div>
+          <div class="brand-name">The African Oracle</div>
+          <div class="brand-sub">NSE · JSE Stock Intelligence</div>
+        </div>
+      </a>
+      <nav class="site-nav">
+        <a href="index.html" class="nav-link">Screener</a>
+        <a href="learn.html" class="nav-link">Learn</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="detail-loading" id="detailLoading">
+    <div class="spinner"></div>
+    <p>Loading company data…</p>
+  </div>
+  <div class="detail-error hidden" id="detailError">
+    <p>⚠ Company not found. <a href="index.html">Back to screener →</a></p>
+  </div>
+
+  <div class="detail-wrap hidden" id="detailWrap">
+
+    <!-- HERO -->
+    <section class="detail-hero">
+      <div class="detail-hero-inner">
+        <a href="index.html" class="back-link">← Back to Screener</a>
+        <div class="detail-hero-top">
+          <div class="detail-identity">
+            <div class="detail-ticker-row">
+              <span class="detail-ticker" id="dTicker"></span>
+              <span class="detail-exch-badge" id="dExch"></span>
+            </div>
+            <h1 class="detail-name" id="dName"></h1>
+            <div class="detail-meta">
+              <span id="dSector"></span>
+              <span class="meta-dot">·</span>
+              <span id="dCountry"></span>
+              <span class="meta-dot">·</span>
+              <span id="dCurrency"></span>
+            </div>
+          </div>
+          <div class="detail-price-panel">
+            <div class="detail-price-label">Current Price</div>
+            <div class="detail-price" id="dPrice"></div>
+            <div id="dSignal"></div>
+            <div class="detail-iv-row" id="dIVRow"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- AD 1 -->
+    <div class="ad-band"><div class="ad-inner"><div class="ad-placeholder">Advertisement</div></div></div>
+
+    <!-- KEY METRICS -->
+    <section class="d-section">
+      <div class="d-inner">
+        <h2 class="d-title">Key Metrics</h2>
+        <div class="metrics-grid" id="metricsGrid"></div>
+      </div>
+    </section>
+
+    <!-- EPS JOURNEY -->
+    <section class="d-section alt">
+      <div class="d-inner">
+        <h2 class="d-title">Earnings Per Share — 5 Year Journey</h2>
+        <p class="d-sub">How much profit the company generated per share, from 5 years ago to today.</p>
+        <div class="eps-journey">
+          <div class="eps-node">
+            <div class="eps-year-label">FY 2020</div>
+            <div class="eps-tag">Beginning EPS</div>
+            <div class="eps-big" id="eBegin"></div>
+          </div>
+          <div class="eps-connector">
+            <div class="eps-arrow-track">
+              <div class="eps-arrow-fill" id="eArrowFill"></div>
+            </div>
+            <div class="eps-growth-chip" id="eGrowthChip"></div>
+          </div>
+          <div class="eps-node">
+            <div class="eps-year-label">FY 2024/25</div>
+            <div class="eps-tag">Current EPS</div>
+            <div class="eps-big" id="eEnd"></div>
+          </div>
+          <div class="eps-node eps-ttm">
+            <div class="eps-year-label">Live (TTM)</div>
+            <div class="eps-tag">TTM EPS</div>
+            <div class="eps-big" id="eTTM"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- AD 2 -->
+    <div class="ad-band"><div class="ad-inner"><div class="ad-placeholder">Advertisement</div></div></div>
+
+    <!-- MARGINS -->
+    <section class="d-section">
+      <div class="d-inner">
+        <h2 class="d-title">Profit Margin Trend</h2>
+        <p class="d-sub">Net profit margin = % of revenue kept as profit after all costs. Improving margins signal growing efficiency.</p>
+        <div class="margin-section">
+          <div class="margin-row">
+            <span class="margin-row-label">Initial margin (FY2020)</span>
+            <div class="margin-track"><div class="margin-fill init-fill" id="barInit"></div></div>
+            <span class="margin-pct" id="txtInit"></span>
+          </div>
+          <div class="margin-row">
+            <span class="margin-row-label">Final margin (FY2024)</span>
+            <div class="margin-track"><div class="margin-fill final-fill" id="barFinal"></div></div>
+            <span class="margin-pct" id="txtFinal"></span>
+          </div>
+          <div class="margin-verdict" id="marginVerdict"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- QUALITY SCORES -->
+    <section class="d-section alt">
+      <div class="d-inner">
+        <h2 class="d-title">Quality Scores</h2>
+        <p class="d-sub">Rule-based assessments from earnings consistency, debt levels, margins and sector position.</p>
+        <div class="scores-grid" id="scoresGrid"></div>
+      </div>
+    </section>
+
+    <!-- AD 3 -->
+    <div class="ad-band"><div class="ad-inner"><div class="ad-placeholder">Advertisement</div></div></div>
+
+    <!-- HOW TO BUY -->
+    <section class="d-section">
+      <div class="d-inner">
+        <h2 class="d-title">How to Buy This Stock</h2>
+        <p class="d-sub">To invest in <strong id="buyName"></strong>, you need a registered brokerage account on the relevant exchange.</p>
+        <div class="broker-grid" id="brokerGrid"></div>
+        <p class="affiliate-note">Affiliate disclosure: we may earn a referral fee if you sign up via these links. This does not influence our analysis.</p>
+      </div>
+    </section>
+
+    <!-- TERMS REMINDER -->
+    <section class="d-section alt">
+      <div class="d-inner terms-reminder">
+        <span class="terms-icon">◈</span>
+        <div>
+          <strong>New to investing?</strong> Not sure what P/E, PEG or Moat means?
+          <a href="learn.html" class="terms-link">Visit our plain-English glossary →</a>
+        </div>
+      </div>
+    </section>
+
+    <div class="d-inner">
+      <p class="disclaimer">Data updated daily from public filings · Not financial advice · Always do your own research</p>
+    </div>
+
+  </div><!-- /detail-wrap -->
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">◈ The African Oracle</div>
+      <div class="footer-links">
+        <a href="index.html">Screener</a>
+        <a href="learn.html">Glossary</a>
+        <a href="privacy.html">Privacy</a>
+      </div>
+      <div class="footer-note">Free forever · Data from NSE &amp; JSE public filings</div>
+    </div>
+  </footer>
+
+  <script src="js/app.js"></script>
+  <script src="js/stock.js"></script>
+</body>
+</html>
