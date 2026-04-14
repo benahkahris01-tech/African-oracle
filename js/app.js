@@ -56,7 +56,7 @@ document.addEventListener("DOMContentLoaded", function () {
 // ── Fetch ─────────────────────────────────────────────────────
 function fetchData() {
   if (!API_URL || API_URL === "PASTE_YOUR_APPS_SCRIPT_URL_HERE") {
-    showError("No API URL set. Open js/app.js and paste your Apps Script Web App URL.");
+    showError("No API URL set. Open js/app.js and paste your Apps Script Web App URL."); 
     return;
   }
   fetch(API_URL)
