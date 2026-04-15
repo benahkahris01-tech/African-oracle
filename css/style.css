@@ -68,7 +68,82 @@ a:hover { color: var(--gold-light); }
 
 /* ── Hero ───────────────────────────────────────────────────── */
 .hero { background: var(--ink-2); border-bottom: 1px solid var(--border); padding: 48px 24px 40px; }
-.hero-inner { max-width: 1600px; margin: 0 auto; }
+
+/* ── Hero layout — two column on desktop ────────────────────── */
+.hero-inner {
+  max-width: 1600px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+
+.hero-left {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Right-side ad slot in hero */
+.hero-ad-slot {
+  flex: 0 0 300px;          /* standard display ad width */
+  width: 300px;
+  align-self: center;
+}
+
+.hero-ad-ins {
+  min-width: 300px;
+  min-height: 250px;        /* standard 300×250 medium rectangle */
+}
+
+/* Before AdSense approval — show a placeholder box */
+.hero-ad-placeholder {
+  width: 300px;
+  min-height: 250px;
+  background: var(--surface-2);
+  border: 1px dashed var(--border-2);
+  border-radius: var(--r);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+/* Also add a banner ad slot below the filter bar */
+.filters-ad-band {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 8px 0;
+}
+.filters-ad-inner {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  justify-content: center;
+}
+.filters-ad-inner ins,
+.filters-ad-banner {
+  display: block;
+  min-height: 90px;          /* leaderboard / banner height */
+  width: 100%;
+  max-width: 728px;          /* standard leaderboard width */
+  background: var(--surface-2);
+  border: 1px dashed var(--border-2);
+  border-radius: var(--r);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+/* Hide hero ad on small screens — not enough room */
+@media (max-width: 900px) {
+  .hero-inner    { flex-direction: column; }
+  .hero-ad-slot  { display: none; }
+  .hero-left     { width: 100%; }
+} 
 .hero-tag {
   display: inline-block; font-size: 9px; letter-spacing: 0.14em;
   text-transform: uppercase; color: var(--gold-dim);
