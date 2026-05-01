@@ -249,20 +249,26 @@ function renderDetail(s) {
   var brokers = s.country === "Kenya"
     ? [
         {
+          name: "Zidii by Sanlam",
+          desc: "Kenya's fastest-growing digital investment platform. Buy NSE shares from as little as KES 1. CMA regulated, fully mobile.",
+          url:  "https://zidii.co.ke",
+          cta:  "Start Investing"
+        },
+        {
           name: "SBG Securities",
-          desc: "Standard Bank Kenya's brokerage arm. Regulated by CMA Kenya. Suitable for NSE equities.",
+          desc: "Standard Bank Kenya's brokerage arm. Regulated by CMA Kenya. Full-service NSE trading with research tools.",
           url:  "https://sbgsecurities.co.ke",
           cta:  "Open Account"
         },
         {
           name: "NCBA Securities",
-          desc: "Full-service stockbroker regulated by CMA Kenya. Integrated with NCBA banking.",
+          desc: "Full-service CMA-regulated stockbroker. Integrated with NCBA banking for seamless fund transfers.",
           url:  "https://ncbasecurities.com",
           cta:  "Open Account"
         },
         {
           name: "Absa Securities Kenya",
-          desc: "Stockbroking arm of Absa Bank Kenya. Offers research and online trading.",
+          desc: "Stockbroking arm of Absa Bank Kenya. Offers research reports and online trading on the NSE.",
           url:  "https://www.absabank.co.ke/business/investments/securities",
           cta:  "Open Account"
         }
@@ -270,19 +276,19 @@ function renderDetail(s) {
     : [
         {
           name: "EasyEquities",
-          desc: "South Africa's leading low-cost online broker. Fractional shares available. Great for beginners.",
+          desc: "South Africa's leading low-cost online broker. Fractional shares from R1. Great for beginners and experienced investors.",
           url:  "https://www.easyequities.co.za",
           cta:  "Open Account"
         },
         {
           name: "Satrix",
-          desc: "ETF and direct equity investing platform by Sanlam. Well-regulated JSE broker.",
+          desc: "Direct equity and ETF investing platform by Sanlam. Well-regulated, low-cost access to JSE stocks.",
           url:  "https://www.satrix.co.za",
           cta:  "Open Account"
         },
         {
           name: "Standard Bank Online Share Trading",
-          desc: "Full JSE access with research tools. Ideal for active investors.",
+          desc: "Full JSE access with professional research tools. Suitable for active traders and long-term investors.",
           url:  "https://www.standardbank.co.za/southafrica/personal/products-and-services/invest-and-save/trading-accounts",
           cta:  "Open Account"
         }
