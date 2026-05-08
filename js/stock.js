@@ -306,7 +306,50 @@ function renderDetail(s) {
     bGrid.appendChild(card);
   });
 
-  // Show the page
+  /* ─────────────────────────────────────────────────────────────
+   ADD THIS BLOCK to stock.js
+   Place it at the very bottom of the renderDetail() function,
+   just before the closing:   show("detailWrap");
+   ───────────────────────────────────────────────────────────── */
+
+  // ── DATA FRESHNESS INDICATOR ─────────────────────────────────────────────
+  // Shows users when the fundamental data was last updated
+  // so they know if it reflects the latest earnings report
+  var ageDays    = numOrNull(s.dataAgeDays);
+  var lastUpdated = s.lastUpdated || "";
+
+  if (lastUpdated || ageDays !== null) {
+    var freshnessBar = document.createElement("div");
+    freshnessBar.className = "freshness-bar";
+
+    var cls  = "fresh-green";
+    var icon = "✓";
+    var msg  = "Data is current";
+
+    if (ageDays !== null) {
+      if (ageDays > 180) {
+        cls  = "fresh-red";
+        icon = "⚠";
+        msg  = "Data may be outdated — results may have been published since last update";
+      } else if (ageDays > 90) {
+        cls  = "fresh-amber";
+        icon = "◔";
+        msg  = "Data is getting stale — check if new results have been published";
+      }
+    }
+
+    freshnessBar.innerHTML =
+      "<span class='fresh-icon " + cls + "'>" + icon + "</span>" +
+      "<span class='fresh-text'>Fundamentals last updated: " +
+        "<strong>" + (lastUpdated || "unknown") + "</strong>" +
+        (ageDays !== null ? " (" + Math.round(ageDays) + " days ago)" : "") +
+      "</span>" +
+      "<span class='fresh-msg " + cls + "'> · " + msg + "</span>";
+
+    // Insert after the metrics grid section
+    var metricsSection = document.getElementById("metricsGrid").closest(".d-section");
+    metricsSection.appendChild(freshnessBar);
+  }
   show("detailWrap");
 }
 
