@@ -1,47 +1,70 @@
 /* ═══════════════════════════════════════════════════════════════
    stock.js — individual company detail page
-   Reads ?ticker=SCOM&country=Kenya from URL
-   Fetches all stocks from API (same as screener), finds the match
+   Self-contained: does NOT depend on app.js running any functions.
+   Only uses API_URL variable which app.js declares globally.
+   Reads ?ticker=SCOM&country=Kenya from URL params.
 ═══════════════════════════════════════════════════════════════ */
 
 document.addEventListener("DOMContentLoaded", function () {
+  // Only run on stock.html — guard against running on other pages
+  if (!document.getElementById("detailWrap")) return;
+
   var params  = new URLSearchParams(window.location.search);
   var ticker  = (params.get("ticker")  || "").toUpperCase().trim();
   var country = (params.get("country") || "").trim();
 
-  if (!ticker) { showDetailError(); return; }
+  if (!ticker) {
+    showDetailError("No ticker found in URL.");
+    return;
+  }
 
-  if (!API_URL || API_URL === "PASTE_YOUR_APPS_SCRIPT_URL_HERE") {
-    showDetailError(); return;
+  // API_URL is declared in app.js which loads before this file
+  if (typeof API_URL === "undefined" ||
+      !API_URL ||
+      API_URL === "PASTE_YOUR_APPS_SCRIPT_URL_HERE") {
+    showDetailError("API URL not configured in js/app.js.");
+    return;
   }
 
   fetch(API_URL)
-    .then(function (r) { return r.json(); })
+    .then(function (r) {
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      return r.json();
+    })
     .then(function (json) {
-      var list = Array.isArray(json.data) ? json.data : [];
+      if (!json || !json.data) throw new Error("Empty API response");
+      var list  = Array.isArray(json.data) ? json.data : [];
       var stock = null;
       for (var i = 0; i < list.length; i++) {
         if (list[i].ticker === ticker) { stock = list[i]; break; }
       }
-      if (!stock) { showDetailError(); return; }
+      if (!stock) {
+        showDetailError("Company " + ticker + " not found in data.");
+        return;
+      }
       renderDetail(stock);
     })
-    .catch(function () { showDetailError(); });
+    .catch(function (err) {
+      console.error("stock.js fetch error:", err);
+      showDetailError("Could not load data: " + err.message);
+    });
 });
 
-function showDetailError() {
+function showDetailError(msg) {
+  console.error("stock.js error:", msg || "unknown");
   hide("detailLoading");
   show("detailError");
 }
 
 function renderDetail(s) {
+  // Hide loading spinner immediately
   hide("detailLoading");
 
-  var cur  = s.currency || (s.country === "Kenya" ? "KES" : "ZAR");
-  var sym  = cur === "ZAR" ? "R" : "KES ";
-  var pr   = numOrNull(s.price);
-  var iv   = numOrNull(s.intrinsicValue);
-  var sig  = getSignal(s);
+  var cur = s.currency || (s.country === "Kenya" ? "KES" : "ZAR");
+  var sym = cur === "ZAR" ? "R" : "KES ";
+  var pr  = numOrNull(s.price);
+  var iv  = numOrNull(s.intrinsicValue);
+  var sig = getSignal(s);
 
   // Page meta
   document.getElementById("pageTitle").textContent =
@@ -395,6 +418,9 @@ function renderDetail(s) {
         "<a href='https://www.standardbank.co.za/southafrica/personal/products-and-services/invest-and-save/share-trading/online-share-trading' target='_blank' rel='noopener noreferrer' class='broker-btn'>Visit Standard Bank OST →</a>" +
       "</div>";
   }
+
+  // ── Show the page — MUST be last, always runs even if sections above had errors
+  try { show("detailWrap"); } catch(e) { console.error("show detailWrap failed:", e); }
 }
 
 // ── Signal (same logic as app.js) ────────────────────────────────────────────
@@ -428,8 +454,13 @@ function getSignal(s) {
   return "avoid";
 }
 
-// ── Shared utilities ──────────────────────────────────────────────────────────
+// ── Utilities — all self-contained, no dependency on app.js ──────────────────
 function numOrNull(v) { var n = parseFloat(v); return isNaN(n) ? null : n; }
+function esc(s) {
+  return String(s || "")
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
 function show(id) { var el = document.getElementById(id); if (el) el.classList.remove("hidden"); }
 function hide(id) { var el = document.getElementById(id); if (el) el.classList.add("hidden"); }
 function setText(id, v) { var el = document.getElementById(id); if (el) el.textContent = v; }
