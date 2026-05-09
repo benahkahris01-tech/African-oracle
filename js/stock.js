@@ -26,6 +26,40 @@ document.addEventListener("DOMContentLoaded", function () {
     return;
   }
 
+  // ── Try sessionStorage cache first ───────────────────────────
+  // app.js stores the full stock list in sessionStorage when the
+  // screener loads. If the user clicked through from the screener,
+  // the data is already there — no network call needed at all.
+  var CACHE_KEY = "oracle_data";
+  var CACHE_TTL = 10 * 60 * 1000; // 10 minutes
+
+  function findAndRender(data) {
+    var stock = null;
+    for (var i = 0; i < data.length; i++) {
+      if (data[i].ticker === ticker) { stock = data[i]; break; }
+    }
+    if (!stock) {
+      showDetailError("Company " + ticker + " not found in data.");
+      return;
+    }
+    renderDetail(stock);
+  }
+
+  try {
+    var cached = sessionStorage.getItem(CACHE_KEY);
+    if (cached) {
+      var parsed = JSON.parse(cached);
+      if (parsed && parsed.ts && (Date.now() - parsed.ts < CACHE_TTL) && parsed.data) {
+        // Data already in cache — render immediately, zero network call
+        findAndRender(parsed.data);
+        return;
+      }
+    }
+  } catch (e) {
+    // sessionStorage unavailable — fall through to fetch
+  }
+
+  // Cache miss — fetch from API and store for future use
   fetch(API_URL)
     .then(function (r) {
       if (!r.ok) throw new Error("HTTP " + r.status);
@@ -33,16 +67,17 @@ document.addEventListener("DOMContentLoaded", function () {
     })
     .then(function (json) {
       if (!json || !json.data) throw new Error("Empty API response");
-      var list  = Array.isArray(json.data) ? json.data : [];
-      var stock = null;
-      for (var i = 0; i < list.length; i++) {
-        if (list[i].ticker === ticker) { stock = list[i]; break; }
-      }
-      if (!stock) {
-        showDetailError("Company " + ticker + " not found in data.");
-        return;
-      }
-      renderDetail(stock);
+      var list = Array.isArray(json.data) ? json.data : [];
+
+      // Store in sessionStorage so screener page is also instant if user goes back
+      try {
+        sessionStorage.setItem(CACHE_KEY, JSON.stringify({
+          ts:   Date.now(),
+          data: list
+        }));
+      } catch (e) { /* storage full — continue */ }
+
+      findAndRender(list);
     })
     .catch(function (err) {
       console.error("stock.js fetch error:", err);
