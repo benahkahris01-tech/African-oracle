@@ -312,25 +312,26 @@ function renderDetail(s) {
       // ── METHOD 3: SBG SECURITIES ────────────────────────────────────────
       "<div class='broker-method'>" +
         "<div class='method-badge'>📊 Best for research &amp; professional trading</div>" +
-        "<div class='broker-name'>SBG Securities</div>" +
-        "<div class='broker-meta'>Standard Bank Kenya · CMA licensed · Full-service brokerage</div>" +
-        "<div class='broker-desc'>Standard Bank Kenya's stockbroking arm. SBG Securities provides full-service NSE brokerage with in-house research reports, portfolio management, and a dedicated relationship manager for larger investors.</div>" +
+        "<div class='broker-name'>SBG Securities (Stanbic Kenya)</div>" +
+        "<div class='broker-meta'>CMA licensed · Top 3 NSE broker · Full-service brokerage · Chiromo, Nairobi</div>" +
+        "<div class='broker-desc'>SBG Securities is one of Kenya's oldest and largest stockbrokers, a subsidiary of Standard Bank Group (Stanbic Bank Kenya). They provide full-service NSE brokerage with in-house research reports and dedicated relationship managers. Best suited for investors who want professional support and research alongside their trades.</div>" +
         "<div class='broker-steps'>" +
           "<div class='step-title'>Step-by-step:</div>" +
-          "<div class='step'><span class='step-num'>1</span><span><strong>Documents needed:</strong> National ID or passport, KRA PIN, proof of address (utility bill or bank statement less than 3 months old)</span></div>" +
-          "<div class='step'><span class='step-num'>2</span><span>Visit <strong>sbgsecurities.co.ke</strong> or walk into any Standard Bank Kenya branch</span></div>" +
-          "<div class='step'><span class='step-num'>3</span><span>Request and fill a <strong>CDS account opening form</strong> and client agreement</span></div>" +
-          "<div class='step'><span class='step-num'>4</span><span>Submit documents — account approval takes 3–7 business days</span></div>" +
-          "<div class='step'><span class='step-num'>5</span><span>Receive your login credentials for the SBG trading platform</span></div>" +
-          "<div class='step'><span class='step-num'>6</span><span><strong>Fund your account</strong> via bank transfer from any Kenyan bank</span></div>" +
-          "<div class='step'><span class='step-num'>7</span><span>Log in, search <strong>" + esc(s.ticker) + "</strong>, place buy order at market or limit price</span></div>" +
+          "<div class='step'><span class='step-num'>1</span><span><strong>Documents needed:</strong> Original National ID or passport, KRA PIN certificate, proof of residence (utility bill or bank statement), passport photo</span></div>" +
+          "<div class='step'><span class='step-num'>2</span><span>Walk into <strong>Stanbic Bank Kenya, Chiromo branch</strong> or call SBG Securities directly to request account opening forms. You can also download forms at <strong>sbgsecurities.co.ke</strong></span></div>" +
+          "<div class='step'><span class='step-num'>3</span><span>Complete the <strong>CDS Account Opening Form</strong> (CDS 1) — this registers you with the Central Depository and Settlement Corporation so your shares are held electronically in your name</span></div>" +
+          "<div class='step'><span class='step-num'>4</span><span>Submit all documents — an SBG staff member certifies your originals. Account approval takes <strong>3–7 business days</strong></span></div>" +
+          "<div class='step'><span class='step-num'>5</span><span><strong>Fund your CDS trading account</strong> via bank transfer. Use these details:<br/>Account Name: <strong>SBG SECURITIES</strong><br/>Bank: CfC Stanbic Bank<br/>Account No: <strong>0100000020499</strong><br/>Branch: Chiromo · Swift: SBICKENX<br/>Always quote your CDS account number as the reference</span></div>" +
+          "<div class='step'><span class='step-num'>6</span><span>Once funds reflect, call or email your SBG relationship manager to place a <strong>buy order</strong> for " + esc(s.ticker) + " — or use their online trading platform if enabled on your account</span></div>" +
+          "<div class='step'><span class='step-num'>7</span><span>Dividends are paid to your bank account automatically via EFT once registered in your CDS profile</span></div>" +
         "</div>" +
         "<div class='broker-notes'>" +
-          "<strong>Trading hours:</strong> Monday–Friday, 9:30 AM – 3:00 PM EAT<br/>" +
-          "<strong>Fees:</strong> Standard NSE brokerage rates (1.8%–2.1%)<br/>" +
-          "<strong>Best for:</strong> Investors who want research support and a full-service experience" +
+          "<strong>Trading hours:</strong> Monday–Friday, 9:00 AM – 3:00 PM EAT<br/>" +
+          "<strong>Fees:</strong> Standard NSE brokerage rates (~1.8%–2.1% per transaction)<br/>" +
+          "<strong>Best for:</strong> Investors who want research reports and a full-service professional experience<br/>" +
+          "<strong>Minimum investment:</strong> No strict minimum for shares; bonds require KES 50,000" +
         "</div>" +
-        "<a href='https://sbgsecurities.co.ke' target='_blank' rel='noopener noreferrer' class='broker-btn'>Visit SBG Securities →</a>" +
+        "<a href='https://www.sbgsecurities.co.ke/sbgsecurities/securities' target='_blank' rel='noopener noreferrer' class='broker-btn'>Visit SBG Securities →</a>" +
       "</div>";
 
   } else {

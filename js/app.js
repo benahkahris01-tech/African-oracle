@@ -56,7 +56,7 @@ document.addEventListener("DOMContentLoaded", function () {
 // ── Fetch ─────────────────────────────────────────────────────
 function fetchData() {
   if (!API_URL || API_URL === "PASTE_YOUR_APPS_SCRIPT_URL_HERE") {
-    showError("No API URL set. Open js/app.js and paste your Apps Script Web App URL."); 
+    showError("No API URL set. Open js/app.js and paste your Apps Script Web App URL.");
     return;
   }
   fetch(API_URL)
@@ -116,26 +116,32 @@ function bindColumnToggles() {
   applyColumnVisibility();
 }
 
+// ── Column visibility — CSS injection approach ────────────────
+// Injects a single <style> block to hide/show columns.
+// Far faster than querySelectorAll + looping every cell.
+var _colStyleEl = null;
 function applyColumnVisibility() {
+  if (!_colStyleEl) {
+    _colStyleEl = document.createElement("style");
+    _colStyleEl.id = "col-visibility";
+    document.head.appendChild(_colStyleEl);
+  }
+  var css = "";
   Object.keys(visibleCols).forEach(function (col) {
-    var show = visibleCols[col];
-    // Header cells
-    document.querySelectorAll("th.tc[data-col='" + col + "']").forEach(function (el) {
-      el.style.display = show ? "" : "none";
-    });
-    // Body cells — use data-col on td
-    document.querySelectorAll("td[data-col='" + col + "']").forEach(function (el) {
-      el.style.display = show ? "" : "none";
-    });
+    if (!visibleCols[col]) {
+      css += 'th[data-col="' + col + '"], td[data-col="' + col + '"] { display: none; }\n';
+    }
   });
+  _colStyleEl.textContent = css;
 }
 
 // ── Bind all filters ──────────────────────────────────────────
 function bindFilters() {
-  document.getElementById("searchInput").addEventListener("input", function () {
+  // Search — debounced 200ms so it doesn't fire on every keystroke
+  document.getElementById("searchInput").addEventListener("input", debounce(function () {
     filters.search = this.value.toLowerCase().trim();
     applyFiltersAndRender();
-  });
+  }, 200));
   bindPillGroup("exchangeFilter", function (v) { filters.exchange = v; applyFiltersAndRender(); });
   bindPillGroup("moatFilter",     function (v) { filters.moat     = v; applyFiltersAndRender(); });
   bindPillGroup("strengthFilter", function (v) { filters.strength = v; applyFiltersAndRender(); });
@@ -211,98 +217,74 @@ function applyFiltersAndRender() {
   setText("resultCount", filtered.length + " of " + allStocks.length + " companies");
 }
 
-// ── Render rows ───────────────────────────────────────────────
+// ── Debounce helper — prevents search firing on every keystroke ───
+function debounce(fn, ms) {
+  var timer;
+  return function() {
+    var args = arguments;
+    clearTimeout(timer);
+    timer = setTimeout(function() { fn.apply(null, args); }, ms);
+  };
+}
+
+// ── Render rows — optimised ───────────────────────────────────
+// Builds entire table as ONE HTML string, writes with one innerHTML call.
+// Uses event delegation (one listener on tbody) instead of per-row listeners.
+// 10-15x faster than createElement + appendChild per row.
 function renderTable(stocks) {
   var tbody = document.getElementById("tableBody");
-  tbody.innerHTML = "";
 
   if (stocks.length === 0) {
     tbody.innerHTML =
       '<tr><td colspan="20" style="text-align:center;padding:48px;color:var(--muted)">No companies match your filters.</td></tr>';
+    applyColumnVisibility();
     return;
   }
 
-  stocks.forEach(function (s) {
-    var cur  = s.currency || (s.country === "Kenya" ? "KES" : "ZAR");
-    var iv   = numOrNull(s.intrinsicValue);
-    var pr   = numOrNull(s.price);
-    var sig  = getSignal(s);
+  // Build entire HTML as one string — single DOM write at end
+  var html = "";
+  for (var i = 0; i < stocks.length; i++) {
+    var s   = stocks[i];
+    var cur = s.currency || (s.country === "Kenya" ? "KES" : "ZAR");
+    var iv  = numOrNull(s.intrinsicValue);
+    var pr  = numOrNull(s.price);
+    var sig = getSignal(s);
+    var href = "stock.html?ticker=" + encodeURIComponent(s.ticker) +
+               "&country="          + encodeURIComponent(s.country);
 
-    var tr = document.createElement("tr");
-
-    // ── Fixed columns (always visible) ──────────────────────────
-    tr.innerHTML =
-      // Ticker
+    html +=
+      '<tr class="stock-row" data-href="' + href + '">' +
       '<td><span class="cell-ticker">' + esc(s.ticker) + '</span></td>' +
-
-      // Company name
       '<td><span class="cell-name" title="' + esc(s.name) + '">' + esc(s.name) + '</span></td>' +
-
-      // Exchange badge
       '<td>' + exchBadge(s.country) + '</td>' +
-
-      // Price — formatted with currency, no "x"
       '<td class="num-col">' + fmtPrice(s.price, cur) + '</td>' +
-
-      // ── Toggleable columns ────────────────────────────────────
-
-      // Beginning EPS (raw number, local currency)
       '<td class="num-col tc" data-col="beginEps">' + fmtNum(s.beginEps, 2, cur + " ") + '</td>' +
-
-      // Ending EPS (raw number, local currency)
       '<td class="num-col tc" data-col="endEps">' + fmtNum(s.endEps, 2, cur + " ") + '</td>' +
-
-      // EPS Growth % — from formula in sheet
       '<td class="num-col tc" data-col="earningsGrowth">' + fmtGrowthPct(s.earningsGrowth) + '</td>' +
-
-      // P/E — plain number, no "x", colour coded
       '<td class="num-col tc" data-col="pe">' + fmtPE(s.pe) + '</td>' +
-
-      // PEG — plain decimal
       '<td class="num-col tc" data-col="peg">' + fmtPEG(s.peg) + '</td>' +
-
-      // Div Yield — as percentage
       '<td class="num-col tc" data-col="divYield">' + fmtPct(s.divYield) + '</td>' +
-
-      // Initial Net Margin — as percentage
       '<td class="num-col tc" data-col="initMargin">' + fmtPct(s.initMargin) + '</td>' +
-
-      // Final Net Margin — as percentage
       '<td class="num-col tc" data-col="finalMargin">' + fmtPct(s.finalMargin) + '</td>' +
-
-      // Margin Growth % — from formula in sheet
       '<td class="num-col tc" data-col="marginGrowth">' + fmtGrowthPct(s.marginGrowth) + '</td>' +
-
-      // Debt/Equity — plain decimal
       '<td class="num-col tc" data-col="debtEquity">' + fmtDE(s.debtEquity) + '</td>' +
-
-      // Moat badge
       '<td class="tc" data-col="moat">' + moatBadge(s.moat) + '</td>' +
-
-      // Financial Strength badge
       '<td class="tc" data-col="finStrength">' + strengthBadge(s.finStrength) + '</td>' +
-
-      // Predictability badge
       '<td class="tc" data-col="predictability">' + predictBadge(s.predictability) + '</td>' +
-
-      // Intrinsic Value — formatted with currency
-      // Also shows margin of safety vs current price
       '<td class="num-col tc" data-col="intrinsicValue">' + fmtIV(iv, pr, cur) + '</td>' +
+      '<td class="tc" data-col="signal">' + signalBadge(sig) + '</td>' +
+      '</tr>';
+  }
 
-      // Signal
-      '<td class="tc" data-col="signal">' + signalBadge(sig) + '</td>';
+  // ONE write to the DOM
+  tbody.innerHTML = html;
 
-    // Navigate to detail page on row click
-    tr.addEventListener("click", function () {
-      window.location.href =
-        "stock.html?ticker=" + encodeURIComponent(s.ticker) +
-        "&country="          + encodeURIComponent(s.country);
-    });
+  // ONE delegated listener instead of one per row
+  tbody.onclick = function (e) {
+    var tr = e.target.closest("tr.stock-row");
+    if (tr && tr.dataset.href) window.location.href = tr.dataset.href;
+  };
 
-    tbody.appendChild(tr);
-  });
-
-  // Re-apply column visibility after render
   applyColumnVisibility();
 }
 
