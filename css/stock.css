@@ -205,26 +205,62 @@
 .sv-medium { color: var(--amber); }
 .sv-low    { color: var(--red);   }
 
-/* Broker section */
-.broker-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 12px; margin-bottom: 16px;
-}
-.broker-card {
-  display: flex; flex-direction: column;
+/* Broker section — step-by-step method cards */
+.broker-grid { display: flex; flex-direction: column; gap: 20px; margin-bottom: 16px; }
+
+.broker-method {
   background: var(--surface-2); border: 1px solid var(--border);
-  border-radius: var(--r); padding: 18px; gap: 8px;
+  border-radius: 8px; padding: 22px 24px;
 }
-.broker-name { font-size: 14px; font-weight: 500; color: #E0E0E0; }
-.broker-desc { font-size: 11px; color: var(--muted); line-height: 1.5; flex: 1; }
+.method-badge {
+  display: inline-block; font-size: 10px; font-weight: 500;
+  padding: 3px 10px; border-radius: 10px; margin-bottom: 10px;
+  background: var(--blue-bg); color: var(--blue);
+  border: 1px solid rgba(58,135,212,0.2);
+}
+.method-badge.fastest {
+  background: var(--green-bg); color: var(--green);
+  border-color: rgba(61,170,110,0.2);
+}
+.broker-name { font-size: 16px; font-weight: 600; color: #EFEFEF; margin-bottom: 3px; }
+.broker-meta { font-size: 11px; color: var(--gold-dim); margin-bottom: 10px; }
+.broker-desc {
+  font-size: 13px; color: #B8B8B8; line-height: 1.7;
+  margin-bottom: 16px; padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+.broker-steps { margin-bottom: 16px; }
+.step-title {
+  font-size: 10px; text-transform: uppercase; letter-spacing: 0.09em;
+  color: var(--muted); margin-bottom: 10px;
+}
+.step {
+  display: flex; align-items: flex-start; gap: 10px;
+  margin-bottom: 8px; font-size: 13px; color: #C0C0C0; line-height: 1.55;
+}
+.step-num {
+  flex-shrink: 0; width: 22px; height: 22px;
+  background: rgba(201,168,76,0.12); border: 1px solid var(--gold-dim);
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 600; color: var(--gold); margin-top: 1px;
+}
+.step strong { color: #DFDFDF; }
+.broker-notes {
+  font-size: 12px; color: var(--muted); line-height: 1.8;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--r); padding: 10px 14px; margin-bottom: 16px;
+}
+.broker-notes strong { color: #C8C8C8; }
 .broker-btn {
-  display: inline-block; margin-top: 8px;
-  background: var(--gold); color: var(--ink); font-size: 12px;
-  font-weight: 500; padding: 7px 14px; border-radius: var(--r);
+  display: inline-block;
+  background: var(--gold); color: var(--ink); font-size: 13px;
+  font-weight: 500; padding: 9px 18px; border-radius: var(--r);
   text-align: center; transition: background 0.15s;
 }
 .broker-btn:hover { background: var(--gold-light); color: var(--ink); }
+.broker-link-note {
+  font-size: 12px; color: var(--muted); font-style: italic; margin-top: 4px;
+}
 .affiliate-note { font-size: 10px; color: var(--muted); font-style: italic; }
 
 /* Terms reminder */
@@ -236,30 +272,3 @@
 .terms-icon { font-size: 20px; color: var(--gold); flex-shrink: 0; }
 .terms-link { color: var(--gold); margin-left: 6px; }
 .terms-link:hover { color: var(--gold-light); }
-/* ─────────────────────────────────────────────────────────────
-   ADD TO css/stock.css
-   Data freshness indicator styles
-   ───────────────────────────────────────────────────────────── */
-
-.freshness-bar {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 16px;
-  padding: 10px 14px;
-  background: var(--surface-2);
-  border: 1px solid var(--border);
-  border-radius: var(--r);
-  font-size: 12px;
-  color: var(--muted);
-  flex-wrap: wrap;
-}
-.fresh-icon {
-  font-size: 14px;
-  font-weight: 700;
-  flex-shrink: 0;
-}
-.fresh-text strong { color: #D0D0D0; }
-.fresh-green { color: var(--green); }
-.fresh-amber { color: var(--amber); }
-.fresh-red   { color: var(--red);   }
