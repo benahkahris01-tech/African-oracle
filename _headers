@@ -1,0 +1,41 @@
+# ═══════════════════════════════════════════════════════════════
+#  The African Oracle — Cache Control Headers
+#  For Cloudflare Pages (native support) and GitHub Pages (partial)
+#
+#  Strategy:
+#  - HTML files: never cache — always serve fresh so version
+#    query strings on JS/CSS links are always current
+#  - JS and CSS: cache 1 year — the ?v= query string in the HTML
+#    forces a fresh download whenever you push a new version
+#  - Fonts/images: cache 1 year — these never change
+# ═══════════════════════════════════════════════════════════════
+
+# HTML pages — never cache, always serve fresh
+/*.html
+  Cache-Control: no-cache, no-store, must-revalidate
+  Pragma: no-cache
+  Expires: 0
+
+# Default for root
+/
+  Cache-Control: no-cache, no-store, must-revalidate
+
+# JavaScript — cache 1 year (cache-busted via ?v= query string)
+/js/*.js
+  Cache-Control: public, max-age=31536000, immutable
+
+# CSS — cache 1 year (cache-busted via ?v= query string)
+/css/*.css
+  Cache-Control: public, max-age=31536000, immutable
+
+# Service worker — must NEVER be cached so updates are instant
+/sw.js
+  Cache-Control: no-cache, no-store, must-revalidate
+
+# Security headers on everything
+/*
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  X-XSS-Protection: 1; mode=block
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(), microphone=(), camera=()
