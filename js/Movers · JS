@@ -38,7 +38,7 @@ function loadData() {
   // API_URL declared in app.js which loads before this file
   if (typeof API_URL === "undefined" ||
       !API_URL ||
-      API_URL === "PASTE_YOUR_APPS_SCRIPT_URL_HERE") {
+      API_URL === "https://script.google.com/macros/s/AKfycbzUDs26aD7RaaVDdL7rUAVRZ83XlDK9dfI9zFcx-SvZXZD_2rnJXdbGSF2fNFNe37GbxQ/exec") {
     showMvError("API URL not configured in js/app.js.");
     return;
   }
