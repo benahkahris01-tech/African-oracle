@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Top &amp; Worst Performers — The African Oracle</title>
+  <meta name="description" content="Top performing and worst performing NSE Kenya and JSE South Africa stocks ranked by price, dividend yield, EPS growth and valuation." />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css?v=1" />
+  <link rel="stylesheet" href="css/movers.css?v=1" />
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5232676175386938" crossorigin="anonymous"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('/sw.js')
+          .then(function (reg) { reg.update(); })
+          .catch(function (err) { console.log('SW failed:', err); });
+      });
+    }
+  </script>
+</head>
+<body>
+
+  <!-- ═══ HEADER ═══ -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="index.html" class="brand">
+        <span class="brand-icon">◈</span>
+        <div>
+          <div class="brand-name">The African Oracle</div>
+          <div class="brand-sub">NSE · JSE Stock Intelligence</div>
+        </div>
+      </a>
+      <nav class="site-nav">
+        <a href="index.html"  class="nav-link">Screener</a>
+        <a href="movers.html" class="nav-link active">Performers</a>
+        <a href="learn.html"  class="nav-link">Learn</a>
+        <a href="about.html"  class="nav-link">About</a>
+        <a href="contact.html" class="nav-link">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ═══ HERO ═══ -->
+  <section class="mv-hero">
+    <div class="mv-hero-inner">
+      <div class="hero-tag">Updated Daily · NSE &amp; JSE</div>
+      <h1 class="hero-title">Top &amp; Worst<br/><em>Performers</em></h1>
+      <p class="hero-sub">Stocks ranked by price, dividend yield, earnings growth and valuation. Covers every company on the Nairobi and Johannesburg Stock Exchanges.</p>
+
+      <!-- Exchange toggle -->
+      <div class="mv-exchange-toggle">
+        <button class="mv-toggle-btn active" data-exchange="all"       id="btnAll">All Markets</button>
+        <button class="mv-toggle-btn"        data-exchange="Kenya"     id="btnNSE">NSE Kenya</button>
+        <button class="mv-toggle-btn"        data-exchange="S. Africa" id="btnJSE">JSE South Africa</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ AD SLOT 1 — Below hero ═══ -->
+  <div class="mv-ad-band">
+    <div class="mv-ad-inner">
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-5232676175386938"
+           data-ad-slot=""
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+  </div>
+
+  <!-- ═══ LOADING ═══ -->
+  <div class="mv-loading" id="mvLoading">
+    <div class="spinner"></div>
+    <p>Loading market data…</p>
+  </div>
+
+  <!-- ═══ ERROR ═══ -->
+  <div class="mv-error hidden" id="mvError">
+    <p>⚠ Could not load data. <a href="index.html">Go to screener →</a></p>
+  </div>
+
+  <!-- ═══ MAIN CONTENT ═══ -->
+  <main class="mv-main hidden" id="mvMain">
+
+    <!-- ── SECTION 1: Highest Price ── -->
+    <section class="mv-section">
+      <div class="mv-section-inner">
+        <div class="mv-section-header">
+          <div class="mv-section-title-wrap">
+            <span class="mv-section-icon top">▲</span>
+            <h2 class="mv-section-title">Highest Priced Stocks</h2>
+          </div>
+          <p class="mv-section-desc">Companies with the highest current share price. High price alone does not mean expensive — always check the P/E ratio.</p>
+        </div>
+        <div class="mv-table-wrap">
+          <table class="mv-table">
+            <thead>
+              <tr>
+                <th class="rank-col">#</th>
+                <th>Ticker</th>
+                <th>Company</th>
+                <th>Exch</th>
+                <th class="num-col">Price</th>
+                <th class="num-col">P/E</th>
+                <th class="num-col">Div Yield</th>
+                <th>Signal</th>
+              </tr>
+            </thead>
+            <tbody id="topPriceBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ AD SLOT 2 ═══ -->
+    <div class="mv-ad-band">
+      <div class="mv-ad-inner">
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-5232676175386938"
+             data-ad-slot=""
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+      </div>
+    </div>
+
+    <!-- ── SECTION 2: Lowest Price ── -->
+    <section class="mv-section alt">
+      <div class="mv-section-inner">
+        <div class="mv-section-header">
+          <div class="mv-section-title-wrap">
+            <span class="mv-section-icon worst">▼</span>
+            <h2 class="mv-section-title">Lowest Priced Stocks</h2>
+          </div>
+          <p class="mv-section-desc">Companies with the lowest current share price. Low price can mean an entry opportunity — or a distressed company. Check the signal.</p>
+        </div>
+        <div class="mv-table-wrap">
+          <table class="mv-table">
+            <thead>
+              <tr>
+                <th class="rank-col">#</th>
+                <th>Ticker</th>
+                <th>Company</th>
+                <th>Exch</th>
+                <th class="num-col">Price</th>
+                <th class="num-col">P/E</th>
+                <th class="num-col">EPS Growth</th>
+                <th>Signal</th>
+              </tr>
+            </thead>
+            <tbody id="worstPriceBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ AD SLOT 3 ═══ -->
+    <div class="mv-ad-band">
+      <div class="mv-ad-inner">
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-5232676175386938"
+             data-ad-slot=""
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+      </div>
+    </div>
+
+    <!-- ── SECTION 3: Top Dividend Yield ── -->
+    <section class="mv-section">
+      <div class="mv-section-inner">
+        <div class="mv-section-header">
+          <div class="mv-section-title-wrap">
+            <span class="mv-section-icon top">💰</span>
+            <h2 class="mv-section-title">Highest Dividend Yield</h2>
+          </div>
+          <p class="mv-section-desc">Stocks paying the most income relative to their price. Sorted by annual dividend yield — ideal for income investors.</p>
+        </div>
+        <div class="mv-table-wrap">
+          <table class="mv-table">
+            <thead>
+              <tr>
+                <th class="rank-col">#</th>
+                <th>Ticker</th>
+                <th>Company</th>
+                <th>Exch</th>
+                <th class="num-col">Div Yield</th>
+                <th class="num-col">Price</th>
+                <th class="num-col">P/E</th>
+                <th>Fin Strength</th>
+              </tr>
+            </thead>
+            <tbody id="topDivBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ AD SLOT 4 ═══ -->
+    <div class="mv-ad-band">
+      <div class="mv-ad-inner">
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-5232676175386938"
+             data-ad-slot=""
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+      </div>
+    </div>
+
+    <!-- ── SECTION 4: Best EPS Growth ── -->
+    <section class="mv-section alt">
+      <div class="mv-section-inner">
+        <div class="mv-section-header">
+          <div class="mv-section-title-wrap">
+            <span class="mv-section-icon top">📈</span>
+            <h2 class="mv-section-title">Strongest Earnings Growth</h2>
+          </div>
+          <p class="mv-section-desc">Companies that grew earnings per share the most over 5 years. Sustained EPS growth is the strongest long-term indicator of a healthy business.</p>
+        </div>
+        <div class="mv-table-wrap">
+          <table class="mv-table">
+            <thead>
+              <tr>
+                <th class="rank-col">#</th>
+                <th>Ticker</th>
+                <th>Company</th>
+                <th>Exch</th>
+                <th class="num-col">EPS Growth</th>
+                <th class="num-col">Begin EPS</th>
+                <th class="num-col">End EPS</th>
+                <th>Moat</th>
+              </tr>
+            </thead>
+            <tbody id="topGrowthBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ AD SLOT 5 ═══ -->
+    <div class="mv-ad-band">
+      <div class="mv-ad-inner">
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-5232676175386938"
+             data-ad-slot=""
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+      </div>
+    </div>
+
+    <!-- ── SECTION 5: Worst EPS Growth / Declining ── -->
+    <section class="mv-section">
+      <div class="mv-section-inner">
+        <div class="mv-section-header">
+          <div class="mv-section-title-wrap">
+            <span class="mv-section-icon worst">📉</span>
+            <h2 class="mv-section-title">Weakest Earnings Growth</h2>
+          </div>
+          <p class="mv-section-desc">Companies with declining or negative EPS growth over 5 years. Useful for identifying stocks to avoid or monitor for a turnaround.</p>
+        </div>
+        <div class="mv-table-wrap">
+          <table class="mv-table">
+            <thead>
+              <tr>
+                <th class="rank-col">#</th>
+                <th>Ticker</th>
+                <th>Company</th>
+                <th>Exch</th>
+                <th class="num-col">EPS Growth</th>
+                <th class="num-col">Begin EPS</th>
+                <th class="num-col">End EPS</th>
+                <th>Signal</th>
+              </tr>
+            </thead>
+            <tbody id="worstGrowthBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ AD SLOT 6 ═══ -->
+    <div class="mv-ad-band">
+      <div class="mv-ad-inner">
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-5232676175386938"
+             data-ad-slot=""
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+      </div>
+    </div>
+
+    <!-- ── SECTION 6: Best Value (Lowest PEG) ── -->
+    <section class="mv-section alt">
+      <div class="mv-section-inner">
+        <div class="mv-section-header">
+          <div class="mv-section-title-wrap">
+            <span class="mv-section-icon top">💎</span>
+            <h2 class="mv-section-title">Best Value — Lowest PEG</h2>
+          </div>
+          <p class="mv-section-desc">PEG under 1.0 signals a stock may be undervalued relative to its growth rate. These are the most attractively priced growers on NSE and JSE.</p>
+        </div>
+        <div class="mv-table-wrap">
+          <table class="mv-table">
+            <thead>
+              <tr>
+                <th class="rank-col">#</th>
+                <th>Ticker</th>
+                <th>Company</th>
+                <th>Exch</th>
+                <th class="num-col">PEG</th>
+                <th class="num-col">P/E</th>
+                <th class="num-col">EPS Growth</th>
+                <th>Moat</th>
+              </tr>
+            </thead>
+            <tbody id="topValueBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ AD SLOT 7 ═══ -->
+    <div class="mv-ad-band">
+      <div class="mv-ad-inner">
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-5232676175386938"
+             data-ad-slot=""
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+      </div>
+    </div>
+
+    <!-- ── SECTION 7: Most Overvalued (Highest PEG) ── -->
+    <section class="mv-section">
+      <div class="mv-section-inner">
+        <div class="mv-section-header">
+          <div class="mv-section-title-wrap">
+            <span class="mv-section-icon worst">⚠</span>
+            <h2 class="mv-section-title">Most Expensive — Highest PEG</h2>
+          </div>
+          <p class="mv-section-desc">Stocks where you are paying the most relative to their growth. High PEG does not always mean avoid — but it demands a strong reason to hold.</p>
+        </div>
+        <div class="mv-table-wrap">
+          <table class="mv-table">
+            <thead>
+              <tr>
+                <th class="rank-col">#</th>
+                <th>Ticker</th>
+                <th>Company</th>
+                <th>Exch</th>
+                <th class="num-col">PEG</th>
+                <th class="num-col">P/E</th>
+                <th class="num-col">Price</th>
+                <th>Signal</th>
+              </tr>
+            </thead>
+            <tbody id="worstValueBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Disclaimer -->
+    <div class="mv-section-inner" style="padding-bottom:40px;">
+      <p class="disclaimer">
+        Data updated daily · Rankings based on current prices and fundamentals ·
+        Not financial advice · Always do your own research ·
+        <a href="learn.html">Learn what these metrics mean →</a>
+      </p>
+    </div>
+
+  </main>
+
+  <!-- ═══ FOOTER ═══ -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">◈ The African Oracle</div>
+      <div class="footer-links">
+        <a href="index.html">Screener</a>
+        <a href="movers.html">Performers</a>
+        <a href="learn.html">Glossary</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+        <a href="privacy.html">Privacy</a>
+      </div>
+      <div class="footer-note">Free forever · Data from NSE &amp; JSE public filings</div>
+    </div>
+  </footer>
+
+  <script src="js/app.js?v=1"></script>
+  <script src="js/movers.js?v=1"></script>
+</body>
+</html>

@@ -8,8 +8,17 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css" />
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5232676175386938" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="css/style.css?v=1" />
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5232676175386938" crossorigin="anonymous"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('/sw.js')
+          .then(function(reg) { reg.update(); })
+          .catch(function(err) { console.log('SW failed:', err); });
+      });
+    }
+  </script>
 </head>
 <body>
 
@@ -26,8 +35,9 @@
       <nav class="site-nav">
         <a href="index.html" class="nav-link active">Screener</a>
         <a href="learn.html" class="nav-link">Learn</a>
-         <a href="about.html" class="nav-link">About</a>
-          <a href="contact.html" class="nav-link">Contact</a>
+        <a href="about.html" class="nav-link">About</a>
+        <a href="movers.html" class="nav-link">Performers</a>
+        <a href="contact.html" class="nav-link">Contact</a>
       </nav>
     </div>
   </header>
@@ -279,12 +289,13 @@
         <a href="index.html">Screener</a>
         <a href="about.html">About</a>
         <a href="contact.html">Contact</a>
-         <a href="privacy.html">Privacy</a>
+        <a href="privacy.html">Privacy</a>
+        <a href="movers.html">Performers</a>
       </div>
       <div class="footer-note">Free forever · Data from NSE &amp; JSE public filings</div>
     </div>
   </footer>
 
-  <script src="js/app.js"></script>
+  <script src="js/app.js?v=1"></script>
 </body>
 </html>
