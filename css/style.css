@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════════
-   THE AFRICAN ORACLE — style.css  v2
+   THE AFRICAN ORACLE — style.css  v2 (Rectified for Responsiveness)
 ═══════════════════════════════════════════════════════════════ */
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -38,6 +38,9 @@ body {
   font-size: 13px;
   line-height: 1.55;
   min-height: 100vh;
+  /* Prevent horizontal overflow on mobile */
+  width: 100%;
+  overflow-x: hidden;
 }
 a { color: var(--gold); text-decoration: none; }
 a:hover { color: var(--gold-light); }
@@ -69,7 +72,6 @@ a:hover { color: var(--gold-light); }
 /* ── Hero ───────────────────────────────────────────────────── */
 .hero { background: var(--ink-2); border-bottom: 1px solid var(--border); padding: 48px 24px 40px; }
 
-/* ── Hero layout — two column on desktop ────────────────────── */
 .hero-inner {
   max-width: 1600px;
   margin: 0 auto;
@@ -83,19 +85,17 @@ a:hover { color: var(--gold-light); }
   min-width: 0;
 }
 
-/* Right-side ad slot in hero */
 .hero-ad-slot {
-  flex: 0 0 300px;          /* standard display ad width */
+  flex: 0 0 300px;
   width: 300px;
   align-self: center;
 }
 
 .hero-ad-ins {
   min-width: 300px;
-  min-height: 250px;        /* standard 300×250 medium rectangle */
+  min-height: 250px;
 }
 
-/* Before AdSense approval — show a placeholder box */
 .hero-ad-placeholder {
   width: 300px;
   min-height: 250px;
@@ -109,7 +109,6 @@ a:hover { color: var(--gold-light); }
   color: var(--muted);
 }
 
-/* Also add a banner ad slot below the filter bar */
 .filters-ad-band {
   background: var(--surface);
   border-bottom: 1px solid var(--border);
@@ -125,9 +124,9 @@ a:hover { color: var(--gold-light); }
 .filters-ad-inner ins,
 .filters-ad-banner {
   display: block;
-  min-height: 90px;          /* leaderboard / banner height */
+  min-height: 90px;
   width: 100%;
-  max-width: 728px;          /* standard leaderboard width */
+  max-width: 728px;
   background: var(--surface-2);
   border: 1px dashed var(--border-2);
   border-radius: var(--r);
@@ -138,12 +137,6 @@ a:hover { color: var(--gold-light); }
   color: var(--muted);
 }
 
-/* Hide hero ad on small screens — not enough room */
-@media (max-width: 900px) {
-  .hero-inner    { flex-direction: column; }
-  .hero-ad-slot  { display: none; }
-  .hero-left     { width: 100%; }
-} 
 .hero-tag {
   display: inline-block; font-size: 9px; letter-spacing: 0.14em;
   text-transform: uppercase; color: var(--gold-dim);
@@ -187,12 +180,12 @@ a:hover { color: var(--gold-light); }
 .search-input::placeholder { color: var(--muted); }
 .filter-group { display: flex; flex-direction: column; gap: 3px; }
 .filter-label { font-size: 8px; text-transform: uppercase; letter-spacing: 0.10em; color: var(--muted); }
-.pill-group { display: flex; gap: 3px; }
+.pill-group { display: flex; gap: 3px; overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 2px; }
 .pill {
   padding: 3px 9px; border-radius: 20px;
   border: 1px solid var(--border-2); background: transparent;
   color: var(--muted); font-family: var(--fb); font-size: 11px;
-  cursor: pointer; transition: all 0.15s;
+  cursor: pointer; transition: all 0.15s; white-space: nowrap;
 }
 .pill:hover { border-color: var(--gold-dim); color: var(--gold-light); }
 .pill.active { background: var(--gold); border-color: var(--gold); color: var(--ink); font-weight: 500; }
@@ -217,7 +210,7 @@ a:hover { color: var(--gold-light); }
 .col-check {
   display: flex; align-items: center; gap: 5px;
   font-size: 11px; color: var(--muted); cursor: pointer;
-  user-select: none; transition: color 0.15s;
+  user-select: none; transition: color 0.15s; white-space: nowrap;
 }
 .col-check:hover { color: var(--gold-light); }
 .col-check input { accent-color: var(--gold); cursor: pointer; }
@@ -239,8 +232,9 @@ a:hover { color: var(--gold-light); }
 .table-wrap {
   width: 100%; overflow-x: auto;
   border-radius: var(--r); border: 1px solid var(--border);
+  -webkit-overflow-scrolling: touch;
 }
-.stock-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.stock-table { width: 100%; border-collapse: collapse; font-size: 12px; min-width: 900px; }
 
 /* Head */
 .stock-table thead {
@@ -346,17 +340,29 @@ a:hover { color: var(--gold-light); }
 .footer-links a:hover { color: var(--gold-light); }
 .footer-note { font-size: 10px; color: var(--muted); }
 
-/* ── Responsive ─────────────────────────────────────────────── */
+/* ── Responsive Overrides ───────────────────────────────────── */
 @media (max-width: 900px) {
-  .col-toggle-inner { gap: 10px; }
+  .hero-inner     { flex-direction: column; text-align: center; }
+  .hero-ad-slot   { display: none; }
+  .hero-left      { width: 100%; }
+  .hero-sub       { margin: 0 auto 32px; }
+  .hero-stats     { justify-content: center; }
+  
+  .col-toggle-inner { gap: 10px; overflow-x: auto; flex-wrap: nowrap; padding-bottom: 12px; }
   .col-toggle-bar   { overflow-x: auto; }
   .table-section    { padding: 12px 0 40px; }
   .table-wrap       { border-radius: 0; border-left: none; border-right: none; }
 }
+
 @media (max-width: 600px) {
+  .header-inner { flex-direction: column; height: auto; padding: 12px 24px; gap: 10px; }
+  .site-nav { width: 100%; justify-content: center; overflow-x: auto; }
   .hero { padding: 28px 16px 24px; }
   .hero-stats { gap: 20px; }
-  .filters-inner { padding: 10px 14px; gap: 10px; }
+  .filters-bar { position: relative; top: 0; } /* Optional: Unstick on tiny screens to save space */
+  .filters-inner { padding: 10px 14px; gap: 10px; flex-direction: column; align-items: stretch; }
   .search-wrap { flex: 0 0 100%; }
+  .result-count { margin-left: 0; text-align: center; }
   .footer-inner { flex-direction: column; text-align: center; }
+  .footer-links { justify-content: center; flex-wrap: wrap; }
 }
