@@ -1,18 +1,17 @@
 /* ═══════════════════════════════════════════════════════════════
    movers.js — Top & Worst Performers page
-   Self-contained. Uses API_URL from app.js (loaded first).
-   Uses sessionStorage cache shared with app.js and stock.js
-   so data is never fetched twice in the same session.
+   Self-contained. Reads API_URL from app.js if available,
+   or falls back to reading it directly from the same variable.
+   Cache key matches app.js exactly so data is shared.
 ═══════════════════════════════════════════════════════════════ */
 
-// How many rows to show per table
 var ROWS_PER_TABLE = 10;
-
-// Current exchange filter — "all", "Kenya", "S. Africa"
 var currentExchange = "all";
-
-// Full dataset once loaded
 var allData = [];
+
+// Cache key must match exactly what app.js uses
+var MV_CACHE_KEY = "oracle_data";
+var MV_CACHE_TTL = 10 * 60 * 1000; // 10 minutes
 
 // ── Boot ──────────────────────────────────────────────────────
 document.addEventListener("DOMContentLoaded", function () {
@@ -33,56 +32,65 @@ document.addEventListener("DOMContentLoaded", function () {
   loadData();
 });
 
-// ── Load data — shared sessionStorage cache ───────────────────
+// ── Load data ─────────────────────────────────────────────────
 function loadData() {
-  // API_URL declared in app.js which loads before this file
-  if (typeof API_URL === "undefined" ||
-      !API_URL ||
-      API_URL === "https://script.google.com/macros/s/AKfycbzUDs26aD7RaaVDdL7rUAVRZ83XlDK9dfI9zFcx-SvZXZD_2rnJXdbGSF2fNFNe37GbxQ/exec") {
-    showMvError("API URL not configured in js/app.js.");
+  var url = (typeof API_URL !== "undefined") ? API_URL : "";
+
+  // Simplified check: only error if the URL is empty or still the placeholder
+  if (!url || url.includes("PASTE_YOUR_APPS_SCRIPT_URL_HERE")) {
+    showMvError("API URL not set. Please check js/app.js.");
     return;
   }
 
-  // Check sessionStorage first — same key as screener and stock page
-  var APP_VERSION = (typeof APP_VERSION !== "undefined") ? APP_VERSION : "1";
-  var CACHE_KEY   = "oracle_data_" + APP_VERSION;
-  var CACHE_TTL   = 10 * 60 * 1000; // 10 minutes
-
+  // ── Try sessionStorage cache first ───────────────────────────
+  // Uses same key as app.js so data is shared — if user
+  // visited screener first this page loads instantly, zero fetch.
   try {
-    var cached = sessionStorage.getItem(CACHE_KEY);
+    var cached = sessionStorage.getItem(MV_CACHE_KEY);
     if (cached) {
       var parsed = JSON.parse(cached);
-      if (parsed && parsed.ts && (Date.now() - parsed.ts < CACHE_TTL) && parsed.data) {
+      if (parsed && parsed.ts &&
+          (Date.now() - parsed.ts < MV_CACHE_TTL) &&
+          parsed.data && parsed.data.length > 0) {
         allData = parsed.data;
         renderAll(allData);
-        return;
+        return; // served from cache — no network call
       }
     }
-  } catch (e) { /* fall through */ }
+  } catch (e) { /* sessionStorage unavailable — fall through */ }
 
-  // Cache miss — fetch fresh
-  fetch(API_URL)
+  // ── Cache miss — fetch from API ───────────────────────────────
+  fetch(url)
     .then(function (r) {
       if (!r.ok) throw new Error("HTTP " + r.status);
       return r.json();
     })
     .then(function (json) {
-      if (!json || !json.data) throw new Error("Empty API response");
+      if (!json || !json.data) throw new Error("Empty or invalid API response");
       allData = Array.isArray(json.data) ? json.data : [];
 
-      // Store for other pages in same session
+      if (allData.length === 0) {
+        showMvError("API returned no companies. Check your Google Sheet has data.");
+        return;
+      }
+
+      // Store in sessionStorage with same key as app.js
       try {
-        sessionStorage.setItem(CACHE_KEY, JSON.stringify({
+        sessionStorage.setItem(MV_CACHE_KEY, JSON.stringify({
           ts:   Date.now(),
           data: allData
         }));
-      } catch (e) { /* storage full */ }
+      } catch (e) { /* storage full — continue without caching */ }
 
       renderAll(allData);
     })
     .catch(function (err) {
       console.error("movers.js fetch error:", err);
-      showMvError("Could not load data: " + err.message);
+      showMvError(
+        "Could not load data: " + err.message +
+        ". Check your Apps Script is deployed as a Web App " +
+        "with access set to Anyone."
+      );
     });
 }
 
