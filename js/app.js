@@ -11,8 +11,16 @@
 // ── PASTE YOUR APPS SCRIPT WEB APP URL HERE ─────────────────
 // Deploy doGet() in Apps Script then paste the URL below.
 // Example: https://script.google.com/macros/s/AKfy.../exec
+// IMPORTANT: This must stay ABOVE the DOMContentLoaded block
+// so stock.js, movers.js and any other page can read it.
 var API_URL = "https://script.google.com/macros/s/AKfycbzUDs26aD7RaaVDdL7rUAVRZ83XlDK9dfI9zFcx-SvZXZD_2rnJXdbGSF2fNFNe37GbxQ/exec";
 // ────────────────────────────────────────────────────────────
+
+// ── Shared cache config — used by app.js, stock.js, movers.js
+// All three files use the SAME key so data is only fetched once
+// per session regardless of which page the user visits first.
+var CACHE_KEY = "oracle_data";
+var CACHE_TTL = 10 * 60 * 1000; // 10 minutes in milliseconds
 
 var allStocks   = [];
 var filtered    = [];
@@ -59,13 +67,27 @@ document.addEventListener("DOMContentLoaded", function () {
   bindColumnToggles();
 });
 
-// ── Cache config ──────────────────────────────────────────────
-// Data is cached in sessionStorage for 10 minutes.
-// This means: screener loads instantly after the first fetch.
-// Clicking a company and coming back is instant.
-// After 10 minutes the cache expires and fresh data is fetched.
-var CACHE_KEY = "oracle_data";
-var CACHE_TTL = 10 * 60 * 1000; // 10 minutes in milliseconds
+// ── DEPLOY VERSION — update this on every git push ───────────
+// Must match the VERSION string in sw.js exactly.
+// Changing this busts the sessionStorage data cache so users
+// always see fresh data after a deploy, not stale cached data.
+var APP_VERSION = "2026-05-09-1";
+// ────────────────────────────────────────────────────────────
+
+// ── Register Service Worker ───────────────────────────────────
+// Handles asset cache busting for CSS/JS on all devices.
+// sw.js must sit in the root folder alongside index.html.
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", function () {
+    navigator.serviceWorker.register("/sw.js")
+      .then(function (reg) {
+        reg.update(); // check for SW updates on every page load
+      })
+      .catch(function (err) {
+        console.warn("SW registration failed:", err);
+      });
+  });
+}
 
 // ── Fetch ─────────────────────────────────────────────────────
 function fetchData() {
@@ -184,11 +206,16 @@ function applyColumnVisibility() {
 
 // ── Bind all filters ──────────────────────────────────────────
 function bindFilters() {
-  // Search — debounced 200ms so it doesn't fire on every keystroke
-  document.getElementById("searchInput").addEventListener("input", debounce(function () {
-    filters.search = this.value.toLowerCase().trim();
-    applyFiltersAndRender();
-  }, 200));
+  // Search — capture value immediately (before debounce loses "this" context)
+  // then debounce the render so it doesn't fire on every single keystroke
+  var searchEl = document.getElementById("searchInput");
+  searchEl.addEventListener("input", function () {
+    var val = this.value.toLowerCase().trim();
+    debounce(function () {
+      filters.search = val;
+      applyFiltersAndRender();
+    }, 200)();
+  });
   bindPillGroup("exchangeFilter", function (v) { filters.exchange = v; applyFiltersAndRender(); });
   bindPillGroup("moatFilter",     function (v) { filters.moat     = v; applyFiltersAndRender(); });
   bindPillGroup("strengthFilter", function (v) { filters.strength = v; applyFiltersAndRender(); });
