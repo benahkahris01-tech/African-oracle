@@ -201,12 +201,12 @@ function renderCalendar(exchange, stockMap, premium) {
         '</div>' +
         '<div class="premium-gate-price">' +
           '<div class="price-option">' +
-            '<div class="price-amount">KES 500</div>' +
+            '<div class="price-amount">KES 800</div>' +
             '<div class="price-period">per month</div>' +
           '</div>' +
           '<div class="price-divider">or</div>' +
           '<div class="price-option featured">' +
-            '<div class="price-amount">KES 4,500</div>' +
+            '<div class="price-amount">KES 7,200</div>' +
             '<div class="price-period">per year <span class="price-save">Save 25%</span></div>' +
           '</div>' +
         '</div>' +
