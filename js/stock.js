@@ -26,6 +26,16 @@ document.addEventListener("DOMContentLoaded", function () {
     return;
   }
 
+  // ── Premium: use priority (live) endpoint if user is subscribed ──
+  var fetchUrl = API_URL;
+  if (typeof isPremium === "function" && isPremium()) {
+    var premToken = "";
+    try { premToken = localStorage.getItem("oracle_premium_token") || ""; } catch(e) {}
+    if (premToken) {
+      fetchUrl = API_URL + "?action=priority&token=" + encodeURIComponent(premToken);
+    }
+  }
+
   // ── Try sessionStorage cache first ───────────────────────────
   // Uses same fixed key as app.js and movers.js — "oracle_data"
   // so all three pages share the same cache.
@@ -59,7 +69,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // Cache miss — fetch from API and store for future use
-  fetch(API_URL)
+  fetch(fetchUrl)
     .then(function (r) {
       if (!r.ok) throw new Error("HTTP " + r.status);
       return r.json();
@@ -663,6 +673,19 @@ function renderDetail(s) {
       "</div>";
   }
 
+  // ── CHARTS — all four rendered for everyone ───────────────────────────────
+  // EPS, margin and radar charts use existing API data — always free
+  setTimeout(function () { renderCharts(s, cur, sym); }, 100);
+
+  // ── PRICE HISTORY — premium only ─────────────────────────────────────────
+  // Free users see a lock overlay on the price chart container
+  // Premium users get the full weekly price history line chart
+  if (typeof isPremium === "function" && isPremium()) {
+    fetchPriceHistory(s.ticker, cur, sym);
+  } else {
+    showPriceChartLock();
+  }
+
   // ── Show the page — MUST be last, always runs even if sections above had errors
   try { show("detailWrap"); } catch(e) { console.error("show detailWrap failed:", e); }
 }
@@ -698,7 +721,7 @@ function getSignal(s) {
   return "avoid";
 }
 
-// ── Utilities — all self-contained, no dependency on app.js ──────────────────
+// ── Utilities ─────────────────────────────────────────────────────────────────
 function numOrNull(v) { var n = parseFloat(v); return isNaN(n) ? null : n; }
 function esc(s) {
   return String(s || "")
@@ -708,3 +731,344 @@ function esc(s) {
 function show(id) { var el = document.getElementById(id); if (el) el.classList.remove("hidden"); }
 function hide(id) { var el = document.getElementById(id); if (el) el.classList.add("hidden"); }
 function setText(id, v) { var el = document.getElementById(id); if (el) el.textContent = v; }
+
+// ── Chart colour palette (matches site dark theme) ────────────────────────────
+var CHART_GOLD   = "#C9A84C";
+var CHART_GREEN  = "#3DAA6E";
+var CHART_RED    = "#C0392B";
+var CHART_AMBER  = "#D4853A";
+var CHART_BLUE   = "#3A87D4";
+var CHART_MUTED  = "#6B6B6B";
+var CHART_BG     = "#1E1E1E";
+var CHART_BORDER = "#272727";
+
+// Shared Chart.js defaults for dark theme
+Chart.defaults.color         = "#9A9A9A";
+Chart.defaults.borderColor   = CHART_BORDER;
+Chart.defaults.font.family   = "'DM Sans', system-ui, sans-serif";
+Chart.defaults.font.size     = 11;
+
+// ── Render all three fundamental charts ──────────────────────────────────────
+function renderCharts(s, cur, sym) {
+  if (typeof Chart === "undefined") {
+    console.warn("Chart.js not loaded — charts skipped");
+    return;
+  }
+
+  var bEps = numOrNull(s.beginEps);
+  var eEps = numOrNull(s.endEps);
+  var tEps = numOrNull(s.eps);
+  var iM   = numOrNull(s.initMargin);
+  var fM   = numOrNull(s.finalMargin);
+
+  // ── 1. EPS Journey bar chart ─────────────────────────────────────────────
+  var epsCanvas = document.getElementById("epsChart");
+  if (epsCanvas && bEps !== null && eEps !== null) {
+    var epsGrowth = bEps !== 0 ? ((eEps - bEps) / Math.abs(bEps) * 100).toFixed(1) : 0;
+    var epsGrowthPositive = parseFloat(epsGrowth) >= 0;
+
+    new Chart(epsCanvas, {
+      type: "bar",
+      data: {
+        labels: ["Begin EPS\n(FY2020)", "Current EPS\n(FY2024/25)", "Live TTM\nEPS"],
+        datasets: [{
+          label: "EPS (" + cur + ")",
+          data:  [bEps, eEps, tEps !== null ? tEps : eEps],
+          backgroundColor: [
+            "rgba(106,173,238,0.7)",
+            epsGrowthPositive ? "rgba(61,170,110,0.8)" : "rgba(192,57,43,0.8)",
+            "rgba(201,168,76,0.7)"
+          ],
+          borderColor: [
+            CHART_BLUE,
+            epsGrowthPositive ? CHART_GREEN : CHART_RED,
+            CHART_GOLD
+          ],
+          borderWidth: 1,
+          borderRadius: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: function(ctx) {
+                return sym + (ctx.parsed.y !== null ? ctx.parsed.y.toFixed(2) : "—") +
+                  " | Growth: " + (epsGrowthPositive ? "+" : "") + epsGrowth + "%";
+              }
+            }
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: false,
+            grid: { color: CHART_BORDER },
+            ticks: {
+              callback: function(v) { return sym + v.toFixed(1); }
+            }
+          },
+          x: { grid: { display: false } }
+        }
+      }
+    });
+  }
+
+  // ── 2. Margin trend bar chart ─────────────────────────────────────────────
+  var marginCanvas = document.getElementById("marginChart");
+  if (marginCanvas && iM !== null && fM !== null) {
+    var marginImproved = fM >= iM;
+    new Chart(marginCanvas, {
+      type: "bar",
+      data: {
+        labels: ["Initial Margin\n(FY2020)", "Final Margin\n(FY2024/25)"],
+        datasets: [{
+          label: "Net Profit Margin",
+          data:  [parseFloat((iM * 100).toFixed(1)), parseFloat((fM * 100).toFixed(1))],
+          backgroundColor: [
+            "rgba(106,173,238,0.7)",
+            marginImproved ? "rgba(61,170,110,0.8)" : "rgba(192,57,43,0.8)"
+          ],
+          borderColor: [
+            CHART_BLUE,
+            marginImproved ? CHART_GREEN : CHART_RED
+          ],
+          borderWidth: 1,
+          borderRadius: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: function(ctx) {
+                return "Margin: " + ctx.parsed.y.toFixed(1) + "%" +
+                  (marginImproved ? " ↑ Improving" : " ↓ Declining");
+              }
+            }
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            grid: { color: CHART_BORDER },
+            ticks: { callback: function(v) { return v + "%"; } }
+          },
+          x: { grid: { display: false } }
+        }
+      }
+    });
+  }
+
+  // ── 3. Quality Score Radar chart ──────────────────────────────────────────
+  var radarCanvas = document.getElementById("radarChart");
+  if (radarCanvas) {
+    // Convert text scores to numeric values for radar
+    function moatScore(m) {
+      return m === "Wide" ? 10 : m === "Narrow" ? 6 : 2;
+    }
+    function strengthScore(str) {
+      return str === "Strong" ? 10 : str === "Adequate" ? 6 : 2;
+    }
+    function predictScore(p) {
+      return p === "High" ? 10 : p === "Medium" ? 6 : 2;
+    }
+    function peScore(pe) {
+      if (!pe || pe <= 0) return 3;
+      if (pe < 8)  return 10;
+      if (pe < 15) return 7;
+      if (pe < 25) return 4;
+      return 2;
+    }
+    function divScore(d) {
+      if (!d || d <= 0) return 2;
+      var pct = d * 100;
+      if (pct >= 6) return 10;
+      if (pct >= 3) return 7;
+      return 4;
+    }
+
+    var radarData = [
+      moatScore(s.moat),
+      strengthScore(s.finStrength),
+      predictScore(s.predictability),
+      peScore(numOrNull(s.pe)),
+      divScore(numOrNull(s.divYield))
+    ];
+
+    new Chart(radarCanvas, {
+      type: "radar",
+      data: {
+        labels: ["Moat", "Fin Strength", "Predictability", "Value (P/E)", "Div Yield"],
+        datasets: [{
+          label: s.ticker,
+          data:  radarData,
+          backgroundColor: "rgba(201,168,76,0.15)",
+          borderColor:     CHART_GOLD,
+          borderWidth:     2,
+          pointBackgroundColor: CHART_GOLD,
+          pointRadius:          4
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false }
+        },
+        scales: {
+          r: {
+            min: 0, max: 10,
+            ticks: { display: false, stepSize: 2 },
+            grid:  { color: CHART_BORDER },
+            pointLabels: {
+              font: { size: 10 },
+              color: "#9A9A9A"
+            },
+            angleLines: { color: CHART_BORDER }
+          }
+        }
+      }
+    });
+  }
+}
+
+// ── Price chart lock — shown to free users ────────────────────────────────────
+function showPriceChartLock() {
+  var wrap    = document.getElementById("priceChartWrap");
+  var emptyEl = document.getElementById("priceChartEmpty");
+  var noteEl  = document.getElementById("priceHistoryNote");
+
+  // Hide the empty state message
+  if (emptyEl) emptyEl.style.display = "none";
+
+  // Replace with premium lock overlay
+  if (wrap) {
+    var lock = document.createElement("div");
+    lock.className = "price-chart-lock";
+    lock.innerHTML =
+      '<div class="price-chart-lock-inner">' +
+        '<div class="price-chart-lock-icon">◈</div>' +
+        '<div class="price-chart-lock-title">Weekly Price History</div>' +
+        '<p class="price-chart-lock-msg">' +
+          '52-week price chart, high/low tracking and historical data ' +
+          'are available to Premium subscribers.' +
+        '</p>' +
+        '<a href="premium.html" class="price-chart-lock-btn">Unlock with Premium →</a>' +
+        '<div class="price-chart-lock-sub">' +
+          'Already subscribed? ' +
+          '<a href="#" class="price-chart-enter-token">Enter your token</a>' +
+        '</div>' +
+      '</div>';
+    wrap.appendChild(lock);
+
+    // Bind token entry link
+    lock.querySelector(".price-chart-enter-token").addEventListener("click", function (e) {
+      e.preventDefault();
+      if (typeof showTokenModal === "function") showTokenModal();
+    });
+  }
+
+  if (noteEl) {
+    noteEl.textContent = "Price history is a Premium feature — subscribe from KES 500/month.";
+  }
+}
+
+// ── Fetch and render price history chart ──────────────────────────────────────
+function fetchPriceHistory(ticker, cur, sym) {
+  if (typeof API_URL === "undefined" || !API_URL ||
+      API_URL === "PASTE_YOUR_APPS_SCRIPT_URL_HERE") return;
+
+  fetch(API_URL + "?action=history&ticker=" + encodeURIComponent(ticker))
+    .then(function(r) { return r.json(); })
+    .then(function(json) {
+      var data = json && json.data ? json.data : [];
+
+      var emptyEl = document.getElementById("priceChartEmpty");
+      var canvas  = document.getElementById("priceChart");
+      var noteEl  = document.getElementById("priceHistoryNote");
+
+      if (!data || data.length < 2) {
+        // Not enough data yet — keep empty state visible
+        if (noteEl) noteEl.textContent =
+          "Collecting weekly snapshots every Monday. " +
+          (data.length === 1 ? "1 data point so far — need at least 2 to draw a chart." : "");
+        return;
+      }
+
+      // Have data — hide empty, show canvas
+      if (emptyEl) emptyEl.style.display = "none";
+      if (canvas)  canvas.classList.remove("hidden");
+
+      var labels = data.map(function(d) {
+        var dt = new Date(d.date);
+        return (dt.getMonth()+1) + "/" + dt.getDate();
+      });
+      var prices = data.map(function(d) { return d.price; });
+
+      // 52-week high and low
+      var high52 = Math.max.apply(null, prices);
+      var low52  = Math.min.apply(null, prices);
+      var latest = prices[prices.length - 1];
+
+      if (noteEl) {
+        noteEl.textContent =
+          "52-week high: " + sym + high52.toFixed(2) +
+          " · Low: " + sym + low52.toFixed(2) +
+          " · " + data.length + " weekly data points";
+      }
+
+      if (typeof Chart !== "undefined" && canvas) {
+        new Chart(canvas, {
+          type: "line",
+          data: {
+            labels:   labels,
+            datasets: [{
+              label:           "Price (" + cur + ")",
+              data:            prices,
+              borderColor:     CHART_GOLD,
+              backgroundColor: "rgba(201,168,76,0.08)",
+              borderWidth:     2,
+              pointRadius:     2,
+              pointHoverRadius: 5,
+              fill:            true,
+              tension:         0.3
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                callbacks: {
+                  label: function(ctx) {
+                    return sym + ctx.parsed.y.toFixed(2);
+                  }
+                }
+              }
+            },
+            scales: {
+              y: {
+                grid:  { color: CHART_BORDER },
+                ticks: { callback: function(v) { return sym + v.toFixed(0); } }
+              },
+              x: {
+                grid:  { display: false },
+                ticks: { maxTicksLimit: 8 }
+              }
+            }
+          }
+        });
+      }
+    })
+    .catch(function(err) {
+      console.log("Price history not available:", err);
+      // Silent fail — empty state stays visible, page unaffected
+    });
+}

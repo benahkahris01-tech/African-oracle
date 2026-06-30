@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Payment Successful — The African Oracle Premium</title>
+  <meta name="description" content="Your African Oracle Premium subscription is active. Check your email for your access token." />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css?v=1" />
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5232676175386938" crossorigin="anonymous"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('/sw.js')
+          .then(function (reg) { reg.update(); })
+          .catch(function () {});
+      });
+    }
+  </script>
+  <style>
+    .success-wrap {
+      max-width: 600px; margin: 60px auto; padding: 0 24px 80px;
+      text-align: center;
+    }
+    .success-icon {
+      font-size: 64px; margin-bottom: 20px; line-height: 1;
+    }
+    .success-title {
+      font-family: var(--fh); font-size: 36px; font-weight: 900;
+      color: var(--green); margin-bottom: 12px;
+    }
+    .success-subtitle {
+      font-size: 16px; color: #C0C0C0; line-height: 1.7; margin-bottom: 32px;
+    }
+    .success-email-box {
+      background: var(--surface); border: 1px solid var(--border);
+      border-left: 4px solid var(--gold); border-radius: var(--r);
+      padding: 20px 24px; margin-bottom: 32px; text-align: left;
+    }
+    .success-email-label {
+      font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em;
+      color: var(--muted); margin-bottom: 6px;
+    }
+    .success-email-addr {
+      font-family: var(--fm); font-size: 16px; color: var(--gold-light);
+      margin-bottom: 10px;
+    }
+    .success-email-note {
+      font-size: 13px; color: var(--muted); line-height: 1.6;
+    }
+    .success-steps {
+      background: var(--surface-2); border: 1px solid var(--border);
+      border-radius: var(--r); padding: 24px; margin-bottom: 32px;
+      text-align: left;
+    }
+    .success-steps-title {
+      font-size: 14px; font-weight: 600; color: #E0E0E0;
+      margin-bottom: 16px;
+    }
+    .success-step {
+      display: flex; align-items: flex-start; gap: 12px;
+      margin-bottom: 14px;
+    }
+    .success-step:last-child { margin-bottom: 0; }
+    .success-step-num {
+      flex-shrink: 0; width: 24px; height: 24px;
+      background: rgba(201,168,76,0.15); border: 1px solid var(--gold-dim);
+      border-radius: 50%; display: flex; align-items: center;
+      justify-content: center; font-size: 11px; font-weight: 600;
+      color: var(--gold); margin-top: 1px;
+    }
+    .success-step-text {
+      font-size: 13px; color: #C0C0C0; line-height: 1.6;
+    }
+    .success-step-text strong { color: #E0E0E0; }
+    .success-btns {
+      display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+      margin-bottom: 32px;
+    }
+    .success-btn-primary {
+      display: inline-block; background: var(--gold); color: var(--ink);
+      font-size: 14px; font-weight: 600; padding: 12px 24px;
+      border-radius: var(--r); text-decoration: none;
+      transition: background 0.15s;
+    }
+    .success-btn-primary:hover { background: var(--gold-light); color: var(--ink); }
+    .success-btn-secondary {
+      display: inline-block; background: transparent; color: var(--gold);
+      font-size: 14px; font-weight: 500; padding: 12px 24px;
+      border-radius: var(--r); border: 1px solid var(--gold-dim);
+      text-decoration: none; transition: all 0.15s;
+    }
+    .success-btn-secondary:hover { background: rgba(201,168,76,0.08); }
+    .success-token-entry {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--r); padding: 24px; margin-bottom: 24px;
+    }
+    .success-token-title {
+      font-size: 14px; font-weight: 600; color: #E0E0E0; margin-bottom: 8px;
+    }
+    .success-token-desc {
+      font-size: 12px; color: var(--muted); margin-bottom: 14px;
+    }
+    .success-token-row {
+      display: flex; gap: 8px;
+    }
+    .success-token-input {
+      flex: 1; background: var(--surface-2); border: 1px solid var(--border-2);
+      border-radius: var(--r); color: #D0D0D0; font-family: var(--fm);
+      font-size: 13px; padding: 9px 12px; outline: none;
+    }
+    .success-token-input:focus { border-color: var(--gold-dim); }
+    .success-token-btn {
+      background: var(--gold); color: var(--ink); border: none;
+      font-family: var(--fb); font-size: 13px; font-weight: 600;
+      padding: 9px 16px; border-radius: var(--r); cursor: pointer;
+    }
+    .success-token-btn:hover { background: var(--gold-light); }
+    .success-token-msg { font-size: 12px; margin-top: 8px; }
+    .success-token-msg.ok  { color: var(--green); }
+    .success-token-msg.err { color: var(--red); }
+    .success-note {
+      font-size: 12px; color: var(--muted); line-height: 1.7;
+    }
+    .success-note a { color: var(--gold); }
+  </style>
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="index.html" class="brand">
+        <span class="brand-icon">◈</span>
+        <div>
+          <div class="brand-name">The African Oracle</div>
+          <div class="brand-sub">NSE · JSE Stock Intelligence</div>
+        </div>
+      </a>
+      <nav class="site-nav">
+        <a href="index.html"    class="nav-link">Screener</a>
+        <a href="portfolio.html" class="nav-link">Portfolio</a>
+        <a href="calendar.html" class="nav-link">Calendar</a>
+        <a href="premium.html"  class="nav-link">Premium</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="success-wrap">
+
+    <div class="success-icon">✓</div>
+    <h1 class="success-title">Payment Received!</h1>
+    <p class="success-subtitle">
+      Thank you for subscribing to The African Oracle Premium.
+      Your access token is being generated and will be emailed to you shortly.
+    </p>
+
+    <!-- Email confirmation box -->
+    <div class="success-email-box">
+      <div class="success-email-label">Token being sent to</div>
+      <div class="success-email-addr" id="successEmail">your email address</div>
+      <div class="success-email-note">
+        Your token email arrives within a few minutes. Check your spam folder
+        if you do not see it within 5 minutes. The email is sent from
+        <strong>support@africanoracle.info</strong>.
+      </div>
+    </div>
+
+    <!-- What to do next -->
+    <div class="success-steps">
+      <div class="success-steps-title">What happens next</div>
+      <div class="success-step">
+        <div class="success-step-num">1</div>
+        <div class="success-step-text">
+          <strong>Check your email</strong> — your access token looks like
+          <span style="font-family:var(--fm);color:var(--gold-light)">ORC-XXXX-XXXX-XXXX-XXXX</span>
+        </div>
+      </div>
+      <div class="success-step">
+        <div class="success-step-num">2</div>
+        <div class="success-step-text">
+          <strong>Enter your token below</strong> or on the
+          <a href="premium.html" style="color:var(--gold)">Premium page</a>
+          to unlock features immediately
+        </div>
+      </div>
+      <div class="success-step">
+        <div class="success-step-num">3</div>
+        <div class="success-step-text">
+          <strong>Token is saved in your browser</strong> — you only enter it
+          once per device. Premium features unlock automatically on every visit.
+        </div>
+      </div>
+    </div>
+
+    <!-- Token entry — enter it here directly -->
+    <div class="success-token-entry">
+      <div class="success-token-title">Already received your token? Enter it here</div>
+      <div class="success-token-desc">
+        Paste your token below to activate premium on this device right now.
+      </div>
+      <div class="success-token-row">
+        <input type="text" id="successTokenInput" class="success-token-input"
+               placeholder="ORC-XXXX-XXXX-XXXX-XXXX" autocomplete="off" />
+        <button id="successTokenBtn" class="success-token-btn">Activate</button>
+      </div>
+      <div id="successTokenMsg" class="success-token-msg"></div>
+    </div>
+
+    <!-- Navigation buttons -->
+    <div class="success-btns">
+      <a href="portfolio.html" class="success-btn-primary">Open Portfolio Tracker →</a>
+      <a href="calendar.html"  class="success-btn-secondary">Earnings Calendar →</a>
+    </div>
+
+    <p class="success-note">
+      Questions or issues? <a href="contact.html">Contact us</a> with your
+      M-PESA transaction code and we will resolve it within 1 hour.<br/>
+      <a href="terms.html">Terms</a> · <a href="privacy.html">Privacy</a>
+    </p>
+
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">◈ The African Oracle</div>
+      <div class="footer-links">
+        <a href="index.html">Screener</a>
+        <a href="portfolio.html">Portfolio</a>
+        <a href="calendar.html">Calendar</a>
+        <a href="premium.html">Premium</a>
+        <a href="privacy.html">Privacy</a>
+        <a href="terms.html">Terms</a>
+      </div>
+      <div class="footer-note">Free forever for core features · Premium from KES 500/month</div>
+    </div>
+  </footer>
+
+  <script src="js/app.js?v=1"></script>
+  <script src="js/premium.js?v=1"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      // Read URL params
+      var params = new URLSearchParams(window.location.search);
+      var email  = params.get("email") || "";
+      var plan   = params.get("plan")  || "monthly";
+
+      if (email) {
+        document.getElementById("successEmail").textContent = email;
+      }
+
+      // Token activation
+      var inp = document.getElementById("successTokenInput");
+      var btn = document.getElementById("successTokenBtn");
+      var msg = document.getElementById("successTokenMsg");
+
+      btn.addEventListener("click", function () {
+        var token = inp.value.trim().toUpperCase();
+        if (!token) {
+          msg.textContent = "Please enter your token.";
+          msg.className   = "success-token-msg err";
+          return;
+        }
+        btn.textContent = "Verifying…";
+        btn.disabled    = true;
+
+        if (typeof verifyAndStore === "function") {
+          verifyAndStore(token,
+            function (info) {
+              msg.textContent = "✓ Premium activated! Welcome, " + info.email + ". Redirecting…";
+              msg.className   = "success-token-msg ok";
+              setTimeout(function () {
+                window.location.href = "portfolio.html";
+              }, 2000);
+            },
+            function (errMsg) {
+              btn.textContent = "Activate";
+              btn.disabled    = false;
+              msg.textContent = "⚠ " + errMsg;
+              msg.className   = "success-token-msg err";
+            }
+          );
+        } else {
+          btn.textContent = "Activate";
+          btn.disabled    = false;
+          msg.textContent = "⚠ System not ready. Try refreshing the page.";
+          msg.className   = "success-token-msg err";
+        }
+      });
+
+      inp.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") btn.click();
+      });
+    });
+  </script>
+</body>
+</html>

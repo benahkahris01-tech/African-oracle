@@ -1,0 +1,169 @@
+/* ═══════════════════════════════════════════════
+   portfolio.css — Portfolio Tracker page styles
+═══════════════════════════════════════════════ */
+
+/* Hero */
+.pf-hero {
+  background: var(--ink-2); border-bottom: 1px solid var(--border);
+  padding: 48px 24px 40px;
+}
+.pf-hero-inner { max-width: 1100px; margin: 0 auto; }
+.pf-tag {
+  display: inline-block; font-size: 9px; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--gold-dim);
+  border: 1px solid var(--gold-dim); border-radius: 20px;
+  padding: 3px 11px; margin-bottom: 18px;
+}
+.pf-title {
+  font-family: var(--fh); font-size: clamp(26px,5vw,44px);
+  font-weight: 900; color: #F5F5F5; line-height: 1.08; margin-bottom: 12px;
+}
+.pf-title em { font-style: italic; color: var(--gold); }
+.pf-sub { font-size: 14px; color: var(--muted); line-height: 1.7; max-width: 540px; }
+
+/* Main layout */
+.pf-main { padding: 28px 24px 64px; }
+.pf-outer {
+  max-width: 1100px; margin: 0 auto;
+  display: grid; grid-template-columns: 1fr 260px;
+  gap: 32px; align-items: start;
+}
+
+/* Loading / empty */
+.pf-loading { text-align: center; padding: 60px 24px; color: var(--muted); }
+.pf-empty {
+  text-align: center; padding: 60px 24px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 8px; margin-bottom: 24px;
+}
+.pf-empty-icon { font-size: 32px; color: var(--gold-dim); margin-bottom: 12px; }
+.pf-empty h2 { font-family: var(--fh); font-size: 20px; color: #E0E0E0; margin-bottom: 8px; }
+.pf-empty p  { font-size: 13px; color: var(--muted); }
+
+/* Summary stats */
+.pf-summary {
+  display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px;
+}
+.pf-stat-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--r); padding: 14px 18px; min-width: 100px;
+}
+.pf-stat-label { font-size: 9px; text-transform: uppercase; letter-spacing: 0.09em; color: var(--muted); margin-bottom: 6px; }
+.pf-stat-value { font-family: var(--fh); font-size: 22px; font-weight: 700; color: var(--gold); }
+
+/* Table */
+.pf-table-wrap {
+  overflow-x: auto; border: 1px solid var(--border);
+  border-radius: var(--r); margin-bottom: 4px;
+}
+.pf-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.pf-table thead { background: var(--surface-2); border-bottom: 1px solid var(--border); }
+.pf-table th {
+  padding: 9px 12px; text-align: left;
+  font-size: 9px; font-weight: 500; text-transform: uppercase;
+  letter-spacing: 0.07em; color: var(--muted); white-space: nowrap;
+}
+.pf-table th.num-col { text-align: right; }
+.pf-table tbody tr {
+  border-bottom: 1px solid var(--border);
+  transition: background 0.1s; cursor: pointer;
+}
+.pf-table tbody tr:last-child { border-bottom: none; }
+.pf-table tbody tr:hover { background: var(--surface-2); }
+.pf-table td { padding: 10px 12px; vertical-align: middle; }
+.pf-table td.num-col { text-align: right; font-family: var(--fm); font-size: 11px; }
+
+.pf-remove-btn {
+  background: none; border: none; color: var(--muted);
+  font-size: 14px; cursor: pointer; padding: 2px 6px;
+  border-radius: 4px; transition: all 0.15s;
+}
+.pf-remove-btn:hover { background: var(--red-bg); color: var(--red); }
+
+/* Add section */
+.pf-add-section {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 8px; padding: 22px 24px;
+}
+.pf-add-title {
+  font-family: var(--fh); font-size: 18px; font-weight: 700;
+  color: #F0F0F0; margin-bottom: 14px;
+}
+.pf-search-wrap { position: relative; }
+.pf-search-input {
+  width: 100%; background: var(--surface-2);
+  border: 1px solid var(--border-2); border-radius: var(--r);
+  color: #D0D0D0; font-family: var(--fb); font-size: 14px;
+  padding: 11px 16px; outline: none; transition: border-color 0.15s;
+}
+.pf-search-input:focus { border-color: var(--gold-dim); }
+.pf-search-input::placeholder { color: var(--muted); }
+
+/* Search results dropdown */
+.pf-search-results {
+  margin-top: 8px; background: var(--surface-2);
+  border: 1px solid var(--border-2); border-radius: var(--r);
+  overflow: hidden; max-height: 320px; overflow-y: auto;
+}
+.pf-result-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 14px; border-bottom: 1px solid var(--border);
+  cursor: pointer; transition: background 0.1s;
+}
+.pf-result-item:last-child { border-bottom: none; }
+.pf-result-item:hover { background: var(--surface); }
+.pf-result-left { display: flex; flex-direction: column; gap: 2px; }
+.pf-result-ticker { font-family: var(--fm); font-size: 12px; color: var(--gold-light); }
+.pf-result-name   { font-size: 12px; color: #C0C0C0; }
+.pf-result-right  { display: flex; align-items: center; gap: 8px; }
+.pf-add-btn {
+  background: var(--gold); color: var(--ink);
+  font-family: var(--fb); font-size: 11px; font-weight: 600;
+  padding: 4px 10px; border: none; border-radius: 4px;
+  cursor: pointer; transition: background 0.15s;
+}
+.pf-add-btn:hover { background: var(--gold-light); }
+.pf-add-btn:disabled { background: var(--border-2); color: var(--muted); cursor: default; }
+.pf-no-results {
+  padding: 20px; text-align: center; font-size: 13px; color: var(--muted);
+}
+
+/* Sidebar */
+.pf-sidebar { display: flex; flex-direction: column; gap: 0; }
+.pf-sidebar-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 8px; padding: 16px; margin-bottom: 14px;
+}
+.pf-sidebar-title {
+  font-size: 10px; text-transform: uppercase; letter-spacing: 0.09em;
+  color: var(--muted); margin-bottom: 10px;
+}
+.pf-sidebar-card p { font-size: 12px; color: var(--muted); line-height: 1.65; }
+.pf-sidebar-links  { display: flex; flex-direction: column; gap: 4px; }
+.pf-sidebar-link {
+  font-size: 13px; color: #C0C0C0; padding: 6px 0;
+  border-bottom: 1px solid var(--border); transition: color 0.15s;
+}
+.pf-sidebar-link:last-child { border-bottom: none; }
+.pf-sidebar-link:hover { color: var(--gold); }
+.pf-disclaimer { background: transparent; }
+.pf-disclaimer p { font-size: 11px; }
+.pf-disclaimer a { color: var(--gold-dim); }
+
+/* Colour helpers */
+.n-good { color: var(--green); }
+.n-warn { color: var(--amber); }
+.n-bad  { color: var(--red);   }
+.n-na   { color: var(--muted); font-style: italic; }
+
+@media (max-width: 860px) {
+  .pf-outer { grid-template-columns: 1fr; }
+  .pf-sidebar { display: none; }
+}
+@media (max-width: 600px) {
+  .pf-hero { padding: 32px 16px 28px; }
+  .pf-main { padding: 16px 16px 48px; }
+  .pf-summary { gap: 8px; }
+  .pf-stat-card { padding: 10px 12px; min-width: 80px; }
+  .pf-stat-value { font-size: 18px; }
+}

@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portfolio Tracker — NSE &amp; JSE Watchlist | The African Oracle</title>
+  <meta name="description" content="Track your NSE Kenya and JSE South Africa stock watchlist. See live prices, signals, and portfolio metrics — free, no login required." />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css?v=1" />
+  <link rel="stylesheet" href="css/portfolio.css?v=1" />
+  <link rel="stylesheet" href="css/premium.css?v=1" />
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5232676175386938" crossorigin="anonymous"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('/sw.js')
+          .then(function (reg) { reg.update(); })
+          .catch(function (err) { console.log('SW failed:', err); });
+      });
+    }
+  </script>
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="index.html" class="brand">
+        <span class="brand-icon">◈</span>
+        <div>
+          <div class="brand-name">The African Oracle</div>
+          <div class="brand-sub">NSE · JSE Stock Intelligence</div>
+        </div>
+      </a>
+      <nav class="site-nav">
+        <a href="index.html"     class="nav-link">Screener</a>
+        <a href="movers.html"    class="nav-link">Performers</a>
+        <a href="calendar.html"  class="nav-link">Calendar</a>
+        <a href="portfolio.html" class="nav-link active">Portfolio</a>
+        <a href="blog.html"      class="nav-link">Blog</a>
+        <a href="learn.html"     class="nav-link">Learn</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="pf-hero">
+    <div class="pf-hero-inner">
+      <div class="pf-tag">Free · Saved in your browser · No login needed</div>
+      <h1 class="pf-title">Your Watchlist &amp;<br/><em>Portfolio Tracker</em></h1>
+      <p class="pf-sub">Add NSE and JSE stocks to your personal watchlist. See live prices, signals, and portfolio-level metrics — all saved privately in your browser.</p>
+    </div>
+  </section>
+
+  <main class="pf-main">
+    <div class="pf-outer">
+
+      <!-- ═══ LEFT COLUMN ═══ -->
+      <div class="pf-content">
+
+        <!-- Loading -->
+        <div class="pf-loading" id="pfLoading">
+          <div class="spinner"></div>
+          <p>Loading market data…</p>
+        </div>
+
+        <!-- Empty state — shown when watchlist is empty -->
+        <div class="pf-empty hidden" id="pfEmpty">
+          <div class="pf-empty-icon">◈</div>
+          <h2>Your watchlist is empty</h2>
+          <p>Search for a company below and add it to start tracking.</p>
+        </div>
+
+        <!-- Summary stats — shown when watchlist has stocks -->
+        <div class="pf-summary hidden" id="pfSummary">
+          <div class="pf-stat-card">
+            <div class="pf-stat-label">Holdings</div>
+            <div class="pf-stat-value" id="pfCount">0</div>
+          </div>
+          <div class="pf-stat-card">
+            <div class="pf-stat-label">Avg P/E</div>
+            <div class="pf-stat-value" id="pfAvgPE">—</div>
+          </div>
+          <div class="pf-stat-card">
+            <div class="pf-stat-label">Avg Div Yield</div>
+            <div class="pf-stat-value" id="pfAvgDiv">—</div>
+          </div>
+          <div class="pf-stat-card">
+            <div class="pf-stat-label">Buy Signals</div>
+            <div class="pf-stat-value n-good" id="pfBuyCount">0</div>
+          </div>
+          <div class="pf-stat-card">
+            <div class="pf-stat-label">Avoid Signals</div>
+            <div class="pf-stat-value n-bad" id="pfAvoidCount">0</div>
+          </div>
+        </div>
+
+        <!-- Watchlist table -->
+        <div class="pf-table-wrap hidden" id="pfTableWrap">
+          <table class="pf-table">
+            <thead>
+              <tr>
+                <th>Ticker</th>
+                <th>Company</th>
+                <th>Exch</th>
+                <th class="num-col">Price</th>
+                <th class="num-col">P/E</th>
+                <th class="num-col">Div Yield</th>
+                <th class="num-col">EPS Growth</th>
+                <th>Moat</th>
+                <th>Signal</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="pfTableBody"></tbody>
+          </table>
+        </div>
+
+        <!-- Ad — after watchlist table, before search -->
+        <ins class="adsbygoogle"
+             style="display:block;margin:28px 0;"
+             data-ad-client="ca-pub-5232676175386938"
+             data-ad-slot=""
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+
+        <!-- Add stock section -->
+        <div class="pf-add-section">
+          <h2 class="pf-add-title">Add a stock to your watchlist</h2>
+          <div class="pf-search-wrap">
+            <input type="text" id="pfSearchInput" class="pf-search-input"
+                   placeholder="Type ticker or company name e.g. SCOM or Safaricom" />
+          </div>
+          <div class="pf-search-results hidden" id="pfSearchResults"></div>
+        </div>
+
+        <!-- Ad after search section -->
+        <ins class="adsbygoogle"
+             style="display:block;margin:28px 0 0;"
+             data-ad-client="ca-pub-5232676175386938"
+             data-ad-slot=""
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+
+      </div><!-- /pf-content -->
+
+      <!-- ═══ RIGHT SIDEBAR ═══ -->
+      <aside class="pf-sidebar">
+
+        <div class="pf-sidebar-card">
+          <div class="pf-sidebar-title">How your watchlist works</div>
+          <p>Your watchlist is saved in your browser's local storage. It stays between visits — no account or login needed.</p>
+          <p style="margin-top:8px;">Your data never leaves your device. We do not store or see your watchlist.</p>
+          <p style="margin-top:8px;color:var(--amber);">⚠ Clearing your browser data will reset your watchlist.</p>
+        </div>
+
+        <!-- Ad in sidebar -->
+        <ins class="adsbygoogle"
+             style="display:block;margin:16px 0;"
+             data-ad-client="ca-pub-5232676175386938"
+             data-ad-slot=""
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+
+        <div class="pf-sidebar-card">
+          <div class="pf-sidebar-title">Quick links</div>
+          <div class="pf-sidebar-links">
+            <a href="index.html"   class="pf-sidebar-link">Full screener →</a>
+            <a href="movers.html"  class="pf-sidebar-link">Top performers →</a>
+            <a href="calendar.html" class="pf-sidebar-link">Earnings calendar →</a>
+            <a href="learn.html"   class="pf-sidebar-link">Learn the terms →</a>
+          </div>
+        </div>
+
+        <div class="pf-sidebar-card pf-disclaimer">
+          <p>This tracker is for personal reference only. Not financial advice. <a href="terms.html">Terms apply.</a></p>
+        </div>
+
+      </aside>
+
+    </div><!-- /pf-outer -->
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">◈ The African Oracle</div>
+      <div class="footer-links">
+        <a href="index.html">Screener</a>
+        <a href="movers.html">Performers</a>
+        <a href="calendar.html">Calendar</a>
+        <a href="portfolio.html">Portfolio</a>
+        <a href="blog.html">Blog</a>
+        <a href="privacy.html">Privacy</a>
+        <a href="terms.html">Terms</a>
+      </div>
+      <div class="footer-note">Free forever · Data from NSE &amp; JSE public filings</div>
+    </div>
+  </footer>
+
+  <script src="js/app.js?v=1"></script>
+  <script src="js/portfolio.js?v=1"></script>
+  <script src="js/premium.js?v=1"></script>
+</body>
+</html>

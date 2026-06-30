@@ -1,0 +1,568 @@
+/* ═══════════════════════════════════════════════════════════════
+   premium.css — Shared premium gate and status styles
+   Loaded on all premium feature pages alongside page-specific CSS
+═══════════════════════════════════════════════════════════════ */
+
+/* ── Premium gate — shown to free users ──────────────────────── */
+.premium-gate {
+  text-align: center;
+  background: var(--ink-2);
+  border: 1px solid var(--gold-dim);
+  border-radius: 12px;
+  padding: 48px 32px;
+  margin: 24px 0;
+  position: relative;
+  overflow: hidden;
+}
+.premium-gate::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+.premium-gate-icon {
+  font-size: 36px; color: var(--gold);
+  margin-bottom: 16px; line-height: 1;
+}
+.premium-gate-title {
+  font-family: var(--fh); font-size: 22px; font-weight: 700;
+  color: #F0F0F0; margin-bottom: 12px;
+}
+.premium-gate-desc {
+  font-size: 14px; color: var(--muted); line-height: 1.7;
+  max-width: 460px; margin: 0 auto 28px;
+}
+
+/* Pricing */
+.premium-gate-price {
+  display: flex; align-items: center; justify-content: center;
+  gap: 16px; margin-bottom: 24px; flex-wrap: wrap;
+}
+.price-option {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 8px; padding: 16px 24px; min-width: 120px;
+}
+.price-option.featured {
+  border-color: var(--gold);
+  background: rgba(201,168,76,0.06);
+}
+.price-amount {
+  font-family: var(--fh); font-size: 24px; font-weight: 700;
+  color: var(--gold); line-height: 1;
+}
+.price-period {
+  font-size: 11px; color: var(--muted); margin-top: 4px;
+}
+.price-save {
+  display: inline-block; background: var(--green-bg); color: var(--green);
+  font-size: 9px; font-weight: 600; padding: 1px 6px;
+  border-radius: 4px; margin-left: 4px;
+}
+.price-divider { font-size: 12px; color: var(--muted); }
+
+/* CTA button */
+.premium-gate-btn {
+  display: inline-block;
+  background: var(--gold); color: var(--ink);
+  font-size: 14px; font-weight: 600;
+  padding: 13px 28px; border-radius: var(--r);
+  text-decoration: none; transition: background 0.15s;
+  margin-bottom: 28px;
+}
+.premium-gate-btn:hover { background: var(--gold-light); color: var(--ink); }
+
+/* Token input section */
+.premium-gate-token {
+  border-top: 1px solid var(--border); padding-top: 20px;
+}
+.premium-gate-token p {
+  font-size: 12px; color: var(--muted); margin-bottom: 10px;
+}
+.token-input-row {
+  display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;
+}
+.token-input {
+  background: var(--surface-2); border: 1px solid var(--border-2);
+  border-radius: var(--r); color: #D0D0D0;
+  font-family: var(--fm); font-size: 13px;
+  padding: 9px 14px; outline: none;
+  width: 260px; transition: border-color 0.15s;
+}
+.token-input:focus { border-color: var(--gold-dim); }
+.token-input::placeholder { color: var(--muted); }
+.token-submit-btn {
+  background: var(--surface-2); border: 1px solid var(--border-2);
+  color: #D0D0D0; font-family: var(--fb); font-size: 13px;
+  font-weight: 500; padding: 9px 16px; border-radius: var(--r);
+  cursor: pointer; transition: all 0.15s;
+}
+.token-submit-btn:hover { border-color: var(--gold-dim); color: var(--gold-light); }
+.token-error {
+  margin-top: 8px; font-size: 12px; color: var(--red);
+}
+
+/* ── Premium status bar — shown to active subscribers ─────────── */
+.premium-status-bar {
+  display: flex; align-items: center; gap: 10px;
+  background: rgba(201,168,76,0.06);
+  border: 1px solid var(--gold-dim); border-radius: var(--r);
+  padding: 10px 16px; margin-bottom: 20px; flex-wrap: wrap;
+}
+.premium-status-icon { color: var(--gold); font-size: 14px; }
+.premium-status-text { font-size: 12px; color: var(--gold-light); flex: 1; }
+.premium-sign-out {
+  background: none; border: none; color: var(--muted);
+  font-family: var(--fb); font-size: 11px; cursor: pointer;
+  padding: 2px 6px; border-radius: 4px; transition: color 0.15s;
+}
+.premium-sign-out:hover { color: var(--red); }
+
+/* ── Locked row overlay — used in calendar ────────────────────── */
+.locked-row td {
+  position: relative; user-select: none;
+}
+.locked-row td::after {
+  content: "";
+  position: absolute; inset: 0;
+  background: rgba(14,14,14,0.7);
+  backdrop-filter: blur(3px);
+}
+.locked-row-label {
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 14px; font-size: 12px; color: var(--muted);
+  background: var(--surface); border-bottom: 1px solid var(--border);
+}
+.locked-row-label a { color: var(--gold); }
+
+/* ── Priority badge — shown in premium status bar ─────────────── */
+.priority-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 9px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.08em; padding: 2px 7px; border-radius: 4px;
+  background: var(--green-bg); color: var(--green);
+}
+
+/* ── Responsive ───────────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .premium-gate { padding: 32px 20px; }
+  .premium-gate-title { font-size: 18px; }
+  .token-input { width: 100%; }
+  .token-input-row { flex-direction: column; }
+  .token-submit-btn { width: 100%; }
+}
+
+/* ════════════════════════════════════════════════════════════
+   premium.html PAGE STYLES
+   Lock overlay from requirePremium(), modal from showTokenModal(),
+   pricing cards, comparison table, how-to steps
+════════════════════════════════════════════════════════════ */
+
+/* ── Lock overlay (injected by requirePremium()) ─────────── */
+.prem-lock-overlay {
+  position: absolute; inset: 0; z-index: 50;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(10,10,10,0.88);
+  backdrop-filter: blur(4px);
+  border-radius: inherit;
+}
+.prem-lock-box {
+  text-align: center; padding: 32px 24px; max-width: 340px;
+}
+.prem-lock-icon {
+  font-size: 32px; color: var(--gold); margin-bottom: 12px;
+}
+.prem-lock-title {
+  font-family: var(--fh); font-size: 18px; font-weight: 700;
+  color: #F0F0F0; margin-bottom: 8px;
+}
+.prem-lock-msg {
+  font-size: 13px; color: var(--muted); line-height: 1.6;
+  margin-bottom: 20px;
+}
+.prem-lock-btn {
+  display: inline-block; background: var(--gold); color: var(--ink);
+  font-size: 13px; font-weight: 600; padding: 10px 22px;
+  border-radius: var(--r); text-decoration: none;
+  transition: background 0.15s; margin-bottom: 12px;
+}
+.prem-lock-btn:hover { background: var(--gold-light); color: var(--ink); }
+.prem-lock-sub {
+  font-size: 11px; color: var(--muted);
+}
+.prem-lock-sub a { color: var(--gold-dim); }
+
+/* ── Token modal (from showTokenModal()) ─────────────────── */
+.prem-modal-wrap {
+  position: fixed; inset: 0; z-index: 999;
+  background: rgba(0,0,0,0.75);
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px;
+}
+.prem-modal {
+  background: var(--ink-2); border: 1px solid var(--gold-dim);
+  border-radius: 10px; padding: 32px; width: 100%; max-width: 440px;
+  position: relative;
+}
+.prem-modal-title {
+  font-family: var(--fh); font-size: 20px; font-weight: 700;
+  color: #F0F0F0; margin-bottom: 10px;
+}
+.prem-modal-desc {
+  font-size: 13px; color: var(--muted); line-height: 1.65; margin-bottom: 18px;
+}
+.prem-token-input {
+  width: 100%; background: var(--surface-2);
+  border: 1px solid var(--border-2); border-radius: var(--r);
+  color: #D0D0D0; font-family: var(--fm); font-size: 14px;
+  padding: 10px 14px; outline: none; transition: border-color 0.15s;
+  margin-bottom: 10px; box-sizing: border-box;
+}
+.prem-token-input:focus { border-color: var(--gold-dim); }
+.prem-token-input::placeholder { color: var(--muted); }
+.prem-token-err {
+  font-size: 12px; color: var(--red); margin-bottom: 10px;
+}
+.prem-modal-actions {
+  display: flex; gap: 8px; margin-top: 6px;
+}
+.prem-ok-btn {
+  flex: 1; background: var(--gold); color: var(--ink);
+  font-family: var(--fb); font-size: 13px; font-weight: 600;
+  padding: 10px; border: none; border-radius: var(--r); cursor: pointer;
+  transition: background 0.15s;
+}
+.prem-ok-btn:hover { background: var(--gold-light); }
+.prem-ok-btn:disabled { background: var(--border-2); color: var(--muted); cursor: default; }
+.prem-cancel-btn {
+  background: var(--surface-2); border: 1px solid var(--border-2);
+  color: var(--muted); font-family: var(--fb); font-size: 13px;
+  padding: 10px 16px; border-radius: var(--r); cursor: pointer;
+  transition: all 0.15s;
+}
+.prem-cancel-btn:hover { border-color: var(--red); color: var(--red); }
+.prem-modal-foot {
+  margin-top: 14px; font-size: 11px; color: var(--muted); text-align: center;
+}
+.prem-modal-foot a { color: var(--gold-dim); }
+
+/* ── premium.html hero ───────────────────────────────────── */
+.prem-page-hero {
+  background: var(--ink-2); border-bottom: 1px solid var(--border);
+  padding: 52px 24px 44px;
+}
+.prem-page-hero-inner { max-width: 1000px; margin: 0 auto; }
+.prem-page-tag {
+  display: inline-block; font-size: 9px; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--gold-dim);
+  border: 1px solid var(--gold-dim); border-radius: 20px;
+  padding: 3px 11px; margin-bottom: 18px;
+}
+.prem-page-title {
+  font-family: var(--fh); font-size: clamp(28px,5vw,50px);
+  font-weight: 900; color: #F5F5F5; line-height: 1.08; margin-bottom: 14px;
+}
+.prem-page-title em { font-style: italic; color: var(--gold); }
+.prem-page-sub {
+  font-size: 15px; color: var(--muted); line-height: 1.75; max-width: 580px;
+}
+
+/* ── premium.html main ───────────────────────────────────── */
+.prem-page-main { padding: 36px 24px 64px; }
+.prem-page-inner { max-width: 1000px; margin: 0 auto; }
+
+/* ── Status banner (active subscriber) ───────────────────── */
+.prem-status-banner {
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  background: rgba(61,170,110,0.08); border: 1px solid rgba(61,170,110,0.3);
+  border-radius: var(--r); padding: 14px 18px; margin-bottom: 32px;
+}
+.prem-status-icon { font-size: 16px; color: var(--green); }
+.prem-status-text { font-size: 13px; color: var(--green); flex: 1; }
+.prem-status-logout {
+  background: none; border: 1px solid var(--border-2);
+  color: var(--muted); font-family: var(--fb); font-size: 11px;
+  padding: 4px 10px; border-radius: var(--r); cursor: pointer;
+  transition: all 0.15s;
+}
+.prem-status-logout:hover { border-color: var(--red); color: var(--red); }
+
+/* ── Feature comparison table ────────────────────────────── */
+.prem-compare {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; overflow: hidden; margin-bottom: 40px;
+}
+.prem-compare-header {
+  display: grid; grid-template-columns: 1fr 120px 140px;
+  background: var(--surface-2); border-bottom: 1px solid var(--border);
+  padding: 12px 20px;
+}
+
+.prem-compare-col-head {
+  text-align: center; font-size: 11px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted);
+}
+.prem-compare-col-head.premium { color: var(--gold); }
+
+.prem-compare-group-title {
+  padding: 10px 20px 6px;
+  font-size: 9px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.1em; color: var(--gold-dim);
+  background: rgba(201,168,76,0.04);
+  border-top: 1px solid var(--border);
+}
+.prem-compare-row {
+  display: grid; grid-template-columns: 1fr 120px 140px;
+  padding: 11px 20px; border-top: 1px solid var(--border);
+  align-items: center;
+}
+.prem-compare-row:hover { background: rgba(255,255,255,0.02); }
+.prem-compare-feature { font-size: 13px; color: #C0C0C0; }
+.prem-compare-val {
+  text-align: center; font-size: 13px; color: var(--muted);
+}
+.prem-compare-val.gold { color: var(--green); font-weight: 500; }
+.prem-compare-val.muted { color: var(--border-2); font-size: 16px; }
+
+/* ── Pricing cards ───────────────────────────────────────── */
+.prem-pricing { margin-bottom: 48px; text-align: center; }
+.prem-pricing-title {
+  font-family: var(--fh); font-size: 26px; font-weight: 700;
+  color: #F0F0F0; margin-bottom: 8px;
+}
+.prem-pricing-sub { font-size: 14px; color: var(--muted); margin-bottom: 28px; }
+.prem-plans {
+  display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;
+}
+.prem-plan {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; padding: 28px 24px; min-width: 240px;
+  max-width: 300px; flex: 1; text-align: left; position: relative;
+}
+.prem-plan.featured {
+  border-color: var(--gold);
+  background: rgba(201,168,76,0.04);
+}
+.prem-plan-badge {
+  position: absolute; top: -11px; left: 50%; transform: translateX(-50%);
+  background: var(--gold); color: var(--ink);
+  font-size: 9px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.08em; padding: 3px 12px; border-radius: 10px;
+  white-space: nowrap;
+}
+.prem-plan-name {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--muted); margin-bottom: 12px;
+}
+.prem-plan-price {
+  display: flex; align-items: baseline; gap: 4px; margin-bottom: 4px;
+}
+.prem-plan-currency { font-size: 14px; color: var(--gold); font-weight: 500; }
+.prem-plan-amount {
+  font-family: var(--fh); font-size: 38px; font-weight: 700; color: var(--gold);
+  line-height: 1;
+}
+.prem-plan-period { font-size: 13px; color: var(--muted); }
+.prem-plan-usd { font-size: 11px; color: var(--muted); margin-bottom: 20px; }
+.prem-plan-features {
+  list-style: none; margin: 0 0 24px; padding: 0;
+}
+.prem-plan-features li {
+  font-size: 13px; color: #C0C0C0; padding: 6px 0;
+  border-bottom: 1px solid var(--border);
+  padding-left: 16px; position: relative;
+}
+.prem-plan-features li:last-child { border-bottom: none; }
+.prem-plan-features li::before {
+  content: "✓"; position: absolute; left: 0;
+  color: var(--green); font-size: 11px; top: 7px;
+}
+.prem-plan-btn {
+  display: block; text-align: center;
+  background: var(--surface-2); border: 1px solid var(--border-2);
+  color: #D0D0D0; font-family: var(--fb); font-size: 13px; font-weight: 500;
+  padding: 11px 20px; border-radius: var(--r); text-decoration: none;
+  transition: all 0.15s;
+}
+.prem-plan-btn:hover { border-color: var(--gold-dim); color: var(--gold-light); }
+.prem-plan-btn.featured-btn {
+  background: var(--gold); color: var(--ink); border-color: var(--gold);
+}
+.prem-plan-btn.featured-btn:hover { background: var(--gold-light); }
+
+/* ── How to subscribe steps ──────────────────────────────── */
+.prem-how { margin-bottom: 48px; }
+.prem-how-title {
+  font-family: var(--fh); font-size: 22px; font-weight: 700;
+  color: #F0F0F0; margin-bottom: 6px;
+}
+.prem-how-sub { font-size: 13px; color: var(--muted); margin-bottom: 24px; }
+.prem-steps { display: flex; flex-direction: column; gap: 12px; }
+.prem-step {
+  display: flex; gap: 16px; align-items: flex-start;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--r); padding: 16px;
+}
+.prem-step-num {
+  flex-shrink: 0; width: 28px; height: 28px;
+  background: rgba(201,168,76,0.12); border: 1px solid var(--gold-dim);
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700; color: var(--gold);
+}
+.prem-step-text { font-size: 13px; color: #C0C0C0; line-height: 1.65; }
+.prem-step-text strong { color: #E0E0E0; }
+.prem-step-text code {
+  font-family: var(--fm); font-size: 12px; color: var(--gold-light);
+  background: var(--surface-2); padding: 1px 5px; border-radius: 3px;
+}
+
+/* ── Token entry section ─────────────────────────────────── */
+.prem-token-section {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; padding: 28px 24px; margin-bottom: 32px;
+}
+.prem-token-title {
+  font-family: var(--fh); font-size: 20px; font-weight: 700;
+  color: #F0F0F0; margin-bottom: 8px;
+}
+.prem-token-desc { font-size: 13px; color: var(--muted); margin-bottom: 18px; }
+.prem-token-form {
+  display: flex; gap: 8px; flex-wrap: wrap;
+}
+.prem-page-token-input {
+  flex: 1; min-width: 240px;
+  background: var(--surface-2); border: 1px solid var(--border-2);
+  border-radius: var(--r); color: #D0D0D0;
+  font-family: var(--fm); font-size: 14px;
+  padding: 10px 14px; outline: none; transition: border-color 0.15s;
+}
+.prem-page-token-input:focus { border-color: var(--gold-dim); }
+.prem-page-token-input::placeholder { color: var(--muted); }
+.prem-page-token-btn {
+  background: var(--gold); color: var(--ink);
+  font-family: var(--fb); font-size: 13px; font-weight: 600;
+  padding: 10px 20px; border: none; border-radius: var(--r);
+  cursor: pointer; transition: background 0.15s; white-space: nowrap;
+}
+.prem-page-token-btn:hover    { background: var(--gold-light); }
+.prem-page-token-btn:disabled { background: var(--border-2); color: var(--muted); cursor: default; }
+.prem-page-token-msg {
+  margin-top: 10px; font-size: 13px; line-height: 1.6; border-radius: var(--r);
+  padding: 8px 12px;
+}
+.prem-page-token-msg.success { background: var(--green-bg); color: var(--green); }
+.prem-page-token-msg.error   { background: var(--red-bg);   color: var(--red);   }
+
+/* ── Analytics section (portfolio.html premium) ──────────── */
+.prem-analytics-section {
+  margin-top: 28px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; overflow: hidden;
+}
+.prem-analytics-header {
+  display: flex; align-items: center; gap: 10px;
+  padding: 16px 20px; border-bottom: 1px solid var(--border);
+  background: rgba(201,168,76,0.04);
+}
+.prem-analytics-title {
+  font-family: var(--fh); font-size: 17px; font-weight: 700; color: #F0F0F0;
+  flex: 1;
+}
+.prem-analytics-body { padding: 20px; }
+
+/* Analytics cards grid */
+.analytics-cards {
+  display: grid; grid-template-columns: repeat(auto-fill,minmax(180px,1fr));
+  gap: 12px; margin-bottom: 24px;
+}
+.analytics-card {
+  background: var(--ink-2); border: 1px solid var(--border);
+  border-radius: var(--r); padding: 16px;
+}
+.analytics-card-label {
+  font-size: 9px; text-transform: uppercase; letter-spacing: 0.09em;
+  color: var(--muted); margin-bottom: 6px;
+}
+.analytics-card-value {
+  font-family: var(--fh); font-size: 22px; font-weight: 700; color: var(--gold);
+}
+.analytics-card-sub { font-size: 11px; color: var(--muted); margin-top: 3px; }
+
+/* Sector breakdown bars */
+.sector-breakdown { margin-bottom: 24px; }
+.sector-breakdown-title {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 0.09em;
+  color: var(--muted); margin-bottom: 12px;
+}
+.sector-bar-row {
+  display: grid; grid-template-columns: 140px 1fr 40px;
+  align-items: center; gap: 10px; margin-bottom: 8px;
+}
+.sector-bar-label { font-size: 12px; color: #C0C0C0; }
+.sector-bar-track {
+  height: 6px; background: var(--surface-2);
+  border-radius: 3px; overflow: hidden;
+}
+.sector-bar-fill {
+  height: 100%; background: var(--gold);
+  border-radius: 3px; transition: width 0.6s ease;
+}
+.sector-bar-pct { font-size: 11px; color: var(--muted); text-align: right; }
+
+/* CSV export button */
+.csv-export-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--surface-2); border: 1px solid var(--border-2);
+  color: #D0D0D0; font-family: var(--fb); font-size: 12px; font-weight: 500;
+  padding: 8px 16px; border-radius: var(--r); cursor: pointer;
+  transition: all 0.15s; text-decoration: none;
+}
+.csv-export-btn:hover { border-color: var(--gold-dim); color: var(--gold-light); }
+
+/* ── Responsive ──────────────────────────────────────────── */
+@media (max-width: 700px) {
+  .prem-plans { flex-direction: column; align-items: center; }
+  .prem-plan  { max-width: 100%; width: 100%; }
+  .prem-compare-header,
+  .prem-compare-row { grid-template-columns: 1fr 80px 100px; }
+  .prem-compare-feature { font-size: 12px; }
+  .prem-token-form { flex-direction: column; }
+  .prem-page-token-input { min-width: 100%; }
+  .sector-bar-row { grid-template-columns: 100px 1fr 36px; }
+}
+
+/* ── Payment buttons on premium page ────────────────────────── */
+.prem-payment-btns { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
+.mpesa-pay-btn {
+  background: #00A651 !important; color: #fff !important;
+  border: 1px solid #00A651 !important;
+  cursor: pointer !important; width: 100% !important;
+  display: block !important; text-align: center !important;
+}
+.mpesa-pay-btn:hover { background: #009444 !important; }
+.paystack-pay-btn {
+  background: transparent !important;
+  border: 1px solid var(--border-2) !important;
+  color: #C0C0C0 !important; font-size: 13px !important;
+  cursor: pointer !important; width: 100% !important;
+  display: block !important; text-align: center !important;
+}
+.paystack-pay-btn:hover { border-color: var(--gold-dim) !important; color: var(--gold-light) !important; }
+.payment-coming-soon {
+  font-size: 12px; color: var(--muted); line-height: 1.65;
+  background: var(--surface-2); border: 1px solid var(--border);
+  border-radius: var(--r); padding: 12px 14px; margin-top: 8px;
+}
+.payment-coming-soon a { color: var(--gold); }
+
+/* ── Paystack modal CSS removed from here — now self-injected by   */
+/* paystack.js to avoid load-order conflicts and ensure the modal   */
+/* always renders centered regardless of which page or CSS loads.  */
+
+/* ── Payment status messages ─────────────────────────────────── */
+.payment-message {
+  padding: 14px 18px; border-radius: var(--r);
+  font-size: 13px; line-height: 1.6; margin-bottom: 20px;
+}
+.payment-message-success { background: var(--green-bg); color: var(--green); border: 1px solid rgba(61,170,110,0.25); }
+.payment-message-warn    { background: var(--amber-bg); color: var(--amber); border: 1px solid rgba(212,133,58,0.25); }
+.payment-message-error   { background: var(--red-bg);   color: var(--red);   border: 1px solid rgba(192,57,43,0.25); }

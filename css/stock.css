@@ -272,3 +272,62 @@
 .terms-icon { font-size: 20px; color: var(--gold); flex-shrink: 0; }
 .terms-link { color: var(--gold); margin-left: 6px; }
 .terms-link:hover { color: var(--gold-light); }
+
+/* ── M-PESA Payment Modal ───────────────────────────────────── */
+.mpesa-modal-wrap {
+  position: fixed; inset: 0; z-index: 1000;
+  background: rgba(0,0,0,0.75);
+  display: flex; align-items: center; justify-content: center;
+  padding: 16px;
+}
+.mpesa-modal {
+  background: var(--ink-2); border: 1px solid var(--border);
+  border-radius: 12px; width: 100%; max-width: 440px;
+  position: relative; overflow: hidden;
+}
+.mpesa-close {
+  position: absolute; top: 12px; right: 14px;
+  background: none; border: none; color: var(--muted);
+  font-size: 18px; cursor: pointer; line-height: 1;
+}
+.mpesa-close:hover { color: #E0E0E0; }
+.mpesa-header {
+  background: #00A651; padding: 20px 24px; text-align: center;
+}
+.mpesa-logo {
+  font-family: var(--fh); font-size: 22px; font-weight: 900;
+  color: #fff; letter-spacing: 0.05em; margin-bottom: 4px;
+}
+.mpesa-plan-name { font-size: 12px; color: rgba(255,255,255,0.85); margin-bottom: 4px; }
+.mpesa-amount    { font-size: 20px; font-weight: 700; color: #fff; }
+.mpesa-body      { padding: 20px 24px; }
+.mpesa-step      
+.mpesa-instruction { font-size: 13px; color: var(--muted); margin-bottom: 16px; line-height: 1.6; }
+.mpesa-form-group  { margin-bottom: 14px; }
+.mpesa-label    { display: block; font-size: 10px; text-transform: uppercase; letter-spacing: 0.09em; color: var(--muted); margin-bottom: 5px; }
+.mpesa-input    {
+  width: 100%; background: var(--surface-2); border: 1px solid var(--border-2);
+  border-radius: var(--r); color: #D0D0D0; font-family: var(--fb);
+  font-size: 14px; padding: 10px 12px; outline: none;
+  transition: border-color 0.15s; box-sizing: border-box;
+}
+.mpesa-input:focus { border-color: #00A651; }
+.mpesa-hint     { font-size: 11px; color: var(--muted); margin-top: 4px; }
+.mpesa-error    { background: var(--red-bg); color: var(--red); border: 1px solid rgba(192,57,43,0.25); border-radius: var(--r); padding: 8px 12px; font-size: 12px; margin-bottom: 12px; }
+.mpesa-submit-btn {
+  width: 100%; background: #00A651; color: #fff;
+  font-family: var(--fb); font-size: 14px; font-weight: 600;
+  padding: 12px; border: none; border-radius: var(--r);
+  cursor: pointer; transition: background 0.15s; margin-bottom: 10px;
+}
+.mpesa-submit-btn:hover    { background: #009444; }
+.mpesa-submit-btn:disabled { background: var(--border-2); color: var(--muted); cursor: default; }
+.mpesa-secure   { font-size: 11px; color: var(--muted); text-align: center; }
+.mpesa-pending-icon  { font-size: 40px; text-align: center; margin-bottom: 12px; }
+.mpesa-pending-title { font-family: var(--fh); font-size: 20px; font-weight: 700; color: #F0F0F0; text-align: center; margin-bottom: 10px; }
+.mpesa-pending-msg   { font-size: 13px; color: #C0C0C0; text-align: center; margin-bottom: 8px; line-height: 1.6; }
+.mpesa-polling  { display: flex; align-items: center; justify-content: center; gap: 10px; margin: 16px 0; }
+.mpesa-spinner  { width: 18px; height: 18px; border: 2px solid var(--border-2); border-top-color: #00A651; border-radius: 50%; animation: spin 0.8s linear infinite; }
+.mpesa-manual-btn { width: 100%; background: var(--surface); border: 1px solid var(--border-2); color: #C0C0C0; font-family: var(--fb); font-size: 13px; padding: 10px; border-radius: var(--r); cursor: pointer; margin-top: 8px; }
+.mpesa-footer   { padding: 12px 24px; border-top: 1px solid var(--border); font-size: 11px; color: var(--muted); text-align: center; }
+.mpesa-footer a { color: var(--gold); }

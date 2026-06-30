@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Premium — The African Oracle | NSE &amp; JSE Advanced Analytics</title>
+  <meta name="description" content="Unlock advanced NSE and JSE analytics — earnings calendar, portfolio tracker, historical data, priority updates and more." />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css?v=1" />
+  <link rel="stylesheet" href="css/premium.css?v=1" />
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5232676175386938" crossorigin="anonymous"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('/sw.js')
+          .then(function (reg) { reg.update(); })
+          .catch(function (err) { console.log('SW failed:', err); });
+      });
+    }
+  </script>
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="index.html" class="brand">
+        <span class="brand-icon">◈</span>
+        <div>
+          <div class="brand-name">The African Oracle</div>
+          <div class="brand-sub">NSE · JSE Stock Intelligence</div>
+        </div>
+      </a>
+      <nav class="site-nav">
+        <a href="index.html"    class="nav-link">Screener</a>
+        <a href="movers.html"   class="nav-link">Performers</a>
+        <a href="blog.html"     class="nav-link">Blog</a>
+        <a href="learn.html"    class="nav-link">Learn</a>
+        <a href="premium.html"  class="nav-link active">Premium</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ═══ HERO ═══ -->
+  <section class="prem-page-hero">
+    <div class="prem-page-hero-inner">
+      <div class="prem-page-tag">African Oracle Premium</div>
+      <h1 class="prem-page-title">The full picture.<br/><em>For serious investors.</em></h1>
+      <p class="prem-page-sub">The free screener gives you the data. Premium gives you the tools to act on it — earnings alerts, deep portfolio analytics, historical price ranges, and live priority data updates.</p>
+    </div>
+  </section>
+
+  <main class="prem-page-main">
+    <div class="prem-page-inner">
+
+      <!-- ═══ STATUS BANNER — shown if user is already premium ═══ -->
+      <div class="prem-status-banner hidden" id="premStatusBanner">
+        <span class="prem-status-icon">✓</span>
+        <div class="prem-status-text">
+          You are subscribed — <span id="premStatusTier"></span> plan.
+          Expires <span id="premStatusExpiry"></span>
+          (<span id="premStatusDays"></span> days remaining).
+        </div>
+        <button onclick="premiumLogout()" class="prem-status-logout">Sign out</button>
+      </div>
+
+      <!-- ═══ FEATURE COMPARISON ═══ -->
+      <div class="prem-compare">
+        <div class="prem-compare-header">
+          <div class="prem-compare-col-blank"></div>
+          <div class="prem-compare-col-head free">Free</div>
+          <div class="prem-compare-col-head premium">Premium</div>
+        </div>
+
+        <div class="prem-compare-group-title">Core Screener</div>
+        <div class="prem-compare-row">
+          <div class="prem-compare-feature">Full NSE &amp; JSE screener (200+ companies)</div>
+          <div class="prem-compare-val">✓</div>
+          <div class="prem-compare-val gold">✓</div>
+        </div>
+        <div class="prem-compare-row">
+          <div class="prem-compare-feature">P/E, PEG, EPS growth, margins, moat scores</div>
+          <div class="prem-compare-val">✓</div>
+          <div class="prem-compare-val gold">✓</div>
+        </div>
+        <div class="prem-compare-row">
+          <div class="prem-compare-feature">Stock detail pages with company analysis</div>
+          <div class="prem-compare-val">✓</div>
+          <div class="prem-compare-val gold">✓</div>
+        </div>
+        <div class="prem-compare-row">
+          <div class="prem-compare-feature">Data refresh frequency</div>
+          <div class="prem-compare-val muted">6-hour cache</div>
+          <div class="prem-compare-val gold">Live — always current</div>
+        </div>
+
+        <div class="prem-compare-group-title">Earnings Calendar</div>
+        <div class="prem-compare-row">
+          <div class="prem-compare-feature">Next 3 upcoming results dates</div>
+          <div class="prem-compare-val">✓</div>
+          <div class="prem-compare-val gold">✓</div>
+        </div>
+        <div class="prem-compare-row">
+          <div class="prem-compare-feature">Full calendar — all upcoming &amp; recent dates</div>
+          <div class="prem-compare-val muted">—</div>
+          <div class="prem-compare-val gold">✓</div>
+        </div>
+        <div class="prem-compare-row">
+          <div class="prem-compare-feature">NSE &amp; JSE exchange filter</div>
+          <div class="prem-compare-val muted">—</div>
+          <div class="prem-compare-val gold">✓</div>
+        </div>
+
+        <div class="prem-compare-group-title">Portfolio Tracker</div>
+        <div class="prem-compare-row">
+          <div class="prem-compare-feature">Basic watchlist (add &amp; track stocks)</div>
+          <div class="prem-compare-val muted">—</div>
+          <div class="prem-compare-val gold">✓</div>
+        </div>
+        <div class="prem-compare-row">
+          <div class="prem-compare-feature">Advanced analytics — sector breakdown</div>
+          <div class="prem-compare-val muted">—</div>
+          <div class="prem-compare-val gold">✓</div>
+        </div>
+        <div class="prem-compare-row">
+          <div class="prem-compare-feature">Weighted P/E and dividend income projection</div>
+          <div class="prem-compare-val muted">—</div>
+          <div class="prem-compare-val gold">✓</div>
+        </div>
+        <div class="prem-compare-row">
+          <div class="prem-compare-feature">Export watchlist to CSV</div>
+          <div class="prem-compare-val muted">—</div>
+          <div class="prem-compare-val gold">✓</div>
+        </div>
+
+        <div class="prem-compare-group-title">Historical Data</div>
+        <div class="prem-compare-row">
+          <div class="prem-compare-feature">52-week high and low prices</div>
+          <div class="prem-compare-val muted">—</div>
+          <div class="prem-compare-val gold">✓ Coming soon</div>
+        </div>
+        <div class="prem-compare-row">
+          <div class="prem-compare-feature">Price vs intrinsic value history</div>
+          <div class="prem-compare-val muted">—</div>
+          <div class="prem-compare-val gold">✓ Coming soon</div>
+        </div>
+      </div>
+
+      <!-- Ad slot after feature table -->
+      <ins class="adsbygoogle"
+           style="display:block;margin:32px 0;"
+           data-ad-client="ca-pub-5232676175386938"
+           data-ad-slot=""
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+
+      <!-- ═══ PRICING ═══ -->
+      <div class="prem-pricing">
+        <h2 class="prem-pricing-title">Simple pricing</h2>
+        <p class="prem-pricing-sub">One plan. Full access to everything premium. Cancel anytime.</p>
+
+        <div class="prem-plans">
+
+          <div class="prem-plan">
+            <div class="prem-plan-name">Monthly</div>
+            <div class="prem-plan-price">
+              <span class="prem-plan-currency">KES</span>
+              <span class="prem-plan-amount">800</span>
+              <span class="prem-plan-period">/ month</span>
+            </div>
+            <div class="prem-plan-usd">Approx. R101.25 / $6.19 USD</div>
+            <ul class="prem-plan-features">
+              <li>Full earnings calendar</li>
+              <li>Portfolio tracker + analytics</li>
+              <li>Priority live data</li>
+              <li>CSV export</li>
+              <li>Cancel anytime</li>
+            </ul>
+            <!-- Payment buttons — smart switcher based on location + Paystack readiness -->
+            <div class="prem-payment-btns" id="payBtnsMonthly">
+              <!-- M-PESA button — always shown for Kenyan users -->
+              <button onclick="handleSubscribeClick('monthly','mpesa')"
+                      class="prem-plan-btn mpesa-pay-btn"
+                      id="mpesaBtnMonthly">
+                Pay via M-PESA — KES 800
+              </button>
+              <!-- Paystack button — hidden until key is configured -->
+              <button onclick="handleSubscribeClick('monthly','paystack')"
+                      class="prem-plan-btn paystack-pay-btn hidden"
+                      id="paystackBtnMonthly">
+                Pay by Card / EFT →
+              </button>
+            </div>
+          </div>
+
+          <div class="prem-plan featured">
+            <div class="prem-plan-badge">Best value — save 25%</div>
+            <div class="prem-plan-name">Annual</div>
+            <div class="prem-plan-price">
+              <span class="prem-plan-currency">KES</span>
+              <span class="prem-plan-amount">7,200</span>
+              <span class="prem-plan-period">/ year</span>
+            </div>
+            <div class="prem-plan-usd">Approx. R911.25 / $55.69 USD</div>
+            <ul class="prem-plan-features">
+              <li>Everything in Monthly</li>
+              <li>2 months free vs monthly</li>
+              <li>Priority support</li>
+              <li>Early access to new features</li>
+            </ul>
+            <!-- Payment buttons — smart switcher -->
+            <div class="prem-payment-btns" id="payBtnsAnnual">
+              <!-- M-PESA button — always shown for Kenyan users -->
+              <button onclick="handleSubscribeClick('annual','mpesa')"
+                      class="prem-plan-btn featured-btn mpesa-pay-btn"
+                      id="mpesaBtnAnnual">
+                Pay via M-PESA — KES 7,200
+              </button>
+              <!-- Paystack button — hidden until key is configured -->
+              <button onclick="handleSubscribeClick('annual','paystack')"
+                      class="prem-plan-btn paystack-pay-btn hidden"
+                      id="paystackBtnAnnual">
+                Pay by Card / EFT →
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ═══ HOW TO SUBSCRIBE ═══ -->
+      <div class="prem-how">
+        <h2 class="prem-how-title">How to subscribe</h2>
+        <p class="prem-how-sub">While we finalise our automated payment system, subscriptions are processed manually within 24 hours.</p>
+        <div class="prem-steps">
+          <div class="prem-step">
+            <div class="prem-step-num">1</div>
+            <div class="prem-step-text">
+              <strong>Choose your plan</strong> and click the subscribe button above. This opens our contact form with your plan pre-selected.
+            </div>
+          </div>
+          <div class="prem-step">
+            <div class="prem-step-num">2</div>
+            <div class="prem-step-text">
+              <strong>Send payment</strong> via M-PESA to the number provided in our reply email. Include your email address as the reference.
+            </div>
+          </div>
+          <div class="prem-step">
+            <div class="prem-step-num">3</div>
+            <div class="prem-step-text">
+              <strong>Receive your token</strong> by email within 24 hours. It looks like <code>ORC-XXXX-XXXX-XXXX-XXXX</code>.
+            </div>
+          </div>
+          <div class="prem-step">
+            <div class="prem-step-num">4</div>
+            <div class="prem-step-text">
+              <strong>Enter your token</strong> on any premium page. It is saved in your browser — you only enter it once per device.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ad slot -->
+      <ins class="adsbygoogle"
+           style="display:block;margin:32px 0;"
+           data-ad-client="ca-pub-5232676175386938"
+           data-ad-slot=""
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+
+      <!-- ═══ TOKEN ENTRY — for existing subscribers ═══ -->
+      <div class="prem-token-section" id="premTokenSection">
+        <h2 class="prem-token-title">Already subscribed?</h2>
+        <p class="prem-token-desc">Enter your access token to unlock premium features on this device.</p>
+        <div class="prem-token-form">
+          <input type="text" id="premPageTokenInput" class="prem-page-token-input"
+                 placeholder="ORC-XXXX-XXXX-XXXX-XXXX" autocomplete="off" />
+          <button id="premPageTokenBtn" class="prem-page-token-btn">Verify Token</button>
+        </div>
+        <div id="premPageTokenMsg" class="prem-page-token-msg hidden"></div>
+      </div>
+
+      <p style="font-size:12px;color:var(--muted);text-align:center;margin-top:40px;">
+        Questions? <a href="contact.html" style="color:var(--gold);">Contact us</a> ·
+        <a href="terms.html" style="color:var(--gold);">Terms</a> ·
+        <a href="privacy.html" style="color:var(--gold);">Privacy</a>
+      </p>
+
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">◈ The African Oracle</div>
+      <div class="footer-links">
+        <a href="index.html">Screener</a>
+        <a href="movers.html">Performers</a>
+        <a href="blog.html">Blog</a>
+        <a href="premium.html">Premium</a>
+        <a href="about.html">About</a>
+        <a href="privacy.html">Privacy</a>
+        <a href="terms.html">Terms</a>
+      </div>
+      <div class="footer-note">Free forever for core features · Premium from KES 500/month</div>
+    </div>
+  </footer>
+
+  <script src="js/app.js?v=1"></script>
+  <script src="js/premium.js?v=1"></script>
+  <script src="js/mpesa.js?v=1"></script>
+  <script src="js/paystack.js?v=1"></script>
+  <script>
+
+    // ── handleSubscribeClick — GLOBAL, defined immediately ────────
+    // Must be outside DOMContentLoaded so onclick= on buttons
+    // can find it the instant the page loads.
+    function handleSubscribeClick(planId, method) {
+      if (method === "mpesa") {
+        if (typeof showMpesaForm !== "function") {
+          showPremPageError(
+            "M-PESA payment script not loaded. Make sure js/mpesa.js " +
+            "is inside your js/ folder then hard-refresh the page (Ctrl+Shift+R)."
+          );
+          return;
+        }
+        showMpesaForm(planId);
+
+      } else if (method === "paystack") {
+        if (typeof showPaystackForm !== "function") {
+          showPremPageError(
+            "Paystack script not loaded. Make sure js/paystack.js " +
+            "is inside your js/ folder then hard-refresh the page."
+          );
+          return;
+        }
+        showPaystackForm(planId);
+      }
+    }
+
+    function showPremPageError(msg) {
+      var el = document.getElementById("premPageError");
+      if (!el) {
+        el    = document.createElement("div");
+        el.id = "premPageError";
+        el.style.cssText =
+          "background:rgba(192,57,43,0.12);border:1px solid rgba(192,57,43,0.3);" +
+          "color:#E07070;border-radius:6px;padding:12px 16px;font-size:13px;" +
+          "line-height:1.6;margin:0 0 16px;";
+        var plans = document.querySelector(".prem-plans");
+        if (plans) plans.parentNode.insertBefore(el, plans);
+        else document.body.insertBefore(el, document.body.firstChild);
+      }
+      el.textContent = "⚠ " + msg;
+      el.scrollIntoView({ behavior:"smooth", block:"center" });
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      // Detects user location and Paystack readiness
+      // Shows the right payment options automatically
+      function configurePaymentButtons() {
+        var tz = "";
+        try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ""; } catch (e) {}
+        var isSouthAfrica = tz.indexOf("Johannesburg") > -1 || tz.indexOf("South_Africa") > -1;
+        var paystackReady = (typeof isPaystackReady === "function") && isPaystackReady();
+
+        // South African user
+        if (isSouthAfrica) {
+          // Hide M-PESA buttons — not relevant for SA users
+          ["mpesaBtnMonthly", "mpesaBtnAnnual"].forEach(function (id) {
+            var el = document.getElementById(id);
+            if (el) el.classList.add("hidden");
+          });
+
+          if (paystackReady) {
+            // Paystack live — show card/EFT buttons
+            ["paystackBtnMonthly", "paystackBtnAnnual"].forEach(function (id) {
+              var el = document.getElementById(id);
+              if (el) {
+                el.classList.remove("hidden");
+                el.textContent = el.id.includes("Monthly")
+                  ? "Pay by Card / EFT — R150 →"
+                  : "Pay by Card / EFT — R1,350 →";
+              }
+            });
+          } else {
+            // Paystack not live yet — show coming soon message
+            ["payBtnsMonthly", "payBtnsAnnual"].forEach(function (id) {
+              var el = document.getElementById(id);
+              if (el) {
+                el.innerHTML =
+                  '<div class="payment-coming-soon">' +
+                    '💳 Card payments for South African users coming soon.<br/>' +
+                    'Contact us at <a href="contact.html">contact page</a> to subscribe manually.' +
+                  '</div>';
+              }
+            });
+          }
+        } else {
+          // Kenyan or other user — M-PESA is primary
+          // If Paystack also ready, show both options
+          if (paystackReady) {
+            ["paystackBtnMonthly", "paystackBtnAnnual"].forEach(function (id) {
+              var el = document.getElementById(id);
+              if (el) {
+                el.classList.remove("hidden");
+                el.textContent = "Pay by Card →";
+              }
+            });
+          }
+          // M-PESA buttons always visible for Kenyan users — already showing
+        }
+      }
+
+      configurePaymentButtons();
+
+      // ── Show status banner if already premium ─────────────────────
+      if (isPremium()) {
+        var info = getPremiumInfo();
+        document.getElementById("premStatusBanner").classList.remove("hidden");
+        document.getElementById("premStatusTier").textContent   = info.tier;
+        document.getElementById("premStatusExpiry").textContent = info.expiry;
+        document.getElementById("premStatusDays").textContent   = info.daysLeft;
+        document.getElementById("premTokenSection").style.display = "none";
+      }
+
+      // ── Token entry ───────────────────────────────────────────────
+      var inp = document.getElementById("premPageTokenInput");
+      var btn = document.getElementById("premPageTokenBtn");
+      var msg = document.getElementById("premPageTokenMsg");
+
+      btn.addEventListener("click", function () {
+        var token = inp.value.trim().toUpperCase();
+        if (!token) { showMsg("Please enter your token.", "error"); return; }
+        btn.textContent = "Verifying…";
+        btn.disabled    = true;
+
+        verifyAndStore(token,
+          function (info) {
+            showMsg("✓ Token verified! Welcome, " + info.email +
+              ". Your " + info.tier + " plan is active until " + info.expiry + ".", "success");
+            btn.textContent = "Verified ✓";
+            setTimeout(function () { window.location.href = "portfolio.html"; }, 2000);
+          },
+          function (errMsg) {
+            btn.textContent = "Verify Token";
+            btn.disabled    = false;
+            showMsg("⚠ " + errMsg, "error");
+          }
+        );
+      });
+
+      inp.addEventListener("keydown", function (e) { if (e.key === "Enter") btn.click(); });
+
+      function showMsg(text, type) {
+        msg.textContent = text;
+        msg.className   = "prem-page-token-msg " + type;
+        msg.classList.remove("hidden");
+      }
+    });
+  </script>
+</body>
+</html>
