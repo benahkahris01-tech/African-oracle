@@ -3,27 +3,17 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Earnings Calendar — NSE &amp; JSE Results Dates | The African Oracle</title>
-  <meta name="description" content="Upcoming and recent earnings results dates for NSE Kenya and JSE South Africa listed companies. Know when companies are reporting before it happens." />
+  <title>Contact Us — The African Oracle</title>
+  <meta name="description" content="Get in touch with The African Oracle team — data corrections, feedback, partnership enquiries and general questions." />
   <meta http-equiv="X-Content-Type-Options" content="nosniff" />
   <meta http-equiv="X-Frame-Options" content="DENY" />
   <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css?v=1" />
-  <link rel="stylesheet" href="css/calendar.css?v=1" />
-  <link rel="stylesheet" href="css/premium.css?v=1" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/static-page.css" />
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5232676175386938" crossorigin="anonymous"></script>
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', function () {
-        navigator.serviceWorker.register('/sw.js')
-          .then(function (reg) { reg.update(); })
-          .catch(function (err) { console.log('SW failed:', err); });
-      });
-    }
-  </script>
 </head>
 <body>
 
@@ -37,117 +27,129 @@
         </div>
       </a>
       <nav class="site-nav">
-        <a href="index.html"    class="nav-link">Screener</a>
-        <a href="movers.html"   class="nav-link">Performers</a>
-        <a href="calendar.html" class="nav-link active">Calendar</a>
+        <a href="index.html" class="nav-link">Screener</a>
+        <a href="movers.html" class="nav-link">Performers</a>
+        <a href="calendar.html" class="nav-link">Calendar</a>
         <a href="portfolio.html" class="nav-link">Portfolio</a>
-        <a href="blog.html"     class="nav-link">Blog</a>
-        <a href="learn.html"    class="nav-link">Learn</a>
+        <a href="blog.html" class="nav-link">Blog</a>
+        <a href="learn.html" class="nav-link">Learn</a>
+        <a href="premium.html" class="nav-link">Premium</a>
+        <a href="about.html" class="nav-link">About</a>
+        <a href="contact.html" class="nav-link active">Contact</a>
       </nav>
     </div>
   </header>
 
-  <!-- HERO -->
-  <section class="cal-hero">
-    <div class="cal-hero-inner">
-      <div class="cal-tag">Updated weekly</div>
-      <h1 class="cal-title">Earnings Calendar<br/><em>NSE &amp; JSE</em></h1>
-      <p class="cal-sub">Upcoming results dates for listed companies. Know what is reporting before it happens. Click any company to see its full analysis.</p>
-      <div class="cal-exchange-toggle">
-        <button class="cal-toggle active" data-ex="all">All Markets</button>
-        <button class="cal-toggle" data-ex="NSE">NSE Kenya</button>
-        <button class="cal-toggle" data-ex="JSE">JSE South Africa</button>
-      </div>
+  <section class="static-hero">
+    <div class="static-hero-inner">
+      <div class="static-tag">Get In Touch</div>
+      <h1 class="static-title">Contact Us</h1>
+      <p class="static-sub">Data corrections, feedback, or partnership enquiries — we read every message.</p>
     </div>
   </section>
 
-  <main class="cal-main">
-    <div class="cal-inner">
-
-      <!-- Ad — placed after hero, before content loads -->
+  <!-- Ad slot 1 -->
+  <div class="ad-band">
+    <div class="ad-inner">
       <ins class="adsbygoogle"
-           style="display:block;margin:0 0 28px;"
+           style="display:block"
            data-ad-client="ca-pub-5232676175386938"
            data-ad-slot=""
            data-ad-format="auto"
            data-full-width-responsive="true"></ins>
       <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+  </div>
 
-      <!-- Premium status bar — shown to active subscribers -->
-      <div id="calPremiumBar"></div>
+  <main class="static-main">
+    <div class="static-inner contact-grid">
 
-      <!-- Loading -->
-      <div class="cal-loading" id="calLoading">
-        <div class="spinner"></div>
-        <p>Loading earnings calendar…</p>
+      <!-- Contact form -->
+      <div class="contact-form-wrap">
+        <h2 class="contact-section-title">Send us a message</h2>
+        <p class="contact-intro">Use the form below. We aim to respond within 2 business days.</p>
+
+        <!-- Using Formspree — free, no backend needed, works on static sites -->
+        <!-- Replace YOUR_FORM_ID with your Formspree form ID after signing up at formspree.io -->
+        <form class="contact-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+
+          <div class="form-group">
+            <label class="form-label" for="name">Your name</label>
+            <input class="form-input" type="text" id="name" name="name"
+                   placeholder="e.g. John Mwangi" required />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="email">Email address</label>
+            <input class="form-input" type="email" id="email" name="email"
+                   placeholder="you@example.com" required />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="subject">Subject</label>
+            <select class="form-select" id="subject" name="subject" required>
+              <option value="" disabled selected>Select a topic</option>
+              <option value="data-correction">Data correction — wrong figures</option>
+              <option value="missing-company">Missing company on screener</option>
+              <option value="feedback">General feedback</option>
+              <option value="partnership">Partnership or advertising enquiry</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="message">Message</label>
+            <textarea class="form-textarea" id="message" name="message" rows="5"
+                      placeholder="Please be as specific as possible — e.g. for data corrections include the company ticker and the correct figure with source." required></textarea>
+          </div>
+
+          <button class="form-submit" type="submit">Send Message →</button>
+
+          <p class="form-note">We do not store your email for marketing. It is used only to reply to your message.</p>
+        </form>
       </div>
 
-      <!-- Error -->
-      <div class="cal-error hidden" id="calError">
-        <p>⚠ Could not load calendar data.</p>
+      <!-- Right side info -->
+      <div class="contact-info-wrap">
+
+        <div class="contact-card">
+          <div class="contact-card-icon">📊</div>
+          <h3>Data corrections</h3>
+          <p>If you spot incorrect EPS, dividend or margin data for any company, please tell us the ticker, the wrong value, the correct value, and your source (annual report page preferred). We update corrections within 24 hours.</p>
+        </div>
+
+        <div class="contact-card">
+          <div class="contact-card-icon">🏢</div>
+          <h3>Missing companies</h3>
+          <p>We cover all major NSE and JSE listed companies. If a company is missing, let us know the ticker and exchange and we will add it in our next update cycle.</p>
+        </div>
+
+        <!-- Ad slot 2 -->
+        <div class="ad-band inline-static-ad">
+          <div class="ad-inner">
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-5232676175386938"
+                 data-ad-slot=""
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+            <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+          </div>
+        </div>
+
+        <div class="contact-card">
+          <div class="contact-card-icon">🤝</div>
+          <h3>Partnerships</h3>
+          <p>We are open to partnerships with brokerages, financial education platforms, and African fintech companies. If you are interested in reaching our NSE and JSE investor audience, get in touch.</p>
+        </div>
+
+        <div class="contact-card">
+          <div class="contact-card-icon">⚠</div>
+          <h3>Important reminder</h3>
+          <p>We are data analysts, not financial advisors. We cannot provide personalised investment advice, stock tips, or portfolio recommendations. For investment advice, please consult a licensed financial advisor.</p>
+        </div>
+
       </div>
-
-      <!-- Content -->
-      <div class="cal-content hidden" id="calContent">
-
-        <!-- Upcoming -->
-        <div class="cal-group" id="upcomingGroup">
-          <div class="cal-group-header">
-            <h2 class="cal-group-title">
-              <span class="cal-group-dot upcoming"></span>
-              Upcoming Results
-            </h2>
-            <p class="cal-group-desc">Companies expected to report earnings in the coming weeks.</p>
-          </div>
-          <div class="cal-list" id="upcomingList"></div>
-        </div>
-
-        <!-- Ad between sections -->
-        <ins class="adsbygoogle"
-             style="display:block;margin:32px 0;"
-             data-ad-client="ca-pub-5232676175386938"
-             data-ad-slot=""
-             data-ad-format="auto"
-             data-full-width-responsive="true"></ins>
-        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-
-        <!-- Recent -->
-        <div class="cal-group" id="recentGroup">
-          <div class="cal-group-header">
-            <h2 class="cal-group-title">
-              <span class="cal-group-dot recent"></span>
-              Recently Reported
-            </h2>
-            <p class="cal-group-desc">Companies that have reported in the past 60 days. Click to see their updated metrics.</p>
-          </div>
-          <div class="cal-list" id="recentList"></div>
-        </div>
-
-        <!-- Ad after recent list -->
-        <ins class="adsbygoogle"
-             style="display:block;margin:32px 0;"
-             data-ad-client="ca-pub-5232676175386938"
-             data-ad-slot=""
-             data-ad-format="auto"
-             data-full-width-responsive="true"></ins>
-        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-
-        <!-- How we maintain this -->
-        <div class="cal-info-box">
-          <h3>How this calendar works</h3>
-          <p>NSE and JSE do not publish structured machine-readable earnings date feeds. Our team monitors company announcements, exchange notices, and historical reporting patterns to estimate upcoming results dates. Dates marked <strong>Confirmed</strong> have been verified from an official company announcement. Dates marked <strong>Estimated</strong> are our best estimate based on historical patterns and should be treated as approximate.</p>
-          <p>If you spot an incorrect or missing date, please <a href="contact.html">let us know</a> — we update the calendar within 24 hours.</p>
-        </div>
-
-      </div><!-- /cal-content -->
-
-      <p class="disclaimer" style="margin-top:24px;">
-        Results dates are for informational purposes only. Not financial advice.
-        Always verify official dates with company announcements on the
-        <a href="https://www.nse.co.ke" target="_blank" rel="noopener">NSE website</a> or
-        <a href="https://www.jse.co.za" target="_blank" rel="noopener">JSE website</a>.
-      </p>
-
     </div>
   </main>
 
@@ -156,20 +158,14 @@
       <div class="footer-brand">◈ The African Oracle</div>
       <div class="footer-links">
         <a href="index.html">Screener</a>
-        <a href="movers.html">Performers</a>
-        <a href="calendar.html">Calendar</a>
-        <a href="portfolio.html">Portfolio</a>
-        <a href="blog.html">Blog</a>
+        <a href="learn.html">Glossary</a>
         <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
         <a href="privacy.html">Privacy</a>
-        <a href="terms.html">Terms</a>
       </div>
       <div class="footer-note">Free forever · Data from NSE &amp; JSE public filings</div>
     </div>
   </footer>
 
-  <script src="js/app.js?v=1"></script>
-  <script src="js/premium.js?v=1"></script>
-  <script src="js/calendar.js?v=1"></script>
 </body>
 </html>
