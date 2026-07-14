@@ -34,7 +34,7 @@
 // Leave empty string until Paystack approves your account.
 // The moment you paste your live key here, Paystack buttons
 // appear automatically — no other changes needed anywhere.
-var PAYSTACK_PUBLIC_KEY = "";
+var PAYSTACK_PUBLIC_KEY = "pk_live_6a90347fbbff360baac627af7ba36c750504b02f";
 // Example when live: "pk_live_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 
 // ── Plan config ───────────────────────────────────────────────
