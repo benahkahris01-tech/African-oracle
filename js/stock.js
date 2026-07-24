@@ -128,13 +128,7 @@ function renderDetail(s) {
   document.getElementById("dPrice").textContent =
     pr !== null ? sym + pr.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2}) : "—";
 
-  // Signal
-  var sigLabels = { buy:"● Buy", watch:"◐ Watch", avoid:"○ Avoid", neutral:"– Neutral" };
-  var sigClasses = { buy:"d-signal-buy", watch:"d-signal-watch", avoid:"d-signal-avoid", neutral:"d-signal-neutral" };
-  var sigEl = document.createElement("div");
-  sigEl.className = "d-signal " + (sigClasses[sig] || "d-signal-neutral");
-  sigEl.textContent = sigLabels[sig] || sig;
-  document.getElementById("dSignal").appendChild(sigEl);
+  
 
   // Intrinsic value row
   if (iv !== null && iv > 0 && pr !== null && pr > 0) {

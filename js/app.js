@@ -500,11 +500,7 @@ function predictBadge(val) {
   var m = { "High": "badge-high", "Medium": "badge-medium", "Low": "badge-low" };
   return '<span class="badge ' + (m[val] || "") + '">' + val + '</span>';
 }
-function signalBadge(sig) {
-  var labels  = { buy: "● Buy", watch: "◐ Watch", avoid: "○ Avoid", neutral: "– Neutral" };
-  var classes = { buy: "signal-buy", watch: "signal-watch", avoid: "signal-avoid", neutral: "signal-neutral" };
-  return '<span class="signal ' + (classes[sig] || "") + '">' + (labels[sig] || sig) + '</span>';
-}
+
 
 // ── Utilities ─────────────────────────────────────────────────
 function numOrNull(val) { var n = parseFloat(val); return isNaN(n) ? null : n; }

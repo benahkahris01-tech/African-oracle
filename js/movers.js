@@ -287,12 +287,6 @@ function renderCol(col, s, cur) {
       if (!s.finStrength) return na();
       return '<span class="badge ' + (fBadge[s.finStrength] || "") + '">' + s.finStrength + '</span>';
 
-    case "signal":
-      var sig    = getSignal(s);
-      var sLbl   = { buy: "● Buy", watch: "◐ Watch", avoid: "○ Avoid", neutral: "– Neutral" };
-      var sCls   = { buy: "signal-buy", watch: "signal-watch", avoid: "signal-avoid", neutral: "signal-neutral" };
-      return '<span class="signal ' + (sCls[sig] || "") + '">' + (sLbl[sig] || sig) + '</span>';
-
     default:
       return na();
   }

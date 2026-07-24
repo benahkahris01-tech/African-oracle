@@ -602,36 +602,6 @@ function exportCSV(stocks) {
   URL.revokeObjectURL(url);
 }
 
-// ── Signal logic ──────────────────────────────────────────────
-function getSignal(s) {
-  var pe   = numOrNull(s.pe);
-  var peg  = numOrNull(s.peg);
-  var gr   = numOrNull(s.earningsGrowth);
-  var div  = numOrNull(s.divYield);
-  var moat = s.moat        || "";
-  var str  = s.finStrength || "";
-
-  if (pe !== null && pe <= 0)            return "avoid";
-  if (str === "Weak" && moat === "None") return "avoid";
-  if (gr  !== null && gr < -5)           return "avoid";
-
-  var score = 0;
-  if (moat === "Wide")                         score += 2;
-  if (moat === "Narrow")                       score += 1;
-  if (str  === "Strong")                       score += 2;
-  if (str  === "Adequate")                     score += 1;
-  if (peg  !== null && peg > 0 && peg < 1)    score += 2;
-  if (pe   !== null && pe  > 0 && pe  < 12)   score += 2;
-  if (pe   !== null && pe  >= 12 && pe < 20)  score += 1;
-  if (gr   !== null && gr  > 15)              score += 2;
-  if (gr   !== null && gr  > 5)               score += 1;
-  if (div  !== null && div > 0.05)            score += 1;
-
-  if (score >= 7) return "buy";
-  if (score >= 4) return "watch";
-  if (score >= 1) return "neutral";
-  return "avoid";
-}
 
 // ── Utilities ─────────────────────────────────────────────────
 function numOrNull(v) { var n = parseFloat(v); return isNaN(n) ? null : n; }

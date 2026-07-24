@@ -301,27 +301,3 @@ function renderList(containerId, entries, stockMap, isRecent) {
   container.innerHTML = html;
 }
 
-// ── Signal helpers ────────────────────────────────────────────
-function _calSignal(s) {
-  var pe=parseFloat(s.pe),peg=parseFloat(s.peg),gr=parseFloat(s.earningsGrowth),div=parseFloat(s.divYield);
-  var moat=s.moat||"",str=s.finStrength||"";
-  if(isNaN(pe)||pe<=0) return "avoid";
-  if(str==="Weak"&&moat==="None") return "avoid";
-  if(!isNaN(gr)&&gr<-5) return "avoid";
-  var sc=0;
-  if(moat==="Wide")sc+=2; if(moat==="Narrow")sc+=1;
-  if(str==="Strong")sc+=2; if(str==="Adequate")sc+=1;
-  if(!isNaN(peg)&&peg>0&&peg<1)sc+=2;
-  if(pe>0&&pe<12)sc+=2; if(pe>=12&&pe<20)sc+=1;
-  if(!isNaN(gr)&&gr>15)sc+=2; else if(!isNaN(gr)&&gr>5)sc+=1;
-  if(!isNaN(div)&&div>0.05)sc+=1;
-  return sc>=7?"buy":sc>=4?"watch":sc>=1?"neutral":"avoid";
-}
-function _calSignalHtml(sig) {
-  var lbl={buy:"● Buy",watch:"◐ Watch",avoid:"○ Avoid",neutral:"– Neutral"};
-  var cls={buy:"signal-buy",watch:"signal-watch",avoid:"signal-avoid",neutral:"signal-neutral"};
-  return '<span class="signal '+(cls[sig]||"")+'" style="font-size:10px;padding:1px 7px;">'+(lbl[sig]||"")+'</span>';
-}
-function esc(s){return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
-function show(id){var el=document.getElementById(id);if(el)el.classList.remove("hidden");}
-function hide(id){var el=document.getElementById(id);if(el)el.classList.add("hidden");}
