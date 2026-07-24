@@ -108,7 +108,6 @@ function renderDetail(s) {
   var sym = cur === "ZAR" ? "R" : "KES ";
   var pr  = numOrNull(s.price);
   var iv  = numOrNull(s.intrinsicValue);
-  var sig = getSignal(s);
 
   // Page meta
   document.getElementById("pageTitle").textContent =
@@ -129,7 +128,6 @@ function renderDetail(s) {
     pr !== null ? sym + pr.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2}) : "—";
 
   
-
   // Intrinsic value row
   if (iv !== null && iv > 0 && pr !== null && pr > 0) {
     var mos = ((iv - pr) / iv * 100).toFixed(0);
@@ -395,12 +393,12 @@ function renderDetail(s) {
     },
     {
       label: "Intrinsic Value",
-      tip: "Estimated fair value = EPS × P/E. Compare to current price.",
+      tip: "Estimated fair value = EPS × (8.5 + 2g) × 4.4 / 14.5. Compare to current price.",
       val: iv !== null && iv > 0 ? sym + Math.round(iv).toLocaleString() : "—",
       cls: iv !== null && iv > 0 && pr !== null ? (iv > pr ? "mv-good" : "mv-warn") : "mv-na",
       note: iv !== null && pr !== null && iv > 0
         ? (iv > pr ? "Trading below fair value" : "Trading above fair value")
-        : "EPS × P/E"
+        : "EPS × (8.5 + 2g) × 4.4 / 14.5"
     }
   ];
 
@@ -684,36 +682,6 @@ function renderDetail(s) {
   try { show("detailWrap"); } catch(e) { console.error("show detailWrap failed:", e); }
 }
 
-// ── Signal (same logic as app.js) ────────────────────────────────────────────
-function getSignal(s) {
-  var pe  = numOrNull(s.pe);
-  var peg = numOrNull(s.peg);
-  var gr  = numOrNull(s.earningsGrowth);
-  var div = numOrNull(s.divYield);
-  var moat = s.moat || "";
-  var str  = s.finStrength || "";
-
-  if (pe !== null && pe <= 0)            return "avoid";
-  if (str === "Weak" && moat === "None") return "avoid";
-  if (gr  !== null && gr < -5)           return "avoid";
-
-  var score = 0;
-  if (moat === "Wide")                        score += 2;
-  if (moat === "Narrow")                      score += 1;
-  if (str  === "Strong")                      score += 2;
-  if (str  === "Adequate")                    score += 1;
-  if (peg  !== null && peg > 0 && peg < 1)   score += 2;
-  if (pe   !== null && pe  > 0 && pe  < 12)  score += 2;
-  if (pe   !== null && pe  >= 12 && pe < 20) score += 1;
-  if (gr   !== null && gr  > 15)             score += 2;
-  if (gr   !== null && gr  > 5)              score += 1;
-  if (div  !== null && div > 0.05)           score += 1;
-
-  if (score >= 7) return "buy";
-  if (score >= 4) return "watch";
-  if (score >= 1) return "neutral";
-  return "avoid";
-}
 
 // ── Utilities ─────────────────────────────────────────────────────────────────
 function numOrNull(v) { var n = parseFloat(v); return isNaN(n) ? null : n; }

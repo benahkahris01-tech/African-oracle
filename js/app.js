@@ -5,7 +5,7 @@
    Margins shown as percentages.
    All sheet columns: beginEps, endEps, earningsGrowth, pe, peg,
    divYield, initMargin, finalMargin, marginGrowth, debtEquity,
-   moat, finStrength, predictability, intrinsicValue, signal.
+   moat, finStrength, predictability, intrinsicValue.
 ═══════════════════════════════════════════════════════════════ */
 
 // ── PASTE YOUR APPS SCRIPT WEB APP URL HERE ─────────────────
@@ -42,7 +42,6 @@ var visibleCols = {
   finStrength:    true,
   predictability: true,
   intrinsicValue: true,
-  signal:         true
 };
 
 var filters = {
@@ -322,7 +321,6 @@ function renderTable(stocks) {
     var cur = s.currency || (s.country === "Kenya" ? "KES" : "ZAR");
     var iv  = numOrNull(s.intrinsicValue);
     var pr  = numOrNull(s.price);
-    var sig = getSignal(s);
     var href = "stock.html?ticker=" + encodeURIComponent(s.ticker) +
                "&country="          + encodeURIComponent(s.country);
 
@@ -346,7 +344,6 @@ function renderTable(stocks) {
       '<td class="tc" data-col="finStrength">' + strengthBadge(s.finStrength) + '</td>' +
       '<td class="tc" data-col="predictability">' + predictBadge(s.predictability) + '</td>' +
       '<td class="num-col tc" data-col="intrinsicValue">' + fmtIV(iv, pr, cur) + '</td>' +
-      '<td class="tc" data-col="signal">' + signalBadge(sig) + '</td>' +
       '</tr>';
   }
 
@@ -362,38 +359,6 @@ function renderTable(stocks) {
   applyColumnVisibility();
 }
 
-// ── Signal logic ──────────────────────────────────────────────
-function getSignal(s) {
-  var pe     = numOrNull(s.pe);
-  var peg    = numOrNull(s.peg);
-  var growth = numOrNull(s.earningsGrowth);
-  var div    = numOrNull(s.divYield);
-  var moat   = s.moat        || "";
-  var str    = s.finStrength || "";
-
-  // Avoid: losses or very weak
-  if (pe !== null && pe <= 0)            return "avoid";
-  if (str === "Weak" && moat === "None") return "avoid";
-  if (growth !== null && growth < -5)    return "avoid";
-
-  // Score across dimensions
-  var score = 0;
-  if (moat === "Wide")                          score += 2;
-  if (moat === "Narrow")                        score += 1;
-  if (str  === "Strong")                        score += 2;
-  if (str  === "Adequate")                      score += 1;
-  if (peg  !== null && peg > 0 && peg < 1)     score += 2;
-  if (pe   !== null && pe  > 0 && pe  < 12)    score += 2;
-  if (pe   !== null && pe  >= 12 && pe < 20)   score += 1;
-  if (growth !== null && growth > 15)           score += 2;
-  if (growth !== null && growth > 5)            score += 1;
-  if (div    !== null && div > 0.05)            score += 1;
-
-  if (score >= 7) return "buy";
-  if (score >= 4) return "watch";
-  if (score >= 1) return "neutral";
-  return "avoid";
-}
 
 // ── Formatting functions ──────────────────────────────────────
 
