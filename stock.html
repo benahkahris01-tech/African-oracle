@@ -104,6 +104,36 @@
       </div>
     </section>
 
+    <!-- NEW: VALUATION METHODS BREAKDOWN -->
+    <!-- Shows DCF-FCF / RIM / DDM / DEPS individually instead of only the
+         blended consensus figure. Requires s.valBreakdown from the API
+         (Apps Script change: COL.VAL_BREAKDOWN, see backend notes). -->
+    <section class="d-section">
+      <div class="d-inner">
+        <h2 class="d-title">Valuation Methods</h2>
+        <p class="d-sub">Independent valuation models run in parallel — agreement between them signals higher confidence.</p>
+        <div class="metrics-grid" id="valBreakdownGrid"></div>
+      </div>
+    </section>
+    <!-- END NEW -->
+
+    <!-- RESTORED: PRICE HISTORY (Premium) -->
+    <!-- stock.js already contained showPriceChartLock() / fetchPriceHistory()
+         targeting these exact IDs — this markup was missing from the HTML
+         you pasted, so the feature was rendering nothing for anyone, free
+         or premium, even before this conversation touched the file. -->
+    <section class="d-section alt">
+      <div class="d-inner">
+        <h2 class="d-title">Weekly Price History</h2>
+        <p class="d-sub" id="priceHistoryNote">52-week price trend, updated every Monday.</p>
+        <div class="price-chart-wrap" id="priceChartWrap">
+          <p class="d-sub" id="priceChartEmpty">Loading price history…</p>
+          <canvas id="priceChart" class="hidden" height="260"></canvas>
+        </div>
+      </div>
+    </section>
+    <!-- END RESTORED -->
+
     <!-- EPS JOURNEY -->
     <section class="d-section alt">
       <div class="d-inner">
@@ -132,6 +162,9 @@
             <div class="eps-big" id="eTTM"></div>
           </div>
         </div>
+        <!-- RESTORED: chart view of the same data, built by renderCharts() -->
+        <div class="chart-canvas-wrap"><canvas id="epsChart" height="220"></canvas></div>
+        <!-- END RESTORED -->
       </div>
     </section>
 
@@ -156,6 +189,9 @@
           </div>
           <div class="margin-verdict" id="marginVerdict"></div>
         </div>
+        <!-- RESTORED: chart view of the same data, built by renderCharts() -->
+        <div class="chart-canvas-wrap"><canvas id="marginChart" height="220"></canvas></div>
+        <!-- END RESTORED -->
       </div>
     </section>
 
@@ -165,8 +201,23 @@
         <h2 class="d-title">Quality Scores</h2>
         <p class="d-sub">Rule-based assessments from earnings consistency, debt levels, margins and sector position.</p>
         <div class="scores-grid" id="scoresGrid"></div>
+        <!-- RESTORED: radar overview of the same three scores, built by renderCharts() -->
+        <div class="chart-canvas-wrap" style="max-width:420px;margin-top:20px;"><canvas id="radarChart" height="280"></canvas></div>
+        <!-- END RESTORED -->
       </div>
     </section>
+
+    <!-- NEW: SECTOR PEER COMPARISON -->
+    <!-- Client-side only — uses the full stock list already fetched for
+         this page, no backend change required. -->
+    <section class="d-section">
+      <div class="d-inner">
+        <h2 class="d-title">Sector Comparison</h2>
+        <p class="d-sub">How this company compares to others in the same sector on the same exchange.</p>
+        <div class="peers-table-wrap" id="peersTableWrap"></div>
+      </div>
+    </section>
+    <!-- END NEW -->
 
     <!-- AD 3 -->
     <div class="ad-band"><div class="ad-inner"><div class="ad-placeholder">Advertisement</div></div></div>

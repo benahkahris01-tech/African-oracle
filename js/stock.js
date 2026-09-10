@@ -5,6 +5,9 @@
    Reads ?ticker=SCOM&country=Kenya from URL params.
 ═══════════════════════════════════════════════════════════════ */
 
+// NEW — holds the full stock list once loaded, used by renderPeerComparison()
+var ALL_STOCKS = [];
+
 document.addEventListener("DOMContentLoaded", function () {
   // Only run on stock.html — guard against running on other pages
   if (!document.getElementById("detailWrap")) return;
@@ -43,6 +46,7 @@ document.addEventListener("DOMContentLoaded", function () {
   var CACHE_TTL = 10 * 60 * 1000; // 10 minutes
 
   function findAndRender(data) {
+    ALL_STOCKS = data; // NEW — store full list for sector peer comparison
     var stock = null;
     for (var i = 0; i < data.length; i++) {
       if (data[i].ticker === ticker) { stock = data[i]; break; }
@@ -99,6 +103,55 @@ function showDetailError(msg) {
   hide("detailLoading");
   show("detailError");
 }
+
+// ═══════════════════════════════════════════════════════════════
+// NEW — generates an About section from data every ticker already
+// has (sector, moat, financial strength, predictability, valuation),
+// used whenever no hand-written COMPANY_PROFILES entry exists below.
+// This is what makes every ticker get a real About section instead
+// of the ~30 that had one before.
+// ═══════════════════════════════════════════════════════════════
+function generateFallbackProfile(s) {
+  var moatText = s.moat === "Wide" ? "a wide, durable competitive advantage" :
+                 s.moat === "Narrow" ? "a narrow but present competitive edge" :
+                 "limited structural competitive protection";
+  var finText = s.finStrength === "Strong" ? "a strong balance sheet with low leverage and healthy margins" :
+                s.finStrength === "Adequate" ? "a reasonably sound balance sheet" :
+                "elevated financial risk from higher leverage or thinner margins";
+  var predText = s.predictability === "High" ? "consistent, growing earnings" :
+                 s.predictability === "Medium" ? "earnings that have grown with some volatility" :
+                 "earnings that have been erratic or loss-making in recent years";
+
+  var about = s.name + " is a " + (s.sector || "publicly traded") + " company listed on the " +
+    (s.country === "Kenya" ? "Nairobi Securities Exchange (NSE)" : "Johannesburg Stock Exchange (JSE)") +
+    ", operating in the " + (s.sector || "its") + " sector" +
+    (s.country ? (", based in " + s.country) : "") + ".";
+
+  var highlight = "Based on its most recent five-year earnings and margin trend, " + s.name +
+    " shows " + predText + ", and is assessed as holding " + moatText + " within its sector.";
+
+  var investorParts = ["The company's financial position is assessed as reflecting " + finText + "."];
+  if (s.intrinsicValue && s.price) {
+    var below = s.intrinsicValue > s.price;
+    investorParts.push("At current levels, the stock is trading " + (below ? "below" : "above") +
+      " its estimated intrinsic value" + (s.confidence ? (" (confidence: " + s.confidence + ")") : "") + ".");
+  }
+  if (s.divYield) {
+    investorParts.push("It currently offers a dividend yield of approximately " + (s.divYield*100).toFixed(1) + "%.");
+  }
+
+  return { name: s.name, about: about, highlight: highlight, investor: investorParts.join(" ") };
+}
+// END NEW
+
+// NEW — formats a market cap number with B/M suffix
+function formatMarketCap(v, sym) {
+  if (v === null || v === undefined) return "—";
+  if (v >= 1e9) return sym + (v/1e9).toFixed(2) + "B";
+  if (v >= 1e6) return sym + (v/1e6).toFixed(1) + "M";
+  return sym + v.toLocaleString();
+}
+// END NEW
 
 function renderDetail(s) {
   // Hide loading spinner immediately
@@ -320,12 +373,14 @@ function renderDetail(s) {
   };
 
   // Get profile for this company
-  var profile = COMPANY_PROFILES[s.ticker];
+  // CHANGED — falls back to a data-generated profile when no hand-written
+  // entry exists above, so every ticker gets an About section, not just ~30.
+  var profile = COMPANY_PROFILES[s.ticker] || generateFallbackProfile(s); // CHANGED
 
   // Find or create the company overview section
   // Insert it before the metrics grid section in the DOM
   var metricsSection = document.getElementById("metricsGrid").closest(".d-section");
-  if (profile && metricsSection) {
+  if (metricsSection) { // CHANGED — profile is now never null, so this simplifies from "if (profile && metricsSection)"
     var overviewSection = document.createElement("section");
     overviewSection.className = "d-section";
     overviewSection.style.borderBottom = "1px solid var(--border)";
@@ -354,6 +409,7 @@ function renderDetail(s) {
   var div = numOrNull(s.divYield);
   var gr  = numOrNull(s.earningsGrowth);
   var de  = numOrNull(s.debtEquity);
+  var mc  = numOrNull(s.marketCap); // NEW — requires COL.SHARES + marketCap in buildStockJSON, see backend notes
 
   var metrics = [
     {
@@ -391,14 +447,23 @@ function renderDetail(s) {
       cls: de !== null ? (de < 0.5 ? "mv-good" : de < 1.5 ? "" : "mv-warn") : "mv-na",
       note: "Leverage ratio"
     },
+    // NEW — Market Cap card
+    {
+      label: "Market Cap",
+      tip: "Total market value of all shares outstanding (Price × Shares Outstanding).",
+      val: formatMarketCap(mc, sym),
+      cls: "",
+      note: "Price × Shares Outstanding"
+    },
+    // END NEW
     {
       label: "Intrinsic Value",
-      tip: "Estimated fair value = EPS × (8.5 + 2g) × 4.4 / 14.5. Compare to current price.",
+      tip: "Consensus fair value across up to four independent valuation models (DCF from Free Cash Flow, Residual Income, Dividend Discount, Discounted EPS) — see Valuation Methods below.", // FIXED — old tooltip described a stale Graham-formula that no longer matches the backend
       val: iv !== null && iv > 0 ? sym + Math.round(iv).toLocaleString() : "—",
       cls: iv !== null && iv > 0 && pr !== null ? (iv > pr ? "mv-good" : "mv-warn") : "mv-na",
       note: iv !== null && pr !== null && iv > 0
         ? (iv > pr ? "Trading below fair value" : "Trading above fair value")
-        : "EPS × (8.5 + 2g) × 4.4 / 14.5"
+        : "Consensus of up to 4 valuation models" // FIXED — matches actual methodology now
     }
   ];
 
@@ -413,6 +478,10 @@ function renderDetail(s) {
       "<div class='metric-note'>" + m.note + "</div>";
     grid.appendChild(card);
   });
+
+  // NEW — Valuation methods breakdown (DCF-FCF / RIM / DDM / DEPS individually)
+  renderValuationBreakdown(s);
+  // END NEW
 
   // ── EPS JOURNEY ─────────────────────────────────────────────────────────
   var bEps = numOrNull(s.beginEps);
@@ -511,6 +580,10 @@ function renderDetail(s) {
       "<div class='score-desc'>" + sc.desc + "</div>";
     sGrid.appendChild(card);
   });
+
+  // NEW — Sector peer comparison (client-side, uses ALL_STOCKS)
+  renderPeerComparison(s, ALL_STOCKS);
+  // END NEW
 
   // ── HOW TO BUY ───────────────────────────────────────────────────────────
   setText("buyName", s.name);
@@ -681,6 +754,99 @@ function renderDetail(s) {
   // ── Show the page — MUST be last, always runs even if sections above had errors
   try { show("detailWrap"); } catch(e) { console.error("show detailWrap failed:", e); }
 }
+
+// ═══════════════════════════════════════════════════════════════
+// NEW — Valuation methods breakdown
+// Parses s.valBreakdown (a JSON string from the API) and renders
+// each method's value as its own metric card, plus a confidence note.
+// Requires backend change: COL.VAL_BREAKDOWN + buildStockJSON exposing it.
+// ═══════════════════════════════════════════════════════════════
+function renderValuationBreakdown(s) {
+  var grid = document.getElementById("valBreakdownGrid");
+  if (!grid) return;
+
+  var breakdown = {};
+  try { breakdown = JSON.parse(s.valBreakdown || "{}"); } catch (e) { breakdown = {}; }
+
+  var methodNames = Object.keys(breakdown);
+  if (methodNames.length === 0) {
+    grid.innerHTML = "<p class='d-sub'>Not enough data to run multiple valuation methods for this company yet.</p>";
+    return;
+  }
+
+  var cur = s.currency || (s.country === "Kenya" ? "KES" : "ZAR");
+  var sym = cur === "ZAR" ? "R" : "KES ";
+  var pr  = numOrNull(s.price);
+
+  methodNames.forEach(function (name) {
+    var val = breakdown[name];
+    var cls = (pr && val) ? (val > pr ? "mv-good" : "mv-warn") : "";
+    var card = document.createElement("div");
+    card.className = "metric-card";
+    card.innerHTML =
+      "<div class='metric-label'>" + esc(name) + "</div>" +
+      "<div class='metric-value " + cls + "'>" + sym + Number(val).toLocaleString(undefined, {maximumFractionDigits: 2}) + "</div>" +
+      "<div class='metric-note'>" + (pr ? (val > pr ? "Above current price" : "Below current price") : "") + "</div>";
+    grid.appendChild(card);
+  });
+
+  if (s.confidence) {
+    var note = document.createElement("p");
+    note.className = "d-sub";
+    note.style.marginTop = "12px";
+    note.textContent = "Consensus confidence: " + s.confidence;
+    grid.parentNode.appendChild(note);
+  }
+}
+// END NEW
+
+// ═══════════════════════════════════════════════════════════════
+// NEW — Sector peer comparison
+// Purely client-side — filters the already-fetched full stock list
+// (ALL_STOCKS) down to companies sharing sector + exchange, and
+// ranks them by IV/Price ratio (most undervalued first).
+// ═══════════════════════════════════════════════════════════════
+function renderPeerComparison(s, allStocks) {
+  var wrap = document.getElementById("peersTableWrap");
+  if (!wrap) return;
+
+  var peers = allStocks.filter(function (x) {
+    return x.sector === s.sector && x.country === s.country && x.ticker;
+  });
+  if (peers.length < 2) {
+    wrap.innerHTML = "<p class='d-sub'>No other companies in this sector on the same exchange yet.</p>";
+    return;
+  }
+
+  peers.sort(function (a, b) {
+    var ra = (a.intrinsicValue && a.price) ? a.intrinsicValue / a.price : 0;
+    var rb = (b.intrinsicValue && b.price) ? b.intrinsicValue / b.price : 0;
+    return rb - ra;
+  });
+
+  var cur = s.currency || (s.country === "Kenya" ? "KES" : "ZAR");
+  var sym = cur === "ZAR" ? "R" : "KES ";
+
+  var rows = peers.map(function (p) {
+    var pe = numOrNull(p.pe);
+    var ivRatio = (p.intrinsicValue && p.price) ? (p.intrinsicValue / p.price).toFixed(2) + "x" : "—";
+    var isCurrent = p.ticker === s.ticker;
+    return "<tr class='" + (isCurrent ? "peer-current" : "") + "'>" +
+      "<td>" + esc(p.ticker) + "</td>" +
+      "<td>" + (pe !== null && pe > 0 ? pe.toFixed(1) : "—") + "</td>" +
+      "<td>" + esc(p.moat || "—") + "</td>" +
+      "<td>" + ivRatio + "</td>" +
+      "<td>" + (p.price !== null && p.price !== undefined ? sym + Number(p.price).toFixed(2) : "—") + "</td>" +
+    "</tr>";
+  }).join("");
+
+  wrap.innerHTML =
+    "<table class='peers-table'>" +
+      "<thead><tr><th>Ticker</th><th>P/E</th><th>Moat</th><th>IV/Price</th><th>Price</th></tr></thead>" +
+      "<tbody>" + rows + "</tbody>" +
+    "</table>";
+}
+// END NEW
 
 
 // ── Utilities ─────────────────────────────────────────────────────────────────
