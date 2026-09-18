@@ -141,7 +141,7 @@
           <option value="ticker_asc">Ticker A–Z</option>
           <option value="pe_asc">P/E Low → High</option>
           <option value="pe_desc">P/E High → Low</option>
-          <option value="divYield_desc">Div Yield High → Low</option>
+          <!-- REMOVED: <option value="divYield_desc">Div Yield High → Low</option> -->
           <option value="earningsGrowth_desc">EPS Growth High → Low</option>
           <option value="intrinsicValue_desc">Intrinsic Value High → Low</option>
           <option value="price_asc">Price Low → High</option>
@@ -177,7 +177,7 @@
       <label class="col-check"><input type="checkbox" data-col="earningsGrowth" checked /> EPS Growth</label>
       <label class="col-check"><input type="checkbox" data-col="pe"            checked /> P/E</label>
       <label class="col-check"><input type="checkbox" data-col="peg"           checked /> PEG</label>
-      <label class="col-check"><input type="checkbox" data-col="divYield"      checked /> Div Yield</label>
+      <!-- REMOVED: <label class="col-check"><input type="checkbox" data-col="divYield" checked /> Div Yield</label> -->
       <label class="col-check"><input type="checkbox" data-col="initMargin"    checked /> Init Margin</label>
       <label class="col-check"><input type="checkbox" data-col="finalMargin"   checked /> Final Margin</label>
       <label class="col-check"><input type="checkbox" data-col="marginGrowth"  checked /> Margin Growth</label>
@@ -238,11 +238,13 @@
               <span class="sort-arrow"></span>
               <span class="th-tip" title="P/E ÷ Growth Rate. Under 1.0 often signals an undervalued stock.">?</span>
             </th>
+            <!-- REMOVED:
             <th class="num-col th-sortable tc" data-col="divYield" data-sort="divYield">
               Div Yield
               <span class="sort-arrow"></span>
               <span class="th-tip" title="Annual dividend as % of share price. Higher = more income paid to shareholders.">?</span>
             </th>
+            -->
             <th class="num-col tc" data-col="initMargin">
               Init Margin
               <span class="th-tip" title="Net profit margin ~5 years ago. Shows where profitability started.">?</span>

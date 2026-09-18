@@ -4,8 +4,9 @@
    PE shown as plain number (not with "x").
    Margins shown as percentages.
    All sheet columns: beginEps, endEps, earningsGrowth, pe, peg,
-   divYield, initMargin, finalMargin, marginGrowth, debtEquity,
+   initMargin, finalMargin, marginGrowth, debtEquity,
    moat, finStrength, predictability, intrinsicValue.
+   (divYield removed — see index.html for matching header removal)
 ═══════════════════════════════════════════════════════════════ */
 
 // ── PASTE YOUR APPS SCRIPT WEB APP URL HERE ─────────────────
@@ -27,13 +28,13 @@ var filtered    = [];
 var currentSort = { col: "ticker", dir: "asc" };
 
 // Columns that can be toggled — key matches data-col on th and td
+// REMOVED: divYield (no longer in the header, so nothing to toggle)
 var visibleCols = {
   beginEps:       true,
   endEps:         true,
   earningsGrowth: true,
   pe:             true,
   peg:            true,
-  divYield:       true,
   initMargin:     true,
   finalMargin:    true,
   marginGrowth:   true,
@@ -335,7 +336,7 @@ function renderTable(stocks) {
       '<td class="num-col tc" data-col="earningsGrowth">' + fmtGrowthPct(s.earningsGrowth) + '</td>' +
       '<td class="num-col tc" data-col="pe">' + fmtPE(s.pe) + '</td>' +
       '<td class="num-col tc" data-col="peg">' + fmtPEG(s.peg) + '</td>' +
-      '<td class="num-col tc" data-col="divYield">' + fmtPct(s.divYield) + '</td>' +
+      /* REMOVED: '<td class="num-col tc" data-col="divYield">' + fmtPct(s.divYield) + '</td>' + */
       '<td class="num-col tc" data-col="initMargin">' + fmtPct(s.initMargin) + '</td>' +
       '<td class="num-col tc" data-col="finalMargin">' + fmtPct(s.finalMargin) + '</td>' +
       '<td class="num-col tc" data-col="marginGrowth">' + fmtGrowthPct(s.marginGrowth) + '</td>' +
@@ -398,12 +399,12 @@ function fmtPEG(val) {
 }
 
 // Percentage from decimal (e.g. 0.18 → 18.0%)
+// Still used by initMargin and finalMargin — do NOT delete this
+// function just because divYield's call site was removed above.
 function fmtPct(val) {
   var n = numOrNull(val);
   if (n === null) return '<span class="n-na">—</span>';
   var pct = n * 100;
-  // Div yield: ≥ 5% green, ≥ 2% neutral, < 2% muted
-  // Margins: ≥ 15% green, ≥ 5% neutral, < 5% amber, negative red
   var cls = pct < 0 ? "n-bad" : pct >= 15 ? "n-good" : pct >= 5 ? "" : pct >= 2 ? "" : "n-warn";
   return '<span class="' + cls + '">' + pct.toFixed(1) + '%</span>';
 }

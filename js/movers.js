@@ -3,6 +3,15 @@
    Self-contained. Reads API_URL from app.js if available,
    or falls back to reading it directly from the same variable.
    Cache key matches app.js exactly so data is shared.
+
+   REMOVED: getSignal() and the "signal" column across all tables.
+   This was a fully-written buy/watch/neutral/avoid recommendation
+   function that was never wired into renderCol() (no "signal" case
+   existed there, so it always silently rendered "—"). Left in place,
+   it was a landmine — one added switch case away from turning every
+   table on this page into an explicit investment recommendation,
+   which is exactly what was deliberately excluded from stock.html
+   for legal reasons. Removed outright rather than left dormant.
 ═══════════════════════════════════════════════════════════════ */
 
 var ROWS_PER_TABLE = 10;
@@ -113,7 +122,7 @@ function renderAll(data) {
   renderTable(
     "topPriceBody",
     sortDesc(withPrice, "price").slice(0, ROWS_PER_TABLE),
-    ["price", "pe", "divYield", "signal"]
+    ["price", "pe", "divYield"] // CHANGED — "signal" removed
   );
 
   // 2. Lowest price — only profitable companies (pe > 0) to avoid junk
@@ -123,7 +132,7 @@ function renderAll(data) {
   renderTable(
     "worstPriceBody",
     sortAsc(profitable, "price").slice(0, ROWS_PER_TABLE),
-    ["price", "pe", "earningsGrowth", "signal"]
+    ["price", "pe", "earningsGrowth"] // CHANGED — "signal" removed
   );
 
   // 3. Highest dividend yield — only positive yields
@@ -151,7 +160,7 @@ function renderAll(data) {
   renderTable(
     "worstGrowthBody",
     sortAsc(withGrowth, "earningsGrowth").slice(0, ROWS_PER_TABLE),
-    ["earningsGrowth", "beginEps", "endEps", "signal"]
+    ["earningsGrowth", "beginEps", "endEps"] // CHANGED — "signal" removed
   );
 
   // 6. Best value — lowest positive PEG (under 2 only, to avoid noise)
@@ -173,7 +182,7 @@ function renderAll(data) {
   renderTable(
     "worstValueBody",
     sortDesc(expensivePEG, "peg").slice(0, ROWS_PER_TABLE),
-    ["peg", "pe", "price", "signal"]
+    ["peg", "pe", "price"] // CHANGED — "signal" removed
   );
 
   hide("mvLoading");
@@ -186,7 +195,7 @@ function renderTable(bodyId, stocks, cols) {
   if (!tbody) return;
 
   if (!stocks.length) {
-    tbody.innerHTML = '<tr><td colspan="8" class="mv-empty">No data available for current filter.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="7" class="mv-empty">No data available for current filter.</td></tr>'; // CHANGED colspan 8 -> 7 (one fewer column now)
     return;
   }
 
@@ -292,36 +301,7 @@ function renderCol(col, s, cur) {
   }
 }
 
-// ── Signal — identical logic to app.js and stock.js ──────────
-function getSignal(s) {
-  var pe     = numOrNull(s.pe);
-  var peg    = numOrNull(s.peg);
-  var growth = numOrNull(s.earningsGrowth);
-  var div    = numOrNull(s.divYield);
-  var moat   = s.moat        || "";
-  var str    = s.finStrength || "";
-
-  if (pe !== null && pe <= 0)            return "avoid";
-  if (str === "Weak" && moat === "None") return "avoid";
-  if (growth !== null && growth < -5)    return "avoid";
-
-  var score = 0;
-  if (moat === "Wide")                        score += 2;
-  if (moat === "Narrow")                      score += 1;
-  if (str  === "Strong")                      score += 2;
-  if (str  === "Adequate")                    score += 1;
-  if (peg  !== null && peg  > 0 && peg < 1)  score += 2;
-  if (pe   !== null && pe   > 0 && pe  < 12) score += 2;
-  if (pe   !== null && pe   >= 12 && pe < 20) score += 1;
-  if (growth !== null && growth > 15)         score += 2;
-  if (growth !== null && growth > 5)          score += 1;
-  if (div    !== null && div > 0.05)          score += 1;
-
-  if (score >= 7) return "buy";
-  if (score >= 4) return "watch";
-  if (score >= 1) return "neutral";
-  return "avoid";
-}
+// REMOVED: getSignal() — see file header comment for why.
 
 // ── Sort helpers ──────────────────────────────────────────────
 function sortDesc(arr, key) {
