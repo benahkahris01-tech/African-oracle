@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>About Us — The African Oracle | NSE &amp; JSE Stock Analysis</title>
-  <meta name="description" content="The African Oracle is built by independent African market analysts who have followed NSE Kenya and JSE South Africa for over 6 years. Free stock analysis for every investor." />
+  <meta name="description" content="The African Oracle is an independent, founder-led, Kenya-registered research platform offering free, transparent NSE Kenya and JSE South Africa stock analysis built from public filings." />
   <meta http-equiv="X-Content-Type-Options" content="nosniff" />
   <meta http-equiv="X-Frame-Options" content="DENY" />
   <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
@@ -13,6 +13,32 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/style.css?v=1" />
   <link rel="stylesheet" href="css/static-page.css?v=1" />
+  <style>
+    /* Founder card — self-contained so it works without touching static-page.css */
+    .founder-card {
+      display: flex; gap: 28px; align-items: center; flex-wrap: wrap;
+      padding: 26px; border: 1px solid var(--border, #272727);
+      border-radius: 12px; background: rgba(201,168,76,0.04);
+    }
+    .founder-photo {
+      flex: 0 0 160px; width: 160px; height: 160px; border-radius: 50%;
+      overflow: hidden; border: 2px solid #C9A84C; background: #1E1E1E;
+      display: flex; align-items: center; justify-content: center;
+      color: #C9A84C; font-size: 44px;
+    }
+    .founder-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .founder-body { flex: 1 1 320px; min-width: 0; }
+    .founder-role { font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: #C9A84C; margin: 0 0 10px; }
+    .founder-lead { font-size: 1.08em; line-height: 1.75; margin: 0 0 12px; }
+    .founder-links { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 16px; }
+    .founder-links a {
+      display: inline-block; padding: 8px 16px; border: 1px solid #C9A84C;
+      border-radius: 6px; color: #C9A84C; text-decoration: none; font-size: 14px;
+    }
+    .founder-links a:hover { background: rgba(201,168,76,0.12); }
+    .trust-list { list-style: none; padding: 0; margin: 16px 0 0; display: grid; gap: 10px; }
+    .trust-list li { padding-left: 4px; line-height: 1.65; }
+  </style>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5232676175386938" crossorigin="anonymous"></script>
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-HT3WSBF0TF"></script>
@@ -61,27 +87,59 @@
   <section class="static-hero">
     <div class="static-hero-inner">
       <div class="static-tag">Our Story</div>
-      <h1 class="static-title">Built for African<br/><em>investors, by African analysts</em></h1>
-      <p class="static-sub">We believe every person on this continent deserves access to the same quality of financial analysis that institutional investors take for granted. We have been following NSE and JSE markets for over six years — and we built the tool we always wished existed.</p>
+      <h1 class="static-title">Independent analysis.<br/><em>Built in Kenya, for Africa's investors</em></h1>
+      <p class="static-sub">The African Oracle is a founder-led, Kenya-registered research platform that turns public NSE and JSE filings into clear, free analysis. No hype, no hidden agenda — just transparent numbers and open methods you can check for yourself.</p>
     </div>
   </section>
 
   <main class="static-main">
     <div class="static-inner">
 
+      <!-- ═════════ MEET THE FOUNDER ═════════ -->
+      <div class="static-section">
+        <h2>Meet the founder</h2>
+        <div class="founder-card">
+          <div class="founder-photo">
+            <!--
+              TO ADD YOUR PHOTO: upload it to your /images folder (e.g. images/founder.jpg),
+              then replace the ◈ below with:
+              <img src="images/founder.jpg" alt="Founder of The African Oracle" width="160" height="160" loading="lazy" />
+            -->
+            ◈
+          </div>
+          <div class="founder-body">
+            <p class="founder-role">Founder · The African Oracle</p>
+            <p class="founder-lead">Africa's investors deserve the same clarity as anyone on Wall Street. The African Oracle was founded on that conviction and is run independently by a single founder, registered in Kenya. Its purpose is simple: take the dense annual reports and regulatory filings of NSE and JSE companies and turn them into analysis that anyone can read, verify, and use responsibly.</p>
+            <p>Credibility is not claimed here — it is shown. Every figure is built from public filings and market data, every method is explained openly, our limitations are stated plainly, and nothing on this site is influenced by the companies we cover.</p>
+            <div class="founder-links">
+              <a href="https://x.com/Eddiewaaish" target="_blank" rel="noopener noreferrer">Follow on X →</a>
+              <!-- If you have your exact Facebook page URL, replace the href below with it -->
+              <a href="https://www.facebook.com/search/top?q=AfricanOracle%20Kenya" target="_blank" rel="noopener noreferrer">AfricanOracle Kenya on Facebook →</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="static-section">
         <h2>What we do</h2>
-        <p>The African Oracle is a free stock analysis and screening platform covering every company listed on the <strong>Nairobi Securities Exchange (NSE)</strong> in Kenya and the <strong>Johannesburg Stock Exchange (JSE)</strong> in South Africa — over 200 companies combined across both exchanges.</p>
-        <p>We compile and present financial data including earnings per share (EPS), price-to-earnings ratios (P/E), PEG ratios, dividend yields, net profit margins, debt-to-equity ratios, and proprietary quality scores — all updated daily — in a clean, accessible format designed for both first-time investors and experienced professionals. Every metric we display is explained in plain English on our <a href="learn.html">glossary page</a>.</p>
-        <p>Our screener lets you filter all 200+ companies simultaneously by exchange, economic moat, financial strength, earnings predictability, and sector — something that previously required expensive Bloomberg or Reuters terminals to do on African markets.</p>
+        <p>The African Oracle is a free stock analysis and screening platform covering companies listed on the <strong>Nairobi Securities Exchange (NSE)</strong> in Kenya and the <strong>Johannesburg Stock Exchange (JSE)</strong> in South Africa.</p>
+        <p>We compile and present financial data including earnings per share (EPS), price-to-earnings ratios (P/E), PEG ratios, dividend yields, net profit margins, debt-to-equity ratios, and proprietary quality scores in a clean, accessible format designed for both first-time investors and experienced professionals. Every metric we display is explained in plain English on our <a href="learn.html">glossary page</a>.</p>
+        <p>Our screener lets you filter companies across both exchanges simultaneously by exchange, economic moat, financial strength, earnings predictability, and sector — something that previously required expensive Bloomberg or Reuters terminals to do on African markets.</p>
       </div>
 
       <div class="static-section">
         <h2>Who we are</h2>
-        <p>We are a small team of independent financial data analysts based in Kenya with a deep focus on African capital markets. Our lead analyst has been actively tracking companies listed on the NSE since 2018 — following quarterly earnings, annual reports, dividend announcements, and rights issues across the full breadth of the exchange. JSE coverage was added in 2022 as we expanded our research universe to cover the continent's largest exchange.</p>
+        <p>The African Oracle is a Kenya-registered, founder-owned business. It is led by a single founder with a deep focus on African capital markets, supported by a small team that helps with research and data upkeep. It began as the founder's own effort to analyse NSE-listed companies without spending hours in spreadsheets, and grew into a platform that now covers both the NSE and the JSE.</p>
         <p>We are not fund managers, licensed stockbrokers, or registered financial advisors. We are researchers and analysts who are passionate about making African stock market data accessible and understandable to every investor — regardless of their background or the size of their portfolio.</p>
         <p>Our approach to analysis is grounded in the principles of fundamental investing: we care about earnings quality, margin trends, competitive moats, and balance sheet strength. We believe that good long-term investment outcomes are driven by understanding the businesses behind the share prices — not by chasing short-term price movements.</p>
         <p>Everything published on this platform is built from publicly available information. We read company annual reports, review NSE and JSE regulatory filings, and cross-reference multiple financial databases to build and maintain our dataset. We do not have privileged access to any company information, and we do not trade on or profit from the analysis we publish.</p>
+        <ul class="trust-list">
+          <li><strong>Independent</strong> — not affiliated with the NSE, the JSE, or any listed company.</li>
+          <li><strong>Registered in Kenya</strong> — operated as a registered Kenyan business.</li>
+          <li><strong>Sourced from public information</strong> — company annual reports, regulatory filings, and market data feeds.</li>
+          <li><strong>Transparent</strong> — our data sources, methods, and limitations are documented on this page and in our <a href="learn.html">glossary</a>.</li>
+          <li><strong>Accountable</strong> — spot an error? <a href="contact.html">Tell us</a>; corrections are usually processed within 24 hours.</li>
+        </ul>
       </div>
 
       <!-- Ad slot — placed after a full content section, between sections -->
@@ -97,7 +155,7 @@
         <h2>Why we built this</h2>
         <p>African retail investors have historically been severely underserved by financial data platforms. Global tools like Morningstar, Seeking Alpha, and Simply Wall St focus overwhelmingly on US, European, and Asian markets. The handful of African-focused tools that exist are either expensive subscription services aimed at institutional investors, require account registration, or present data in formats that are inaccessible to everyday investors.</p>
         <p>We experienced this problem personally. As individual investors trying to analyse NSE-listed companies, we found ourselves manually pulling data from annual reports, building spreadsheets, and calculating metrics by hand — work that should take minutes but was taking hours. There was no single place where you could look at Equity Group's P/E ratio, Safaricom's EPS growth trajectory, and Co-op Bank's financial strength score side by side.</p>
-        <p>The African Oracle was built to solve this. It is the tool we always wished existed — completely free, no registration required, and designed specifically for the realities of African capital markets including the unique characteristics of NSE-listed banks, JSE mining companies, East African consumer businesses, and South African REITs.</p>
+        <p>The African Oracle was built to solve this. It is the tool we always wished existed — free to use, no registration required, and designed specifically for the realities of African capital markets including the unique characteristics of NSE-listed banks, JSE mining companies, East African consumer businesses, and South African REITs.</p>
         <p>We launched publicly in early 2026 and have been continuously improving the platform based on user feedback from investors across Kenya, South Africa, Uganda, Nigeria, and the diaspora.</p>
       </div>
 
@@ -111,8 +169,8 @@
           <li><strong>Dividend per share data</strong> — sourced from company annual reports and dividend announcements. Dividend yield is calculated as annual DPS divided by current live price, giving a real-time yield figure that updates with the price.</li>
           <li><strong>Quality scores</strong> — Moat, Financial Strength, and Predictability ratings are calculated using our proprietary rules-based model built on sector analysis, margin trends, earnings consistency, and debt levels. These are analytical tools, not investment recommendations.</li>
         </ul>
-        <p>Our fundamentals data is maintained in a live database that our analysts update directly after each company's earnings results are published. When Safaricom reports its half-year results, we update the EPS and margin figures for SCOM the same day. This means our intrinsic value estimates and quality scores always reflect the most recently reported data, not stale figures from months ago.</p>
-        <p>Data is cached for fast delivery and the website updates within seconds of any data change in our system.</p>
+        <p>Our fundamentals data is maintained in a live database that our team updates as each company's results are reviewed. When a company publishes new earnings, we update its EPS and margin figures as our team reviews the results, so our valuation estimates and quality scores track the most recently reported data rather than stale figures from months ago.</p>
+        <p>Data is cached briefly for fast delivery, so changes appear on the site shortly after our system is updated.</p>
       </div>
 
       <!-- Ad slot — placed between content sections -->
@@ -130,32 +188,31 @@
         <p><strong>Economic Moat</strong> — We assess whether a company has a durable competitive advantage that protects its profitability from competition. In African markets, network effects (Safaricom M-Pesa), regulatory moats (banking licences), cost advantages (large retail chains), and brand loyalty (East African Breweries) are the most common moat sources.</p>
         <p><strong>Financial Strength</strong> — We evaluate balance sheet health using debt-to-equity ratios and profit margins. Critically, we apply different standards for banking companies (which naturally carry high leverage as part of their business model) versus industrial and consumer companies. A D/E ratio of 8 is appropriate for KCB Bank but alarming for a manufacturing company.</p>
         <p><strong>Earnings Predictability</strong> — We look at whether a company has delivered consistent, growing earnings over five years. Commodity-exposed companies like JSE miners can deliver spectacular one-year results but terrible predictability. Consumer staples and telecommunications companies in Africa tend to deliver the most predictable earnings streams.</p>
-        <p><strong>Intrinsic Value</strong> — We provide a simplified earnings-based fair value estimate (EPS × P/E) as a starting point for valuation analysis. We are transparent that this is a simplified model — not a discounted cash flow analysis — and should be used as a comparison tool rather than a precise target price.</p>
+        <p><strong>Intrinsic Value</strong> — We calculate fair value using four independent valuation models rather than a single formula: a discounted cash flow model built on Free Cash Flow, a Residual Income Model that accounts for return on equity relative to cost of capital, a Dividend Discount Model, and a Discounted EPS model. Where these models agree closely, we show that as high confidence. Where they diverge sharply, we say so explicitly rather than quietly averaging them together — divergence itself is information worth seeing, not something to hide.</p>
       </div>
 
       <div class="static-section">
         <h2>What we are not</h2>
         <p>We want to be completely transparent about our limitations so that users can engage with our platform appropriately:</p>
         <ul>
-          <li>We are <strong>not licensed financial advisors</strong> — nothing on this site constitutes financial advice. Always consult a CMA-registered (Kenya) or FSCA-authorised (South Africa) financial advisor before making investment decisions.</li>
+          <li>We are <strong>not licensed financial advisors</strong> — nothing on this site constitutes financial advice or a recommendation to buy, sell, or hold any security. Always consult a CMA-registered (Kenya) or FSCA-authorised (South Africa) financial advisor before making investment decisions.</li>
           <li>We are <strong>not affiliated with the NSE, JSE, or any listed company</strong> — we are a fully independent data and analysis platform.</li>
           <li>We are <strong>not a stockbroker</strong> — we do not execute trades, hold client funds, or manage portfolios. We link to regulated brokerages where you can open your own account.</li>
           <li>We do <strong>not guarantee the completeness or timeliness of all data</strong> — always verify critical figures directly with official company filings before acting on them.</li>
-          <li>Our <strong>Buy / Watch / Avoid signals are algorithmic</strong>, not human analyst recommendations. They are based on quantitative metrics only and do not account for recent news, management changes, or qualitative factors that may materially affect a company's prospects.</li>
         </ul>
       </div>
 
       <div class="static-section">
         <h2>Our mission</h2>
-        <p>To democratise access to quality financial analysis across Africa — one stock at a time. The gap between what institutional investors and retail investors know about African capital markets is enormous. We are working to close that gap, one free tool at a time.</p>
+        <p>To democratise access to quality financial analysis across Africa — one company at a time. The gap between what institutional investors and retail investors know about African capital markets is enormous. We are working to close that gap, one free tool at a time.</p>
         <p>We believe that when more African retail investors make informed, research-based decisions, African capital markets become more efficient, more liquid, and more attractive to both domestic and international capital. Better-informed investors are good for every company that lists on the NSE and JSE.</p>
-        <p>This platform is and will always be free. If you find it useful, the best thing you can do is share it with another investor who could benefit.</p>
+        <p>Our core screener and stock analysis are, and will always be, free. If you find them useful, the best thing you can do is share the site with another investor who could benefit.</p>
         <p>If you have feedback, spot a data error, or want to suggest a company we are missing, we would love to hear from you via our <a href="contact.html">contact page</a>. Data corrections are usually processed within 24 hours.</p>
       </div>
 
       <div class="about-cta">
         <h2>Ready to start analysing?</h2>
-        <p>Browse all NSE and JSE listed companies — free, no signup required.</p>
+        <p>Browse NSE and JSE listed companies — free, no signup required.</p>
         <div class="about-cta-btns">
           <a href="index.html" class="cta-btn-primary">Open the Screener →</a>
           <a href="learn.html" class="cta-btn-secondary">Learn the Terms →</a>

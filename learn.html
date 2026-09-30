@@ -77,7 +77,6 @@
       <a href="#margins"   class="gnav-link">Margins</a>
       <a href="#de"        class="gnav-link">Debt/Equity</a>
       <a href="#iv"        class="gnav-link">Intrinsic Value</a>
-      <a href="#signal"    class="gnav-link">Signal</a>
     </div>
   </nav>
 
@@ -146,7 +145,7 @@
           <div class="term-tip">
             <strong>Rule of thumb:</strong> PEG below 1.0 = potentially undervalued. PEG around 1.0 = fairly valued. PEG above 2.0 = potentially expensive. Popularised by legendary investor Peter Lynch.
           </div>
-          <div class="term-on-oracle">PEG under 1 shows in green on The African Oracle. It is one of our buy signal inputs.</div>
+          <div class="term-on-oracle">PEG under 1 shows in green on The African Oracle.</div>
         </div>
       </article>
 
@@ -190,7 +189,7 @@
           <div class="term-tip">
             <strong>Why it matters:</strong> A wide moat company is more likely to still be profitable in 10 years. Without a moat, today's profits can evaporate when a competitor enters or commodity prices fall.
           </div>
-          <div class="term-on-oracle">Moat on The African Oracle is scored from sector type, net margin level, and EPS growth trajectory. Wide moat is one of the strongest buy signal inputs.</div>
+          <div class="term-on-oracle">Moat on The African Oracle is scored from sector type, net margin level, and EPS growth trajectory.</div>
         </div>
       </article>
 
@@ -292,36 +291,15 @@
           <div class="term-full">Estimated Fair Value</div>
         </div>
         <div class="term-body">
-          <p class="term-plain">Intrinsic value is an estimate of what a share is truly worth based on its earnings, as opposed to what the market is currently trading it for. The gap between intrinsic value and current price is called the margin of safety.</p>
-          <div class="term-formula">Intrinsic Value = EPS × P/E Ratio</div>
+          <p class="term-plain">Intrinsic value is an estimate of what a share is worth based on the underlying business, as opposed to what the market is currently trading it for. The gap between intrinsic value and current price is called the margin of safety.</p>
           <div class="term-example">
-            <div class="ex-label">Real example — KCB Group (KCB)</div>
-            <p>KCB's EPS is KES 16.67 and its P/E is 4.1. Intrinsic value = 16.67 × 4.1 = KES 68.3. If the current market price is KES 67.75, the stock is trading close to its intrinsic value. If price fell to KES 40, there would be a substantial margin of safety of ~40%.</p>
+            <div class="ex-label">How we calculate it</div>
+            <p><strong>Intrinsic Value</strong> — We calculate fair value using four independent valuation models rather than a single formula: a discounted cash flow model built on Free Cash Flow, a Residual Income Model that accounts for return on equity relative to cost of capital, a Dividend Discount Model, and a Discounted EPS model. Where these models agree closely, we show that as high confidence. Where they diverge sharply, we say so explicitly rather than quietly averaging them together — divergence itself is information worth seeing, not something to hide.</p>
           </div>
           <div class="term-tip">
-            <strong>Important caveat:</strong> This is a simplified Graham-style valuation. Real intrinsic value calculations are more complex and involve future earnings projections and discount rates. Our figure is a starting point for comparison, not a precise target price.
+            <strong>Important caveat:</strong> Every valuation is an estimate that depends on assumptions about the future, and different models can legitimately disagree. Treat our figures as a starting point for your own research and comparison, not as a precise target price or a recommendation.
           </div>
-          <div class="term-on-oracle">On each stock page we show intrinsic value alongside a margin of safety indicator — green if the stock appears undervalued, red if it appears overvalued.</div>
-        </div>
-      </article>
-
-      <!-- SIGNAL -->
-      <article class="term-card" id="signal">
-        <div class="term-header">
-          <div class="term-abbr">Signal</div>
-          <div class="term-full">Buy / Watch / Avoid / Neutral</div>
-        </div>
-        <div class="term-body">
-          <p class="term-plain">The signal is our automated summary of a stock's investment attractiveness based on multiple metrics combined. It is a quick starting point — not a buy or sell instruction.</p>
-          <div class="term-grades">
-            <div class="grade wide">● Buy <span>Strong scores across PE, moat, growth and strength</span></div>
-            <div class="grade narrow">◐ Watch <span>Mixed signals — worth monitoring for better entry</span></div>
-            <div class="grade none">○ Avoid <span>Losses, very high debt, weak fundamentals</span></div>
-            <div class="grade neutral">– Neutral <span>Insufficient data or average across all dimensions</span></div>
-          </div>
-          <div class="term-tip">
-            <strong>Critical reminder:</strong> The signal is algorithmic and cannot know your personal financial situation, risk tolerance, time horizon or tax position. It is not financial advice. Use it as one data point among many, and always consult a qualified financial advisor before making investment decisions.
-          </div>
+          <div class="term-on-oracle">On each stock page we show the individual model values, a confidence note, and a margin of safety indicator — green if the stock appears undervalued, red if it appears overvalued.</div>
         </div>
       </article>
 
