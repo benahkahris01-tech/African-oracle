@@ -41,6 +41,29 @@ document.addEventListener("DOMContentLoaded", function () {
   loadData();
 });
 
+// Supabase returns snake_case columns; this file expects camelCase.
+// Also re-stringifies val_breakdown (Supabase gives a real object via
+// jsonb; renderValuationBreakdown() expects a JSON string to parse).
+function normalizeStockRow(r) {
+  return {
+    ticker: r.ticker, name: r.name, sector: r.sector, country: r.country,
+    mode: r.mode, currency: r.currency, price: r.price, eps: r.eps,
+    beginEps: r.begin_eps, endEps: r.end_eps,
+    earningsGrowth: r.earnings_growth, pe: r.pe, peg: r.peg,
+    divYield: r.div_yield, debtEquity: r.debt_equity,
+    predictability: r.predictability,
+    initMargin: r.init_margin, finalMargin: r.final_margin,
+    marginGrowth: r.margin_growth,
+    moat: r.moat, finStrength: r.fin_strength,
+    intrinsicValue: r.intrinsic_value, dps: r.dps,
+    mosPrice: r.mos_price, valMethod: r.val_method,
+    confidence: r.confidence, shares: r.shares,
+    valBreakdown: r.val_breakdown ? JSON.stringify(r.val_breakdown) : null,
+    roe: r.roe, debtToNi: r.debt_to_ni,
+    lastUpdated: r.last_updated, dataAgeDays: r.data_age_days
+  };
+}
+
 // ── Load data ─────────────────────────────────────────────────
 function loadData() {
   var url = (typeof API_URL !== "undefined") ? API_URL : "";
@@ -68,38 +91,30 @@ function loadData() {
     }
   } catch (e) { /* sessionStorage unavailable — fall through */ }
 
-  // ── Cache miss — fetch from API ───────────────────────────────
-  fetch(url)
+    // Cache miss — fetch from Supabase
+  fetch(SUPABASE_URL + "/rest/v1/stocks?select=*", {
+    headers: { apikey: SUPABASE_ANON_KEY, Authorization: "Bearer " + SUPABASE_ANON_KEY }
+  })
     .then(function (r) {
       if (!r.ok) throw new Error("HTTP " + r.status);
       return r.json();
     })
-    .then(function (json) {
-      if (!json || !json.data) throw new Error("Empty or invalid API response");
-      allData = Array.isArray(json.data) ? json.data : [];
+    .then(function (rows) {
+      if (!Array.isArray(rows)) throw new Error("Empty or invalid response");
+      allData = rows.map(normalizeStockRow);
 
       if (allData.length === 0) {
-        showMvError("API returned no companies. Check your Google Sheet has data.");
+        showMvError("Supabase returned no companies.");
         return;
       }
-
-      // Store in sessionStorage with same key as app.js
       try {
-        sessionStorage.setItem(MV_CACHE_KEY, JSON.stringify({
-          ts:   Date.now(),
-          data: allData
-        }));
-      } catch (e) { /* storage full — continue without caching */ }
-
+        sessionStorage.setItem(MV_CACHE_KEY, JSON.stringify({ ts: Date.now(), data: allData }));
+      } catch (e) {}
       renderAll(allData);
     })
     .catch(function (err) {
       console.error("movers.js fetch error:", err);
-      showMvError(
-        "Could not load data: " + err.message +
-        ". Check your Apps Script is deployed as a Web App " +
-        "with access set to Anyone."
-      );
+      showMvError("Could not load data: " + err.message);
     });
 }
 

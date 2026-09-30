@@ -15,6 +15,8 @@
 // IMPORTANT: This must stay ABOVE the DOMContentLoaded block
 // so stock.js, movers.js and any other page can read it.
 var API_URL = "https://script.google.com/macros/s/AKfycbzUDs26aD7RaaVDdL7rUAVRZ83XlDK9dfI9zFcx-SvZXZD_2rnJXdbGSF2fNFNe37GbxQ/exec";
+var SUPABASE_URL = "https://cxotkrdkzrqobfwwyfst.supabase.co";
+var SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN4b3RrcmRrenJxb2Jmd3d5ZnN0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA1OTQ3MTgsImV4cCI6MjEwNjE3MDcxOH0.V1f2VimelLwU1OnSRtDixQ9FE7L82a9xhisTJh3cfvA"; // public/read-only — safe to expose, RLS blocks writes
 // ────────────────────────────────────────────────────────────
 
 // ── Shared cache config — used by app.js, stock.js, movers.js
@@ -26,6 +28,29 @@ var CACHE_TTL = 10 * 60 * 1000; // 10 minutes in milliseconds
 var allStocks   = [];
 var filtered    = [];
 var currentSort = { col: "ticker", dir: "asc" };
+
+// Supabase returns snake_case columns; this file expects camelCase.
+// Also re-stringifies val_breakdown (Supabase gives a real object via
+// jsonb; renderValuationBreakdown() expects a JSON string to parse).
+function normalizeStockRow(r) {
+  return {
+    ticker: r.ticker, name: r.name, sector: r.sector, country: r.country,
+    mode: r.mode, currency: r.currency, price: r.price, eps: r.eps,
+    beginEps: r.begin_eps, endEps: r.end_eps,
+    earningsGrowth: r.earnings_growth, pe: r.pe, peg: r.peg,
+    divYield: r.div_yield, debtEquity: r.debt_equity,
+    predictability: r.predictability,
+    initMargin: r.init_margin, finalMargin: r.final_margin,
+    marginGrowth: r.margin_growth,
+    moat: r.moat, finStrength: r.fin_strength,
+    intrinsicValue: r.intrinsic_value, dps: r.dps,
+    mosPrice: r.mos_price, valMethod: r.val_method,
+    confidence: r.confidence, shares: r.shares,
+    valBreakdown: r.val_breakdown ? JSON.stringify(r.val_breakdown) : null,
+    roe: r.roe, debtToNi: r.debt_to_ni,
+    lastUpdated: r.last_updated, dataAgeDays: r.data_age_days
+  };
+}
 
 // Columns that can be toggled — key matches data-col on th and td
 // REMOVED: divYield (no longer in the header, so nothing to toggle)
@@ -116,25 +141,21 @@ function fetchData() {
     // sessionStorage unavailable or corrupted — fall through to fetch
   }
 
-  // Cache miss — fetch from API
-  fetch(API_URL)
+    // Cache miss — fetch from Supabase (public read path)
+  fetch(SUPABASE_URL + "/rest/v1/stocks?select=*", {
+    headers: { apikey: SUPABASE_ANON_KEY, Authorization: "Bearer " + SUPABASE_ANON_KEY }
+  })
     .then(function (res) {
       if (!res.ok) throw new Error("HTTP " + res.status);
       return res.json();
     })
-    .then(function (json) {
-      if (!json || !json.data) throw new Error("Empty or invalid response from API");
-      allStocks = Array.isArray(json.data) ? json.data : [json.data];
+    .then(function (rows) {
+      if (!Array.isArray(rows)) throw new Error("Empty or invalid response from Supabase");
+      allStocks = rows.map(normalizeStockRow);
 
-      // Store in sessionStorage for reuse within this browser session
       try {
-        sessionStorage.setItem(CACHE_KEY, JSON.stringify({
-          ts:   Date.now(),
-          data: allStocks
-        }));
-      } catch (e) {
-        // sessionStorage full or unavailable — continue without caching
-      }
+        sessionStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), data: allStocks }));
+      } catch (e) {}
 
       populateSectorFilter();
       updateHeroStats();
@@ -143,9 +164,8 @@ function fetchData() {
       hide("loadingState");
     })
     .catch(function (err) {
-      console.error("API fetch error:", err);
-      showError("Could not load data: " + err.message +
-        ". Make sure your Apps Script is deployed as a Web App with access set to Anyone.");
+      console.error("Supabase fetch error:", err);
+      showError("Could not load data: " + err.message);
     });
 }
 

@@ -1,8 +1,15 @@
 /* ═══════════════════════════════════════════════════════════════
    stock.js — individual company detail page
    Self-contained: does NOT depend on app.js running any functions.
-   Only uses API_URL variable which app.js declares globally.
+   Uses these globals declared/defined by app.js (loaded first):
+     API_URL, SUPABASE_URL, SUPABASE_ANON_KEY, normalizeStockRow()
    Reads ?ticker=SCOM&country=Kenya from URL params.
+
+   Data sources:
+     • Premium users → Apps Script (?action=priority) — deliberately kept
+       there as the freshest-data differentiator (no sync lag).
+     • Free users    → Supabase REST (stocks table).
+     • Price history → Supabase REST (price_history table), premium only.
 ═══════════════════════════════════════════════════════════════ */
 
 // NEW — holds the full stock list once loaded, used by renderPeerComparison()
@@ -20,18 +27,56 @@ document.addEventListener("DOMContentLoaded", function () {
     showDetailError("No ticker found in URL.");
     return;
   }
+  // Supabase returns snake_case columns; this file expects camelCase.
+  // Also re-stringifies val_breakdown (Supabase gives a real object via
+  // jsonb; renderValuationBreakdown() expects a JSON string to parse).
+  function normalizeStockRow(r) {
+   return {
+    ticker: r.ticker, name: r.name, sector: r.sector, country: r.country,
+    mode: r.mode, currency: r.currency, price: r.price, eps: r.eps,
+    beginEps: r.begin_eps, endEps: r.end_eps,
+    earningsGrowth: r.earnings_growth, pe: r.pe, peg: r.peg,
+    divYield: r.div_yield, debtEquity: r.debt_equity,
+    predictability: r.predictability,
+    initMargin: r.init_margin, finalMargin: r.final_margin,
+    marginGrowth: r.margin_growth,
+    moat: r.moat, finStrength: r.fin_strength,
+    intrinsicValue: r.intrinsic_value, dps: r.dps,
+    mosPrice: r.mos_price, valMethod: r.val_method,
+    confidence: r.confidence, shares: r.shares,
+    valBreakdown: r.val_breakdown ? JSON.stringify(r.val_breakdown) : null,
+    roe: r.roe, debtToNi: r.debt_to_ni,
+    lastUpdated: r.last_updated, dataAgeDays: r.data_age_days
+  };
+}
 
-  // API_URL is declared in app.js which loads before this file
-  if (typeof API_URL === "undefined" ||
-      !API_URL ||
-      API_URL === "PASTE_YOUR_APPS_SCRIPT_URL_HERE") {
-    showDetailError("API URL not configured in js/app.js.");
-    return;
+  // Evaluated once and reused for config checks, the premium URL and the fetch branch
+  var isPrem = typeof isPremium === "function" && isPremium();
+
+  // ── Config guards — each data source only needs its own config ──
+  if (isPrem) {
+    // API_URL is declared in app.js which loads before this file
+    if (typeof API_URL === "undefined" ||
+        !API_URL ||
+        API_URL === "PASTE_YOUR_APPS_SCRIPT_URL_HERE") {
+      showDetailError("API URL not configured in js/app.js.");
+      return;
+    }
+  } else {
+    if (typeof SUPABASE_URL === "undefined" || !SUPABASE_URL ||
+        typeof SUPABASE_ANON_KEY === "undefined" || !SUPABASE_ANON_KEY) {
+      showDetailError("Supabase is not configured in js/app.js.");
+      return;
+    }
+    if (typeof normalizeStockRow !== "function") {
+      showDetailError("normalizeStockRow() is missing — it must be defined in js/app.js.");
+      return;
+    }
   }
 
   // ── Premium: use priority (live) endpoint if user is subscribed ──
-  var fetchUrl = API_URL;
-  if (typeof isPremium === "function" && isPremium()) {
+  var fetchUrl = typeof API_URL !== "undefined" ? API_URL : "";
+  if (isPrem) {
     var premToken = "";
     try { premToken = localStorage.getItem("oracle_premium_token") || ""; } catch(e) {}
     if (premToken) {
@@ -72,30 +117,30 @@ document.addEventListener("DOMContentLoaded", function () {
     // sessionStorage unavailable — fall through to fetch
   }
 
-  // Cache miss — fetch from API and store for future use
-  fetch(fetchUrl)
-    .then(function (r) {
-      if (!r.ok) throw new Error("HTTP " + r.status);
-      return r.json();
+  // Cache miss — premium users stay on Apps Script (freshest, no sync lag);
+  // free users fetch from Supabase.
+  if (isPrem) {
+    fetch(fetchUrl) // unchanged — still API_URL + ?action=priority&token=...
+      .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+      .then(function (json) {
+        if (!json || !json.data) throw new Error("Empty API response");
+        var list = Array.isArray(json.data) ? json.data : [];
+        try { sessionStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), data: list })); } catch (e) {}
+        findAndRender(list);
+      })
+      .catch(function (err) { showDetailError("Could not load data: " + err.message); });
+  } else {
+    fetch(SUPABASE_URL + "/rest/v1/stocks?select=*", {
+      headers: { apikey: SUPABASE_ANON_KEY, Authorization: "Bearer " + SUPABASE_ANON_KEY }
     })
-    .then(function (json) {
-      if (!json || !json.data) throw new Error("Empty API response");
-      var list = Array.isArray(json.data) ? json.data : [];
-
-      // Store in sessionStorage so screener page is also instant if user goes back
-      try {
-        sessionStorage.setItem(CACHE_KEY, JSON.stringify({
-          ts:   Date.now(),
-          data: list
-        }));
-      } catch (e) { /* storage full — continue */ }
-
-      findAndRender(list);
-    })
-    .catch(function (err) {
-      console.error("stock.js fetch error:", err);
-      showDetailError("Could not load data: " + err.message);
-    });
+      .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+      .then(function (rows) {
+        var list = Array.isArray(rows) ? rows.map(normalizeStockRow) : [];
+        try { sessionStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), data: list })); } catch (e) {}
+        findAndRender(list);
+      })
+      .catch(function (err) { showDetailError("Could not load data: " + err.message); });
+  }
 });
 
 function showDetailError(msg) {
@@ -745,8 +790,9 @@ function renderDetail(s) {
   // ── PRICE HISTORY — premium only ─────────────────────────────────────────
   // Free users see a lock overlay on the price chart container
   // Premium users get the full weekly price history line chart
+  // CHANGED — exchange is now passed because price_history is keyed by (ticker, exchange)
   if (typeof isPremium === "function" && isPremium()) {
-    fetchPriceHistory(s.ticker, cur, sym);
+    fetchPriceHistory(s.ticker, cur, sym, s.country === "Kenya" ? "NSE" : "JSE");
   } else {
     showPriceChartLock();
   }
@@ -871,10 +917,14 @@ var CHART_BG     = "#1E1E1E";
 var CHART_BORDER = "#272727";
 
 // Shared Chart.js defaults for dark theme
-Chart.defaults.color         = "#9A9A9A";
-Chart.defaults.borderColor   = CHART_BORDER;
-Chart.defaults.font.family   = "'DM Sans', system-ui, sans-serif";
-Chart.defaults.font.size     = 11;
+// CHANGED — guarded so a failed Chart.js load can't throw at parse time and
+// kill the whole script (renderCharts() already handles Chart being absent).
+if (typeof Chart !== "undefined") {
+  Chart.defaults.color         = "#9A9A9A";
+  Chart.defaults.borderColor   = CHART_BORDER;
+  Chart.defaults.font.family   = "'DM Sans', system-ui, sans-serif";
+  Chart.defaults.font.size     = 11;
+}
 
 // ── Render all three fundamental charts ──────────────────────────────────────
 function renderCharts(s, cur, sym) {
@@ -1108,14 +1158,25 @@ function showPriceChartLock() {
 }
 
 // ── Fetch and render price history chart ──────────────────────────────────────
-function fetchPriceHistory(ticker, cur, sym) {
-  if (typeof API_URL === "undefined" || !API_URL ||
-      API_URL === "PASTE_YOUR_APPS_SCRIPT_URL_HERE") return;
+// CHANGED — now reads from Supabase price_history (keyed by ticker + exchange)
+// instead of Apps Script. `exchange` is "NSE" or "JSE".
+function fetchPriceHistory(ticker, cur, sym, exchange) { // NOTE: exchange param added
+  if (typeof SUPABASE_URL === "undefined" || !SUPABASE_URL ||
+      typeof SUPABASE_ANON_KEY === "undefined" || !SUPABASE_ANON_KEY) return;
 
-  fetch(API_URL + "?action=history&ticker=" + encodeURIComponent(ticker))
-    .then(function(r) { return r.json(); })
-    .then(function(json) {
-      var data = json && json.data ? json.data : [];
+  fetch(SUPABASE_URL + "/rest/v1/price_history?ticker=eq." + encodeURIComponent(ticker) +
+        "&exchange=eq." + encodeURIComponent(exchange) +
+        "&select=recorded_date,price&order=recorded_date.asc", {
+    headers: { apikey: SUPABASE_ANON_KEY, Authorization: "Bearer " + SUPABASE_ANON_KEY }
+  })
+    .then(function (r) {
+      if (!r.ok) throw new Error("HTTP " + r.status); // added: don't try to parse an error body as data
+      return r.json();
+    })
+    .then(function (rows) {
+      var data = (Array.isArray(rows) ? rows : []).map(function (r) {
+        return { date: r.recorded_date, price: Number(r.price) };
+      });
 
       var emptyEl = document.getElementById("priceChartEmpty");
       var canvas  = document.getElementById("priceChart");

@@ -41,6 +41,29 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
+  // Supabase returns snake_case columns; this file expects camelCase.
+  // Also re-stringifies val_breakdown (Supabase gives a real object via
+  // jsonb; renderValuationBreakdown() expects a JSON string to parse).
+  function normalizeStockRow(r) {
+   return {
+    ticker: r.ticker, name: r.name, sector: r.sector, country: r.country,
+    mode: r.mode, currency: r.currency, price: r.price, eps: r.eps,
+    beginEps: r.begin_eps, endEps: r.end_eps,
+    earningsGrowth: r.earnings_growth, pe: r.pe, peg: r.peg,
+    divYield: r.div_yield, debtEquity: r.debt_equity,
+    predictability: r.predictability,
+    initMargin: r.init_margin, finalMargin: r.final_margin,
+    marginGrowth: r.margin_growth,
+    moat: r.moat, finStrength: r.fin_strength,
+    intrinsicValue: r.intrinsic_value, dps: r.dps,
+    mosPrice: r.mos_price, valMethod: r.val_method,
+    confidence: r.confidence, shares: r.shares,
+    valBreakdown: r.val_breakdown ? JSON.stringify(r.val_breakdown) : null,
+    roe: r.roe, debtToNi: r.debt_to_ni,
+    lastUpdated: r.last_updated, dataAgeDays: r.data_age_days
+   };
+ }
+
   // Hide exchange toggle for free users
   var toggle = document.querySelector(".cal-exchange-toggle");
   if (toggle && !premium) toggle.style.display = "none";
@@ -60,21 +83,21 @@ document.addEventListener("DOMContentLoaded", function () {
 // surfaces the existing #calError state rather than hanging on the
 // loading spinner forever.
 function loadEarningsCalendarEntries(callback) {
-  if (typeof API_URL === "undefined" || !API_URL ||
-      API_URL === "PASTE_YOUR_APPS_SCRIPT_URL_HERE") {
-    console.error("calendar.js: API_URL not configured.");
-    showCalError("Calendar API not configured.");
-    callback([]);
-    return;
-  }
-
-  fetch(API_URL + "?action=calendar")
+  fetch(SUPABASE_URL + "/rest/v1/earnings_calendar?select=*", {
+    headers: { apikey: SUPABASE_ANON_KEY, Authorization: "Bearer " + SUPABASE_ANON_KEY }
+  })
     .then(function (r) {
       if (!r.ok) throw new Error("HTTP " + r.status);
       return r.json();
     })
-    .then(function (json) {
-      var list = (json && Array.isArray(json.data)) ? json.data : [];
+    .then(function (rows) {
+      var list = Array.isArray(rows) ? rows.map(function (r) {
+        return {
+          ticker: r.ticker, exchange: r.exchange, resultType: r.result_type,
+          lastReportDate: r.last_report_date, nextExpectedDate: r.next_expected_date,
+          status: r.status
+        };
+      }) : [];
       callback(list);
     })
     .catch(function (err) {
@@ -328,7 +351,7 @@ function renderList(containerId, entries, stockMap, isRecent) {
           '<span class="cal-td-day">' + day + '</span>' +
           '<span class="cal-td-month">' + month + (year ? " '" + year : "") + '</span>' +
         '</td>' +
-        '<td class="cal-td-ticker">' + esc(e.ticker) + '</td>' +
+        '<td class="cal-td-ticker">' + esc((stockMap[e.ticker] && stockMap[e.ticker].name) || e.ticker) + '</td>' +
         '<td class="cal-td-name">' + esc(e.name) + '</td>' +
         '<td class="cal-td-exch"><span class="cal-exch ' + e.exchange.toLowerCase() + '">' + e.exchange + '</span></td>' +
         '<td class="cal-td-type">' + esc(e.resultType) + '</td>' +
