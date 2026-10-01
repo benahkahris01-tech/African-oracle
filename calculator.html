@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Investment Return Calculator &amp; Investing FAQ — The African Oracle</title>
+  <meta name="description" content="Free NSE and JSE investment return calculator: see how share price growth, dividends, trading costs and dividend tax affect your return. Plus answers to common beginner investing questions." />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css?v=1" />
+  <link rel="stylesheet" href="css/static-page.css?v=1" />
+  <style>
+    .calc-hidden { display: none !important; }
+    .calc-layout { display: grid; grid-template-columns: minmax(0, 380px) minmax(0, 1fr); gap: 28px; align-items: start; }
+    @media (max-width: 900px) { .calc-layout { grid-template-columns: minmax(0, 1fr); } }
+
+    .calc-panel { background: #1A1A1A; border: 1px solid var(--border, #272727); border-radius: 12px; padding: 22px; }
+    .calc-panel h3 { margin: 0 0 14px; font-family: 'Playfair Display', serif; font-size: 18px; color: #E0E0E0; }
+    .calc-field { margin-bottom: 14px; }
+    .calc-field label { display: block; font-size: 13px; color: #B5B5B5; margin-bottom: 6px; }
+    .calc-field input[type=number], .calc-field input[type=text], .calc-field select {
+      width: 100%; box-sizing: border-box; padding: 10px 12px; background: #121212; color: #E8E8E8;
+      border: 1px solid #333; border-radius: 8px; font-size: 15px; font-family: inherit;
+    }
+    .calc-field input:focus, .calc-field select:focus { outline: none; border-color: #C9A84C; }
+    .calc-row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .calc-check { display: flex; align-items: center; gap: 10px; font-size: 14px; color: #C0C0C0; margin: 8px 0; }
+    .calc-hint { font-size: 12px; color: #8A8A8A; margin-top: 5px; line-height: 1.5; }
+    .calc-note { font-size: 13px; color: #C9A84C; margin-top: 8px; line-height: 1.5; }
+    details.calc-adv { margin-top: 10px; border-top: 1px solid #272727; padding-top: 10px; }
+    details.calc-adv summary { cursor: pointer; color: #C9A84C; font-size: 14px; margin-bottom: 12px; }
+
+    .calc-message { padding: 18px; border: 1px dashed #444; border-radius: 10px; color: #B5B5B5; }
+    .calc-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; margin-bottom: 20px; }
+    .calc-card { background: #1A1A1A; border: 1px solid var(--border, #272727); border-radius: 10px; padding: 14px; }
+    .calc-card-label { font-size: 12px; color: #9A9A9A; margin-bottom: 6px; }
+    .calc-card-value { font-family: 'DM Mono', monospace; font-size: 20px; color: #F0F0F0; }
+    .calc-card-note { font-size: 12px; color: #7F7F7F; margin-top: 4px; }
+    .calc-pos { color: #3DAA6E !important; }
+    .calc-neg { color: #E0584A !important; }
+
+    .calc-block { background: #1A1A1A; border: 1px solid var(--border, #272727); border-radius: 12px; padding: 18px 20px; margin-bottom: 18px; }
+    .calc-block h3 { margin: 0 0 12px; font-size: 16px; color: #E0E0E0; }
+    .calc-list { list-style: none; margin: 0; padding: 0; }
+    .calc-list li { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-bottom: 1px solid #242424; font-size: 14px; color: #C0C0C0; }
+    .calc-list li.calc-total { border-bottom: none; font-size: 15px; }
+    ul.calc-insights { margin: 0; padding-left: 18px; color: #C0C0C0; font-size: 14px; line-height: 1.7; }
+    ul.calc-insights li { margin-bottom: 6px; }
+
+    .calc-bars { display: flex; align-items: flex-end; gap: 4px; height: 150px; }
+    .calc-bar-col { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; height: 100%; }
+    .calc-bar { width: 100%; background: linear-gradient(#C9A84C, #8d7432); border-radius: 3px 3px 0 0; }
+    .calc-bar-label { font-size: 10px; color: #7F7F7F; margin-top: 4px; }
+
+    .calc-table-wrap { overflow-x: auto; }
+    table.calc-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    table.calc-table th { text-align: left; color: #9A9A9A; font-weight: 500; padding: 8px; border-bottom: 1px solid #333; white-space: nowrap; }
+    table.calc-table td { padding: 8px; border-bottom: 1px solid #242424; color: #D0D0D0; white-space: nowrap; }
+
+    .calc-disclaimer { font-size: 13px; color: #9A9A9A; line-height: 1.7; border-left: 3px solid #C9A84C; padding: 4px 0 4px 14px; margin: 18px 0 0; }
+
+    /* FAQ */
+    .faq-group { margin-top: 34px; }
+    .faq-group h3 { font-family: 'Playfair Display', serif; font-size: 20px; color: #E0E0E0; margin: 0 0 12px; }
+    details.faq-item { background: #1A1A1A; border: 1px solid var(--border, #272727); border-radius: 10px; margin-bottom: 10px; padding: 0 18px; }
+    details.faq-item summary { cursor: pointer; padding: 15px 0; font-weight: 500; color: #E8E8E8; list-style: none; }
+    details.faq-item summary::-webkit-details-marker { display: none; }
+    details.faq-item summary::after { content: "+"; float: right; color: #C9A84C; font-size: 20px; line-height: 1; }
+    details.faq-item[open] summary::after { content: "–"; }
+    details.faq-item .faq-body { padding: 0 0 16px; color: #C0C0C0; font-size: 14.5px; line-height: 1.8; }
+    details.faq-item .faq-body p { margin: 0 0 12px; }
+    details.faq-item .faq-body ul { margin: 0 0 12px; padding-left: 20px; }
+  </style>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5232676175386938" crossorigin="anonymous"></script>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-HT3WSBF0TF"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-HT3WSBF0TF');
+  </script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('/sw.js')
+          .then(function (reg) { reg.update(); })
+          .catch(function (err) { console.log('SW failed:', err); });
+      });
+    }
+  </script>
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="index.html" class="brand">
+        <span class="brand-icon">◈</span>
+        <div>
+          <div class="brand-name">The African Oracle</div>
+          <div class="brand-sub">NSE · JSE Stock Intelligence</div>
+        </div>
+      </a>
+      <nav class="site-nav">
+        <a href="index.html" class="nav-link">Screener</a>
+        <a href="movers.html" class="nav-link">Performers</a>
+        <a href="calendar.html" class="nav-link">Calendar</a>
+        <a href="portfolio.html" class="nav-link">Portfolio</a>
+        <a href="blog.html" class="nav-link">Blog</a>
+        <a href="learn.html" class="nav-link">Learn</a>
+        <a href="calculator.html" class="nav-link active">Calculator</a>
+        <a href="premium.html" class="nav-link">Premium</a>
+        <a href="about.html" class="nav-link">About</a>
+        <a href="contact.html" class="nav-link">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="static-hero">
+    <div class="static-hero-inner">
+      <div class="static-tag">Investor Tools</div>
+      <h1 class="static-title">Investment return calculator<br/><em>and investing FAQ</em></h1>
+      <p class="static-sub">See how share price growth, dividends, trading costs and dividend tax combine to shape what you actually keep. Pick an NSE or JSE company, or enter your own numbers — then read plain-English answers to the questions new investors ask most.</p>
+    </div>
+  </section>
+
+  <main class="static-main">
+    <div class="static-inner">
+
+      <!-- ═════════════ CALCULATOR ═════════════ -->
+      <div class="static-section">
+        <h2>Return calculator</h2>
+        <p>This is an illustration, not a forecast. You choose the growth assumptions; the calculator shows what those assumptions would mean after costs and tax. Nobody can predict future share prices or dividends.</p>
+
+        <div class="calc-layout">
+
+          <!-- Inputs -->
+          <form id="calcForm" class="calc-panel" autocomplete="off">
+            <h3>Your investment</h3>
+
+            <div class="calc-field calc-hidden" id="stockPicker">
+              <label for="inStock">Pick a company (optional)</label>
+              <input type="text" id="inStock" list="stockList" placeholder="Type a ticker or name, e.g. SCOM" />
+              <datalist id="stockList"></datalist>
+              <div class="calc-note" id="stockNote"></div>
+            </div>
+
+            <div class="calc-field">
+              <label for="inExchange">Exchange</label>
+              <select id="inExchange">
+                <option value="NSE">NSE — Kenya (KES)</option>
+                <option value="JSE">JSE — South Africa (ZAR)</option>
+              </select>
+            </div>
+
+            <div class="calc-field">
+              <label for="inBudget">Amount to invest (<span class="cur-label">KES</span>)</label>
+              <input type="number" id="inBudget" value="50000" min="0" step="any" inputmode="decimal" />
+            </div>
+
+            <div class="calc-row2">
+              <div class="calc-field">
+                <label for="inPrice">Share price (<span class="cur-label">KES</span>)</label>
+                <input type="number" id="inPrice" value="20" min="0" step="any" inputmode="decimal" />
+              </div>
+              <div class="calc-field">
+                <label for="inDps">Dividend / share / yr</label>
+                <input type="number" id="inDps" value="1" min="0" step="any" inputmode="decimal" />
+              </div>
+            </div>
+
+            <div class="calc-row2">
+              <div class="calc-field">
+                <label for="inGrowth">Share price growth (% / yr)</label>
+                <input type="number" id="inGrowth" value="5" min="-99" max="100" step="any" inputmode="decimal" />
+              </div>
+              <div class="calc-field">
+                <label for="inYears">Years held</label>
+                <input type="number" id="inYears" value="5" min="1" max="40" step="1" inputmode="numeric" />
+              </div>
+            </div>
+
+            <label class="calc-check"><input type="checkbox" id="inReinvest" checked /> Reinvest dividends in more shares</label>
+
+            <details class="calc-adv">
+              <summary>Costs, tax and other assumptions</summary>
+
+              <div class="calc-field">
+                <label for="inDpsGrowth">Dividend growth (% / yr)</label>
+                <input type="number" id="inDpsGrowth" value="0" min="-100" max="50" step="any" inputmode="decimal" />
+              </div>
+
+              <div class="calc-field">
+                <label for="inCost">Trading cost per buy or sell (%)</label>
+                <input type="number" id="inCost" value="2.1" min="0" max="20" step="any" inputmode="decimal" />
+                <div class="calc-hint" id="costHint"></div>
+              </div>
+
+              <div class="calc-field">
+                <label for="inTax">Dividend tax withheld (%)</label>
+                <input type="number" id="inTax" value="5" min="0" max="60" step="any" inputmode="decimal" />
+                <div class="calc-hint" id="taxHint"></div>
+              </div>
+
+              <label class="calc-check"><input type="checkbox" id="inFractional" /> My platform allows fractional shares</label>
+            </details>
+          </form>
+
+          <!-- Results -->
+          <div aria-live="polite">
+            <div id="calcMessage" class="calc-message calc-hidden"></div>
+
+            <div id="calcResults">
+              <div id="calcCards" class="calc-cards"></div>
+
+              <div class="calc-block">
+                <h3>Where the result comes from</h3>
+                <ul id="calcBreakdown" class="calc-list"></ul>
+              </div>
+
+              <div class="calc-block">
+                <h3>Putting it in perspective</h3>
+                <ul id="calcInsights" class="calc-insights"></ul>
+              </div>
+
+              <div class="calc-block">
+                <h3>Portfolio value by year</h3>
+                <div id="calcBars" class="calc-bars"></div>
+              </div>
+
+              <div class="calc-block">
+                <h3>What if prices move differently?</h3>
+                <div class="calc-table-wrap">
+                  <table class="calc-table">
+                    <thead><tr><th>Share price growth</th><th>Final value</th><th>Total return</th><th>Annualised</th></tr></thead>
+                    <tbody id="calcSensBody"></tbody>
+                  </table>
+                </div>
+              </div>
+
+              <details class="calc-block">
+                <summary style="cursor:pointer;color:#C9A84C;">Year-by-year table</summary>
+                <div class="calc-table-wrap" style="margin-top:12px;">
+                  <table class="calc-table">
+                    <thead><tr><th>Year</th><th>Share price</th><th>Dividend / share</th><th>Net dividends</th><th>Shares held</th><th>Portfolio value</th></tr></thead>
+                    <tbody id="calcYearBody"></tbody>
+                  </table>
+                </div>
+              </details>
+            </div>
+          </div>
+        </div>
+
+        <p class="calc-disclaimer"><strong>How it works and what it leaves out.</strong> Dividends are assumed paid once a year, after tax, and reinvested (if ticked) at that year's share price with the same trading cost applied. Price and dividend growth are constant rates you choose. Uninvested cash earns nothing. The calculator does not include capital gains tax, inflation, currency movements, account or custody fees, or the timing of ex-dividend dates. Results are for education only and are not investment advice; The African Oracle is not a licensed financial advisor.</p>
+      </div>
+
+      <!-- ═════════════ FAQ ═════════════ -->
+      <div class="static-section">
+        <h2>Investing questions, answered</h2>
+        <p>Plain-English answers for first-time investors and young professionals. This is general education, not personal advice — rules, fees and tax rates change, so confirm current figures with your broker, the CMA, KRA, FSCA or SARS before acting.</p>
+
+        <div class="faq-group">
+          <h3>Prices and costs</h3>
+
+          <details class="faq-item">
+            <summary>Why is the price on my broker different from the listing price?</summary>
+            <div class="faq-body">
+              <p>It is common to see a different number on your broker's app than on a website or the exchange listing. Usually several ordinary things are happening at once:</p>
+              <ul>
+                <li><strong>Timing.</strong> The price shown on The African Oracle is refreshed on a daily schedule, so it is not a live quote. Your broker may show a live price that has moved since.</li>
+                <li><strong>Last trade vs. what you can actually buy at.</strong> A listed price is typically the last traded or closing price. To buy, you pay the lowest price a seller is currently asking (the "ask"); to sell, you receive the highest price a buyer is bidding. The gap between them is the <em>spread</em>, and it can be wide on shares that trade infrequently.</li>
+                <li><strong>Order type.</strong> A market order fills at the best available prices now. A limit order fills only at your price or better — and may not fill at all.</li>
+                <li><strong>Fees and levies sit on top of the price.</strong> On the NSE, regulations cap the total cost at 2.10% for trades up to KES 100,000 (brokerage plus NSE, CMA and CDSC charges and investor-protection levies), so the money leaving your account can be about 2% higher than shares × price.</li>
+                <li><strong>Units.</strong> JSE prices are quoted in cents, while we display Rands. Some platforms show cents.</li>
+              </ul>
+              <p>To compare fairly, look at the broker's bid and ask, check your order's limit price, and read the contract note after each trade — it itemises the price and every charge.</p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary>How much does it cost to buy and sell shares?</summary>
+            <div class="faq-body">
+              <p><strong>NSE (Kenya):</strong> for trades up to KES 100,000, regulations set a maximum total cost of 2.10% per trade — a net brokerage commission of up to 1.76% plus NSE, CMA and CDSC levies and investor-compensation and guarantee-fund charges. For larger trades brokerage is negotiable, with a cap of 1.5%, and statutory charges are added on top. Regulators have also proposed changes to some levies, so ask your broker for the current schedule.</p>
+              <p><strong>JSE (South Africa):</strong> costs depend heavily on the platform. Low-cost platforms charge a fraction of a percent per trade, while traditional brokers may add minimum fees per trade.</p>
+              <p>Costs apply on both buying <em>and</em> selling. On the NSE that can mean roughly 4% round trip on a small trade — which is why the calculator shows how far a price must rise just to break even.</p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary>How much money do I need to start investing?</summary>
+            <div class="faq-body">
+              <p>Much less than most people assume, but costs matter more on small amounts. Many NSE brokers and mobile platforms let you buy a single share, and several JSE platforms allow fractional shares so you can start with a small rand amount. Check each provider's minimums and fee structure.</p>
+              <p>A common principle of sensible investing is to invest only money you will not need for several years, after you have an emergency fund and have cleared expensive debt. That is a general principle, not advice tailored to you.</p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary>Do I need a CDS account?</summary>
+            <div class="faq-body">
+              <p>On the NSE, shares are held electronically in a Central Depository System (CDS) account, which you can open through a licensed broker or the CDSC. Some mobile-based services hold shares in a pooled account on your behalf instead of in your own personal CDS account. The difference matters for how dividends are paid and how you prove ownership, so ask any provider exactly how your shares are held.</p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary>Is investing better than a money market fund, SACCO or treasury bills?</summary>
+            <div class="faq-body">
+              <p>They do different jobs. Money market funds, SACCO deposits and government securities are generally aimed at preserving capital and earning interest, with returns that are more predictable but usually lower over long periods. Shares can grow much more over time, but prices swing, and you can lose money. Many people use a mix for different goals and time horizons. Rates on these products change, so compare current figures rather than relying on old ones.</p>
+            </div>
+          </details>
+        </div>
+
+        <div class="faq-group">
+          <h3>Dividends and tax</h3>
+
+          <details class="faq-item">
+            <summary>Should I invest for dividends rather than share price growth?</summary>
+            <div class="faq-body">
+              <p>Neither is automatically better — they suit different goals. Your <strong>total return</strong> is the dividends you receive <em>plus</em> the change in the share price, so a company can reward you either way.</p>
+              <ul>
+                <li><strong>Dividend-focused investing</strong> appeals to people who want regular cash, such as retirees or anyone covering expenses from their portfolio. Dividends are real cash, and many mature banks, telecoms and consumer companies pay them.</li>
+                <li><strong>Growth-focused investing</strong> appeals to people with a long horizon who do not need income now. Companies that pay little or nothing keep profits to expand, hoping the share price rises.</li>
+              </ul>
+              <p>Things to keep in mind: when a share goes "ex-dividend" its price typically drops by about the dividend, so the payout is not free money; dividends are taxed at source (see below); and dividends are never guaranteed — companies can cut them when profits fall. Reinvesting dividends can compound your holding over many years.</p>
+              <p>Use the calculator to compare: set price growth to 0% for a dividends-only picture, then raise it to see how growth changes the outcome.</p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary>Is a high dividend yield always good?</summary>
+            <div class="faq-body">
+              <p>No. Yield is the annual dividend divided by the share price, so a share price that has fallen sharply can make the yield look high just before the dividend is cut — sometimes called a "yield trap". Check whether the dividend is covered by earnings (the payout ratio), whether profits are stable, and how much debt the company carries. Our <a href="learn.html#divyield">glossary</a> explains yield in more detail.</p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary>What is the difference between dividend yield and total return?</summary>
+            <div class="faq-body">
+              <p>Dividend yield only measures cash income as a percentage of the price. Total return adds price gains or losses and subtracts costs. A stock with a 6% yield whose price falls 10% has a negative total return before tax. "Yield on cost" — shown in the calculator — measures your first-year dividend against what you actually paid, including trading costs.</p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary>How are dividends taxed?</summary>
+            <div class="faq-body">
+              <p><strong>Kenya:</strong> companies deduct withholding tax from dividends before paying you. For resident individuals this has been 5% and is treated as a final tax, but rates are set by Finance Acts and some KRA schedules list different figures — confirm the current rate on the KRA website. Non-residents are taxed at higher rates.</p>
+              <p><strong>South Africa:</strong> dividends tax of 20% is withheld at source. Non-residents may qualify for a lower treaty rate (for example 10% for Kenya residents) if they declare their tax status correctly to their broker.</p>
+              <p>This is why the dividend you receive is lower than the dividend the company announces. You can change the tax rate in the calculator's advanced settings. Tax on capital gains is a separate topic and is not included in the calculator; check the rules for your country.</p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary>Which date decides whether I get the dividend?</summary>
+            <div class="faq-body">
+              <p>Companies announce a dividend with a book closure (record) date. Roughly, you must own the shares before the "ex-dividend" date to receive that payout — buy on or after it and the seller keeps the dividend. Because settlement takes a few business days, the last day to buy is earlier than the book closure date, so check the company's announcement. Our <a href="calendar.html">calendar</a> is a good place to start.</p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary>Should I reinvest my dividends?</summary>
+            <div class="faq-body">
+              <p>Reinvesting means each payout buys more shares, which then earn their own dividends — compounding. Over long periods this can add meaningfully to the result, but every reinvestment trade carries costs, which on the NSE are relatively high for small amounts. Try the calculator with reinvestment on and off to see the difference using your own assumptions.</p>
+            </div>
+          </details>
+        </div>
+
+        <div class="faq-group">
+          <h3>Strategy and risk</h3>
+
+          <details class="faq-item">
+            <summary>Can I lose all my money?</summary>
+            <div class="faq-body">
+              <p>Yes, it is possible. Share prices can fall sharply, and a company that fails can leave shareholders with little or nothing. Owning shares in several companies across different sectors reduces the damage if one fails, but it never removes market risk. Only invest what you can afford to leave invested through downturns.</p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary>How long should I hold shares?</summary>
+            <div class="faq-body">
+              <p>There is no single answer, but share prices are much more volatile over months than over many years, and trading costs penalise frequent buying and selling. Fundamental, long-term investing — focusing on earnings quality, margins and balance sheet strength — tends to suit people who cannot watch markets daily. Match your holding period to when you will need the money.</p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary>Is it better to invest a lump sum or a little every month?</summary>
+            <div class="faq-body">
+              <p>Investing regularly spreads your purchases over different prices, which can make the market's ups and downs easier to live with. The trade-off is cost: if each purchase carries a percentage fee or a minimum charge, many small trades can eat into returns, especially on the NSE. Compare your broker's fee structure before choosing a rhythm.</p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary>How many companies should I own?</summary>
+            <div class="faq-body">
+              <p>Owning a single company concentrates your risk. Spreading money across several companies and sectors — for example a bank, a telecom, a consumer brand and a commodity business — means one bad outcome matters less. There is no magic number; the right level depends on your budget, costs and how much time you can spend following your holdings.</p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary>What is the difference between a share's price and its value?</summary>
+            <div class="faq-body">
+              <p>Price is what the market asks today; value is an estimate of what the business is worth based on its fundamentals. On The African Oracle we estimate fair value using four independent models and show where they agree or diverge. When the price is well below estimated value, there may be a "margin of safety" — but estimates can be wrong. See <a href="learn.html#iv">Intrinsic Value</a> in our glossary.</p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary>What changes if I invest on the JSE from Kenya (or the reverse)?</summary>
+            <div class="faq-body">
+              <p>Several things: the currency (a falling rand or shilling changes your return in your home currency), different taxes and withholding rates, different brokers and account requirements, and different trading hours. Check the cross-border rules and costs for your situation before investing.</p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary>How does inflation affect my returns?</summary>
+            <div class="faq-body">
+              <p>Inflation reduces what your money can buy. If your investment grows 8% in a year and prices rise 5%, your "real" return is roughly 3%. The calculator shows nominal (unadjusted) figures, so compare your annualised return with expected inflation when judging whether an outcome is attractive.</p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary>Is the calculator a prediction?</summary>
+            <div class="faq-body">
+              <p>No. It simply applies the growth rates, costs and tax you enter. Real share prices rise and fall unevenly, and dividends can change or stop. Treat the "what if prices move differently" table as a range of possibilities, not a forecast.</p>
+            </div>
+          </details>
+        </div>
+
+        <p class="calc-disclaimer">Questions we have not answered, or something here that looks out of date? <a href="contact.html">Tell us</a> — corrections are usually processed within 24 hours. The African Oracle is an independent educational platform, not a licensed financial advisor or stockbroker; always consult a CMA-registered (Kenya) or FSCA-authorised (South Africa) professional before making investment decisions.</p>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">◈ The African Oracle</div>
+      <div class="footer-links">
+        <a href="index.html">Screener</a>
+        <a href="movers.html">Performers</a>
+        <a href="learn.html">Glossary</a>
+        <a href="calculator.html">Calculator</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+        <a href="privacy.html">Privacy</a>
+        <a href="terms.html">Terms</a>
+      </div>
+      <div class="footer-note">Free forever · Data from NSE &amp; JSE public filings</div>
+    </div>
+  </footer>
+
+  <!-- app.js supplies SUPABASE_URL / SUPABASE_ANON_KEY / normalizeStockRow for the optional stock picker -->
+  <script src="js/app.js?v=1"></script>
+  <script src="js/calculator.js?v=1"></script>
+</body>
+</html>
