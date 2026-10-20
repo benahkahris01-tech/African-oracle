@@ -134,14 +134,21 @@ function bindToggle() {
 }
 
 // ── Load stock price/PE data then render ──────────────────────
-// (unchanged logic — still merges live price data onto whichever
-// EARNINGS_DATA is currently loaded)
+// stockMap is keyed by "TICKER|EXCHANGE" (e.g. "BAT|NSE") because the same
+// ticker can exist on both exchanges — keying by ticker alone mixed them up.
+function stockKey(ticker, exchange) { return String(ticker) + "|" + exchange; }
+function exchangeOfCountry(country) { return country === "Kenya" ? "NSE" : "JSE"; }
+
 function loadAndRender(exchange, premium) {
   var CACHE_KEY = "oracle_data";
   var CACHE_TTL = 10 * 60 * 1000;
   var stockMap  = {};
 
-  // Premium users: try priority endpoint first (bypasses 6hr cache)
+  function fill(list) {
+    list.forEach(function (s) { stockMap[stockKey(s.ticker, exchangeOfCountry(s.country))] = s; });
+  }
+
+  // Premium users: try priority endpoint first (live data from Apps Script)
   if (premium && typeof API_URL !== "undefined" && API_URL &&
       API_URL !== "PASTE_YOUR_APPS_SCRIPT_URL_HERE") {
     var token = "";
@@ -150,10 +157,7 @@ function loadAndRender(exchange, premium) {
       fetch(API_URL + "?action=priority&token=" + encodeURIComponent(token))
         .then(function (r) { return r.json(); })
         .then(function (json) {
-          if (json && json.data) {
-            var list = Array.isArray(json.data) ? json.data : [];
-            list.forEach(function (s) { stockMap[s.ticker] = s; });
-          }
+          if (json && json.data) fill(Array.isArray(json.data) ? json.data : []);
           renderCalendar(exchange, stockMap, premium);
         })
         .catch(function () { renderCalendar(exchange, {}, premium); });
@@ -161,31 +165,31 @@ function loadAndRender(exchange, premium) {
     }
   }
 
-  // Free users or fallback: sessionStorage cache
+  // Free users or fallback: sessionStorage cache (shared with app.js / movers.js)
   try {
     var cached = sessionStorage.getItem(CACHE_KEY);
     if (cached) {
       var parsed = JSON.parse(cached);
       if (parsed && parsed.ts && (Date.now() - parsed.ts < CACHE_TTL) && parsed.data) {
-        parsed.data.forEach(function (s) { stockMap[s.ticker] = s; });
+        fill(parsed.data);
         renderCalendar(exchange, stockMap, premium);
         return;
       }
     }
   } catch (e) {}
 
-  if (typeof API_URL !== "undefined" && API_URL &&
-      API_URL !== "PASTE_YOUR_APPS_SCRIPT_URL_HERE") {
-    fetch(API_URL)
-      .then(function (r) { return r.json(); })
-      .then(function (json) {
-        if (json && json.data) {
-          var list = Array.isArray(json.data) ? json.data : [];
-          list.forEach(function (s) { stockMap[s.ticker] = s; });
-          try {
-            sessionStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), data: list }));
-          } catch (e) {}
-        }
+  // Cache miss — public read path is Supabase (normalizeStockRow comes from app.js)
+  if (typeof SUPABASE_URL !== "undefined" && SUPABASE_URL &&
+      typeof SUPABASE_ANON_KEY !== "undefined" && SUPABASE_ANON_KEY &&
+      typeof normalizeStockRow === "function") {
+    fetch(SUPABASE_URL + "/rest/v1/stocks?select=*", {
+      headers: { apikey: SUPABASE_ANON_KEY, Authorization: "Bearer " + SUPABASE_ANON_KEY }
+    })
+      .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+      .then(function (rows) {
+        var list = Array.isArray(rows) ? rows.map(normalizeStockRow) : [];
+        fill(list);
+        try { sessionStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), data: list })); } catch (e) {}
         renderCalendar(exchange, stockMap, premium);
       })
       .catch(function () { renderCalendar(exchange, {}, premium); });
@@ -333,7 +337,7 @@ function renderList(containerId, entries, stockMap, isRecent) {
     var month = isNaN(d) ? "" : d.toLocaleString("default", { month: "short" }).toUpperCase();
     var year  = isNaN(d) ? "" : String(d.getFullYear()).slice(2);
 
-    var stock    = stockMap[e.ticker] || {};
+    var stock    = stockMap[stockKey(e.ticker, e.exchange)] || {};
     var cur      = e.exchange === "NSE" ? "KES " : "R";
     var priceStr = stock.price ? cur + Number(stock.price).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2}) : "—";
 
@@ -342,8 +346,8 @@ function renderList(containerId, entries, stockMap, isRecent) {
 
     var otherStr = otherDate ? formatShortDate(otherDate) : "—";
 
-    var href = "stock.html?ticker=" + encodeURIComponent(e.ticker) +
-               "&country=" + encodeURIComponent(e.exchange === "NSE" ? "Kenya" : "S. Africa");
+    // Calendar entries carry an exchange code, not a country — map it back
+    var href = stockPageUrl(e.ticker, e.exchange === "NSE" ? "Kenya" : "S. Africa");
 
     return (
       '<tr class="cal-row" data-href="' + href + '">' +
@@ -351,8 +355,8 @@ function renderList(containerId, entries, stockMap, isRecent) {
           '<span class="cal-td-day">' + day + '</span>' +
           '<span class="cal-td-month">' + month + (year ? " '" + year : "") + '</span>' +
         '</td>' +
-        '<td class="cal-td-ticker">' + esc((stockMap[e.ticker] && stockMap[e.ticker].name) || e.ticker) + '</td>' +
-        '<td class="cal-td-name">' + esc(e.name) + '</td>' +
+        '<td class="cal-td-ticker"><a href="' + href + '" style="color:inherit;text-decoration:none">' + esc(e.ticker) + '</a></td>' +
+        '<td class="cal-td-name">' + esc(stock.name || e.ticker) + '</td>' +
         '<td class="cal-td-exch"><span class="cal-exch ' + e.exchange.toLowerCase() + '">' + e.exchange + '</span></td>' +
         '<td class="cal-td-type">' + esc(e.resultType) + '</td>' +
         '<td class="cal-td-prev">' + otherStr + '</td>' +

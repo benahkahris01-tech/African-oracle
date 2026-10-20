@@ -66,11 +66,10 @@ function normalizeStockRow(r) {
 
 // ── Load data ─────────────────────────────────────────────────
 function loadData() {
-  var url = (typeof API_URL !== "undefined") ? API_URL : "";
-
-  // Simplified check: only error if the URL is empty or still the placeholder
-  if (!url || url.includes("PASTE_YOUR_APPS_SCRIPT_URL_HERE")) {
-    showMvError("API URL not set. Please check js/app.js.");
+  // This page reads from Supabase now, so check that config (not API_URL)
+  if (typeof SUPABASE_URL === "undefined" || !SUPABASE_URL ||
+      typeof SUPABASE_ANON_KEY === "undefined" || !SUPABASE_ANON_KEY) {
+    showMvError("Supabase is not configured. Please check js/app.js.");
     return;
   }
 
@@ -219,8 +218,7 @@ function renderTable(bodyId, stocks, cols) {
     var s    = stocks[i];
     var rank = i + 1;
     var cur  = s.currency || (s.country === "Kenya" ? "KES" : "ZAR");
-    var href = "stock.html?ticker=" + encodeURIComponent(s.ticker) +
-               "&country="          + encodeURIComponent(s.country);
+    var href = stockPageUrl(s.ticker, s.country);
     var rankCls = rank === 1 ? "rank-1" : rank === 2 ? "rank-2" : rank === 3 ? "rank-3" : "";
 
     html += '<tr data-href="' + href + '">';
@@ -229,7 +227,7 @@ function renderTable(bodyId, stocks, cols) {
     html += '<td class="rank-col"><span class="' + rankCls + '">' + rank + '</span></td>';
 
     // Ticker
-    html += '<td><span class="cell-ticker">' + esc(s.ticker) + '</span></td>';
+    html += '<td><a class="cell-ticker" href="' + href + '" style="color:inherit;text-decoration:none">' + esc(s.ticker) + '</a></td>';
 
     // Company name
     html += '<td><span class="cell-name" title="' + esc(s.name) + '">' + esc(s.name) + '</span></td>';

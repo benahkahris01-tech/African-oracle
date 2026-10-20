@@ -20,8 +20,11 @@ document.addEventListener("DOMContentLoaded", function () {
   if (!document.getElementById("detailWrap")) return;
 
   var params  = new URLSearchParams(window.location.search);
-  var ticker  = (params.get("ticker")  || "").toUpperCase().trim();
-  var country = (params.get("country") || "").trim();
+  // Static pages (stocks/abg-jse.html) have no query string — build-static-pages.js
+  // injects window.ORACLE_STATIC = {ticker, country} instead.
+  var STATIC  = window.ORACLE_STATIC || {};
+  var ticker  = (params.get("ticker")  || STATIC.ticker  || "").toUpperCase().trim();
+  var country = (params.get("country") || STATIC.country || "").trim();
 
   if (!ticker) {
     showDetailError("No ticker found in URL.");
@@ -93,8 +96,15 @@ document.addEventListener("DOMContentLoaded", function () {
   function findAndRender(data) {
     ALL_STOCKS = data; // NEW — store full list for sector peer comparison
     var stock = null;
+    // Match on ticker AND country first — the same ticker can exist on both
+    // exchanges (e.g. BAT on NSE and JSE). Fall back to ticker only.
     for (var i = 0; i < data.length; i++) {
-      if (data[i].ticker === ticker) { stock = data[i]; break; }
+      if (data[i].ticker === ticker && (!country || data[i].country === country)) { stock = data[i]; break; }
+    }
+    if (!stock) {
+      for (var j = 0; j < data.length; j++) {
+        if (data[j].ticker === ticker) { stock = data[j]; break; }
+      }
     }
     if (!stock) {
       showDetailError("Company " + ticker + " not found in data.");
@@ -799,6 +809,9 @@ function renderDetail(s) {
 
   // ── Show the page — MUST be last, always runs even if sections above had errors
   try { show("detailWrap"); } catch(e) { console.error("show detailWrap failed:", e); }
+  // The interactive page is ready — hide the static copy so content isn't shown twice.
+  // (If loading fails we never get here, so the static copy stays visible.)
+  hide("staticProfile");
 }
 
 // ═══════════════════════════════════════════════════════════════

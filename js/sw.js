@@ -16,7 +16,7 @@
    For normal updates the version query string handles it.
 ═══════════════════════════════════════════════════════════════ */
 
-var CACHE_VERSION = "oracle-v1";
+var CACHE_VERSION = "oracle-v2";
 var CACHE_NAME    = CACHE_VERSION;
 
 // Files to pre-cache on install — these are served instantly
