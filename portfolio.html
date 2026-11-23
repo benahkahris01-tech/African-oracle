@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Portfolio Tracker — NSE &amp; JSE Watchlist | The African Oracle</title>
   <meta name="robots" content="noindex, follow" />
-  <meta name="description" content="Track your NSE Kenya and JSE South Africa stock watchlist. See live prices, signals, and portfolio metrics — free, no login required." />
+  <meta name="description" content="Track your NSE Kenya and JSE South Africa stock watchlist. See live prices and portfolio metrics — free, no login required." />
   <meta http-equiv="X-Content-Type-Options" content="nosniff" />
   <meta http-equiv="X-Frame-Options" content="DENY" />
   <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
@@ -65,7 +65,7 @@
     <div class="pf-hero-inner">
       <div class="pf-tag">Free · Saved in your browser · No login needed</div>
       <h1 class="pf-title">Your Watchlist &amp;<br/><em>Portfolio Tracker</em></h1>
-      <p class="pf-sub">Add NSE and JSE stocks to your personal watchlist. See live prices, signals, and portfolio-level metrics — all saved privately in your browser.</p>
+      <p class="pf-sub">Add NSE and JSE stocks to your personal watchlist. See live prices and portfolio-level metrics — all saved privately in your browser.</p>
     </div>
   </section>
 
@@ -74,6 +74,9 @@
 
       <!-- ═══ LEFT COLUMN ═══ -->
       <div class="pf-content">
+
+        <!-- Premium status bar — filled by portfolio.js for subscribers -->
+        <div id="pfPremiumBar"></div>
 
         <!-- Loading -->
         <div class="pf-loading" id="pfLoading">
@@ -87,6 +90,9 @@
           <h2>Your watchlist is empty</h2>
           <p>Search for a company below and add it to start tracking.</p>
         </div>
+
+        <!-- Dividend alerts — premium only, filled by js/dividend-alerts.js -->
+        <div id="pfAlertsWrap"></div>
 
         <!-- Summary stats — shown when watchlist has stocks -->
         <div class="pf-summary hidden" id="pfSummary">
@@ -103,12 +109,12 @@
             <div class="pf-stat-value" id="pfAvgDiv">—</div>
           </div>
           <div class="pf-stat-card">
-            <div class="pf-stat-label">Buy Signals</div>
-            <div class="pf-stat-value n-good" id="pfBuyCount">0</div>
+            <div class="pf-stat-label">Dividend Payers</div>
+            <div class="pf-stat-value n-good" id="pfDivCount">0</div>
           </div>
           <div class="pf-stat-card">
-            <div class="pf-stat-label">Avoid Signals</div>
-            <div class="pf-stat-value n-bad" id="pfAvoidCount">0</div>
+            <div class="pf-stat-label">Wide Moat</div>
+            <div class="pf-stat-value" id="pfMoatCount">0</div>
           </div>
         </div>
 
@@ -125,13 +131,15 @@
                 <th class="num-col">Div Yield</th>
                 <th class="num-col">EPS Growth</th>
                 <th>Moat</th>
-                <th>Signal</th>
                 <th></th>
               </tr>
             </thead>
             <tbody id="pfTableBody"></tbody>
           </table>
         </div>
+
+        <!-- Advanced analytics — premium only, filled by portfolio.js -->
+        <div id="pfAnalyticsWrap"></div>
 
         <!-- Ad — after watchlist table, before search -->
         <ins class="adsbygoogle"
@@ -221,6 +229,7 @@
 
   <script src="js/app.js?v=1"></script>
   <script src="js/portfolio.js?v=1"></script>
+  <script src="js/dividend-alerts.js?v=1"></script>
   <script src="js/premium.js?v=1"></script>
 </body>
 </html>

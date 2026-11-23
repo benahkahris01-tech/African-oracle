@@ -7,7 +7,7 @@
    DATA: enriched from the same sessionStorage API cache
    shared across screener, stock pages, calendar and movers.
    
-   Self-contained — has its own esc(), numOrNull(), getSignal()
+   Self-contained — has its own esc() and numOrNull()
    so it does not depend on app.js running any functions.
    Only uses API_URL variable declared in app.js.
 ═══════════════════════════════════════════════════════════════ */
@@ -116,6 +116,9 @@ function onDataReady() {
     }
   }
 
+  // Premium user — dividend alerts for the watchlist (dividend-alerts.js)
+  if (typeof renderDividendAlerts === "function") renderDividendAlerts();
+
   // Premium user — fetch priority (live) data bypassing 6hr cache
   if (typeof API_URL !== "undefined" && API_URL &&
       API_URL !== "PASTE_YOUR_APPS_SCRIPT_URL_HERE") {
@@ -162,8 +165,8 @@ function showPremiumGate() {
       '<div class="premium-gate-icon">◈</div>' +
       '<div class="premium-gate-title">Portfolio Tracker — Premium Feature</div>' +
       '<div class="premium-gate-desc">' +
-        'Track your NSE and JSE watchlist with live prices, buy/watch/avoid signals, ' +
-        'sector breakdown, weighted P/E, dividend income projection and CSV export. ' +
+        'Track your NSE and JSE watchlist with live prices, ' +
+        'sector breakdown, weighted P/E, dividend income projection, dividend payment alerts and CSV export. ' +
         'All premium. All updated daily.' +
       '</div>' +
       '<div class="premium-gate-price">' +
@@ -244,23 +247,22 @@ function renderWatchlist() {
   // ── Summary stats ─────────────────────────────────────────
   var totalPE = 0, peCount = 0;
   var totalDiv = 0, divCount = 0;
-  var buyCount = 0, avoidCount = 0;
+  var divPayers = 0, wideMoat = 0;
 
   watchStocks.forEach(function (s) {
     var pe  = numOrNull(s.pe);
     var div = numOrNull(s.divYield);
-    var sig = getSignal(s);
     if (pe  !== null && pe  > 0) { totalPE  += pe;  peCount++;  }
     if (div !== null && div > 0) { totalDiv += div; divCount++; }
-    if (sig === "buy")   buyCount++;
-    if (sig === "avoid") avoidCount++;
+    if (div !== null && div > 0) divPayers++;
+    if (s.moat === "Wide") wideMoat++;
   });
 
   setText("pfCount",      watchStocks.length);
   setText("pfAvgPE",      peCount  > 0 ? (totalPE  / peCount).toFixed(1)  + "x"  : "—");
   setText("pfAvgDiv",     divCount > 0 ? ((totalDiv / divCount) * 100).toFixed(1) + "%" : "—");
-  setText("pfBuyCount",   buyCount);
-  setText("pfAvoidCount", avoidCount);
+  setText("pfDivCount",   divPayers);
+  setText("pfMoatCount",  wideMoat);
 
   // ── Table rows ────────────────────────────────────────────
   var html = "";
@@ -271,7 +273,6 @@ function renderWatchlist() {
     var pe  = numOrNull(s.pe);
     var div = numOrNull(s.divYield);
     var gr  = numOrNull(s.earningsGrowth);
-    var sig = getSignal(s);
     var href = "stock.html?ticker=" + encodeURIComponent(s.ticker) +
                "&country="          + encodeURIComponent(s.country);
 
@@ -297,9 +298,6 @@ function renderWatchlist() {
       ? '<span class="badge ' + (moatMap[s.moat]||"") + '">' + s.moat + '</span>'
       : '<span class="n-na">—</span>';
 
-    var sigLabels  = { buy:"● Buy", watch:"◐ Watch", avoid:"○ Avoid", neutral:"– Neutral" };
-    var sigClasses = { buy:"signal-buy", watch:"signal-watch", avoid:"signal-avoid", neutral:"signal-neutral" };
-    var sigStr = '<span class="signal ' + (sigClasses[sig]||"") + '">' + (sigLabels[sig]||"") + '</span>';
 
     var exchBadge = s.country === "Kenya"
       ? '<span class="cell-exch exch-nse">NSE</span>'
@@ -315,7 +313,6 @@ function renderWatchlist() {
         '<td class="num-col">' + divStr   + '</td>' +
         '<td class="num-col">' + grStr    + '</td>' +
         '<td>' + moatStr + '</td>' +
-        '<td>' + sigStr  + '</td>' +
         '<td><button class="pf-remove-btn" data-ticker="' + esc(s.ticker) + '" title="Remove from watchlist">✕</button></td>' +
       '</tr>';
   });
@@ -560,10 +557,9 @@ function exportCSV(stocks) {
   var headers = ["Ticker","Company","Exchange","Country","Price","Currency",
     "P/E","PEG","EPS Growth %","Div Yield %","Debt/Equity",
     "Init Margin %","Final Margin %","Moat","Fin Strength","Predictability",
-    "Intrinsic Value","Signal"];
+    "Intrinsic Value"];
 
   var rows = stocks.map(function (s) {
-    var sig = getSignal(s);
     function fmt(v,dp) {
       var n = parseFloat(v); return isNaN(n) ? "" : n.toFixed(dp||2);
     }
@@ -582,8 +578,7 @@ function exportCSV(stocks) {
       fmtPct(s.initMargin),
       fmtPct(s.finalMargin),
       s.moat || "", s.finStrength || "", s.predictability || "",
-      fmt(s.intrinsicValue,0),
-      sig
+      fmt(s.intrinsicValue,0)
     ].map(function (v) {
       // Wrap in quotes if contains comma
       return String(v).indexOf(",") > -1 ? '"' + v + '"' : v;
